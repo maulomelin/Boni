@@ -1,0 +1,65 @@
+{% comment %}
+DESCRIPTION:
+  - Function to retrieve an image's primary color.
+  - Assumes that the image filename has the following format:
+
+        filename = item1-color1--item2-color2--...--itemN-colorN---picid.jpg
+                 = (item1-color1)(--itemX-colorX)*---picid.jpg
+
+  - With that filename format, the splitting process is as follows:
+
+        image.src     =>  [path/filename]
+        split: "/"    =>  [path] [filename]
+        split: "."    =>  [path] [(item1-color1)(--itemX-colorX)*---picid] [jpg]
+        split: "---"  =>  [path] [(item1-color1)(--itemX-colorX)*] [picid] [jpg]
+        split: "--"   =>  [path] [item1-color1] ... [itemN-colorN] [picid] [jpg]
+        split: "-"    =>  [path] [item1] [color1] ... [itemN] [colorN] [picid] [jpg]
+
+PARAMETERS:
+  {image object} image[ required ] // The current image.
+  {string} attribute[ required ] // The attribute to query for.
+
+OUTPUT:
+  - Results of the query are in a variable named image_filename_attribute.
+  - Variable is nil if no query attribute is provided.
+
+SAMPLE:
+  {% include "function.image-filename-attribute", image: image, attribute: primary-color %}
+  <p>The primary color of this image is {{ image_filename_attribute }}</p>
+
+TODOs:
+  - Change delimiters to dashes, upload newly renamed filenes, and update product info via loaded file.
+  - Support fetching arbitrary attributes from an image:
+      - Change function name.
+      - Change file name.
+      - Add a second parameter for attribute to fetch.
+      - Add a case statement for all supported attribute queries.
+
+{% endcomment %}
+{%- if "primary-color" == attribute -%}
+
+  {%- assign x = image.src | downcase -%}
+  {%- assign x = x | split: "/" -%}
+  {%- assign x = x[1] | split: "." -%}
+  {%- assign x = x[0] | split: "--" -%}
+  {%- assign x = x[0] | split: "-" -%}
+  {%- assign x = x[0] | split: "_" -%}
+
+  {%- assign image_filename_attribute = x[1] -%}
+
+{%- elsif "foobar" == attribute -%}
+
+  {%- assign x = image.src | downcase -%}
+  {%- assign x = x | split: "/" | join: "#" -%}
+  {%- assign x = x | split: "." | join: "#" -%}
+  {%- assign x = x | split: "--" | join: "#" -%}
+  {%- assign x = x | split: "-" | join: "#" -%}
+  {%- assign x = x | split: "_" | join: "#" -%}
+
+  {%- assign image_filename_attribute = x -%}
+
+{%- else -%}
+
+  {%- assign image_filename_attribute = nil -%}
+
+{%- endif -%}

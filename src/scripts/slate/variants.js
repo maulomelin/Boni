@@ -46,6 +46,11 @@ slate.Variants = (function() {
             currentOption.value = $element.val();
             currentOption.index = $element.data('index');
 
+/*dbg*/console.log("_getCurrentOptions");
+/*dbg*/console.log("\telement=[" + element + "] type=[" + type + "]");
+/*dbg*/console.log("\tcurrentOption .value=[" + currentOption.value + "] .index=[" + currentOption.index + "]");
+/*dbg*/console.log("");
+/*dbg*/
             return currentOption;
           } else {
             return false;
@@ -54,6 +59,11 @@ slate.Variants = (function() {
           currentOption.value = $element.val();
           currentOption.index = $element.data('index');
 
+/*dbg*/console.log("_getCurrentOptions");
+/*dbg*/console.log("\telement=[" + element +"] type=[" + type + "]");
+/*dbg*/console.log("\tcurrentOption .value=[" + currentOption.value + "] .index=[" + currentOption.index + "]");
+/*dbg*/console.log("");
+/*dbg*/
           return currentOption;
         }
       });
@@ -98,6 +108,10 @@ slate.Variants = (function() {
     _onSelectChange: function() {
       var variant = this._getVariantFromOptions();
 
+/*dbg*/console.log("_onSelectChange");
+/*dbg*/console.log("\tvariant=[" + variant + "]");
+/*dbg*/console.log("");
+/*dbg*/
       this.$container.trigger({
         type: 'variantChange',
         variant: variant

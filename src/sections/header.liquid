@@ -1,108 +1,92 @@
-<style>
-  {% if section.settings.logo != blank %}
-    .site-header__logo-image {
-      max-width: {{ section.settings.logo_max_width }}px;
-    }
-  {% endif %}
-</style>
-<div data-section-id="{{ section.id }}" data-section-type="header-section">
-  <header role="banner">
-    {% if template.name == 'index' %}
-      <h1 itemscope itemtype="http://schema.org/Organization">
-    {% else %}
-      <div class="h1" itemscope itemtype="http://schema.org/Organization">
-    {% endif %}
-        <a href="/" itemprop="url" class="site-logo{% if section.settings.logo != blank %} site-header__logo-image{% endif %}">
-          {% if section.settings.logo != blank %}
-            {% capture image_size %}{{ section.settings.logo_max_width }}x{% endcapture %}
-            <img src="{{ section.settings.logo | img_url: image_size }}"
-                 srcset="{{ section.settings.logo | img_url: image_size }} 1x, {{ section.settings.logo | img_url: image_size, scale: 2 }} 2x"
-                 alt="{{ section.settings.logo.alt | default: shop.name }}"
-                 itemprop="logo">
-          {% else %}
-            {{ shop.name }}
-          {% endif %}
-        </a>
-    {% if template.name == 'index' %}
-      </h1>
-    {% else %}
-      </div>
-    {% endif %}
+{% comment %}
+NOTES:
+  - we follow Slate's convention of wrapping the content of a Section file in
+    an element with a "data-section-type" attribute.  The type is taken from
+    this attribute's value.
+  -
 
-    <a href="/cart">
-      {% include 'icon-cart' %}
-      {{ 'layout.cart.title' | t }}
-      ({{ cart.item_count }} {{ 'layout.cart.items_count' | t: count: cart.item_count }})
-    </a>
+TODOs:
+  - Adjust img tags to leverage other attributes (i.e. srcset, alt, itemprop,
+   etc).
+  See https://css-tricks.com/responsive-images-youre-just-changing-resolutions-use-srcset/
+  - Consider using <... itemscope & itemtype="http://schema.org/Organization">
+   after reviewing Google dev docs.
+  - HOW DO YOU ADD/REMOVE GUTTERS?!
+  - Consider animating menu icon from "=" to "x" on state transitions.
+  - Update "role" attribute for each section
+  (https://stackoverflow.com/questions/4170356/what-values-can-the-html5-xhtml-role-attribute-have)
+  - Create nested menus:
+  https://help.shopify.com/themes/development/building-nested-navigation
+  - Fade header, simple code: https://codepen.io/riogrande/pen/gbXxdx
+  - Add ARIA tags and elements.
+  - Add tags and classes for responsiveness at various breakpoints.
+    e.g.  <!-- .small--hide & aria:.icon-fallback-text -->
+          <!-- class="medium-up--hide" -->
+  - Consider changing "l-"-named classes to "s-".
+  - Rename "_row-container" and "_*-slot"
+  - Review proper use of <nav> tags on all appropriate elements.
+  - Do we apply <nav> to the entire header, or just the part that has
+    the menu links?  What do we use for everything else?
+{% endcomment %}
 
-    {% if shop.customer_accounts_enabled %}
-      <ul>
-        {% if customer %}
-          <li>
-            {% if customer.first_name != blank %}
-              {% capture first_name %}<a href="/account">{{ customer.first_name }}</a>{% endcapture %}
-              {{ 'layout.customer.logged_in_as_html' | t: first_name: first_name }}
-            {% else %}
-              <a href="/account">{{ 'layout.customer.account' | t }}</a>
-            {% endif %}
-          </li>
-          <li>
-            {{ 'layout.customer.log_out' | t | customer_logout_link }}
-          </li>
-        {% else %}
-          <li>
-            {{ 'layout.customer.log_in' | t | customer_login_link }}
-          </li>
-          <li>
-            {{ 'layout.customer.create_account' | t | customer_register_link }}
-          </li>
-        {% endif %}
-      </ul>
-    {% endif %}
+<!-- header section (\src\sections\header.liquid) -->
+<div data-section-id="{{ section.id }}" data-section-type="section-header">
 
-    <form action="/search" method="get" role="search">
-      <label for="Search" class="label-hidden">
-        {{ 'general.search.placeholder' | t }}
-      </label>
-      <input type="search"
-             name="q"
-             id="Search"
-             value="{{ search.terms | escape }}"
-             placeholder="{{ 'general.search.placeholder' | t }}">
-      <button type="submit" class="btn">
-        {% include 'icon-search' %}
-        <span class="icon-fallback-text">{{ 'general.search.submit' | t }}</span>
-      </button>
-    </form>
+  <header>
+
+    <nav class="_navigation-bar">
+
+      <div class="_row-container">
+
+        <div class="_left-slot">
+          <button type="button" class="_js-slide-menu-drawer">
+            <span class="_icon">{% include "icon-hamburger" %}</span>
+            <span class="small--hide">Menu</span>
+          </button>
+          <button type="button" class="_js-slide-search-drawer">
+            <span class="_icon">{% include "icon-search" %}</span>
+            <span class="small--hide">Search</span>
+          </button>
+        </div> <!-- /._left-slot -->
+
+        <div class="_center-slot">
+          <span class="_logo">MLCloset</span>
+        </div> <!-- /._center-slot -->
+
+        <div class="_right-slot">
+          <button type="button">
+            <span class="_icon">{% include "icon-snapchat" %}</span>
+            <span class="small--hide">Account</span>
+          </button>
+          <button type="button">
+            <span class="_icon">{% include "icon-cart" %}</span>
+            <span class="small--hide">
+              {{ "layout.cart.title" | t }}
+              ({{ cart.item_count }}) <!-- {{ "layout.cart.items_count" | t: count: cart.item_count }} -->
+            </span>
+          </button>
+        </div> <!-- /._right-slot -->
+
+      </div> <!-- /._row-container -->
+
+      <div class="_overlay _l-overlay"></div>
+
+      <div class="_menu-drawer _l-left-sliding">
+        {% include "navigation-menu" %}
+      </div> <!-- ._menu-drawer -->
+
+      <div class="_search-drawer _l-top-sliding">
+        Search drawer<br/>Slide it from somewhere.
+      </div> <!-- ._search-drawer -->
+
+    </nav> <!-- /._navigation-bar -->
+
+    <div class="_notification-bar">
+      Notification bar.<br/>Give it some configurable text.
+    </div> <!-- ._notification-bar -->
 
   </header>
 
-  <nav role="navigation">
-    <ul class="site-nav">
-      {% for link in linklists[section.settings.main_linklist].links %}
-        {%- assign child_list_handle = link.title | handleize -%}
-        {% if menus[child_list_handle].links != blank %}
-          <li class="site-nav--has-submenu{% if link.active %} site-nav--active{% endif %}">
-            <a href="{{ link.url }}" class="site-nav__link">
-              {{ link.title }}
-              {% include 'icon-arrow-down' %}
-            </a>
-            <ul class="site-nav__submenu">
-              {% for childlink in menus[child_list_handle].links %}
-                <li {% if childlink.active %}class="site-nav--active"{% endif %}>
-                  <a href="{{ childlink.url }}" class="site-nav__link">{{ childlink.title | escape }}</a>
-                </li>
-              {% endfor %}
-            </ul>
-          </li>
-        {% else %}
-          <li {% if link.active %}class="site-nav--active"{% endif %}>
-            <a href="{{ link.url }}" class="site-nav__link">{{ link.title }}</a>
-          </li>
-        {% endif %}
-      {% endfor %}
-    </ul>
-  </nav>
 </div>
 
 {% schema %}
@@ -129,6 +113,46 @@
         "id": "main_linklist",
         "label": "Menu",
         "default": "main-menu"
+      },
+      {
+        "type": "header",
+        "content": "Notification Bar"
+      },
+      {
+        "type": "checkbox",
+        "id": "notification_bar_display",
+        "label": "Show Notification Bar",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "notification_bar_location_home_page_only",
+        "label": "Home Page only",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "notificaton_bar_text",
+        "label": "Notification text",
+        "default": "Information or Notification"
+      },
+      {
+        "type": "url",
+        "id": "notificaton_bar_link",
+        "label": "Notification link",
+        "info": "Optional"
+      },
+      {
+        "type": "color",
+        "id": "notificaton_bar_background_color",
+        "label": "Background color",
+        "default": "#cccccc"
+      },
+      {
+        "type": "color",
+        "id": "notificaton_bar_text_color",
+        "label": "Text color",
+        "default": "#ffffff"
       }
     ]
   }

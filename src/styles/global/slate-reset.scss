@@ -27,6 +27,7 @@ form {
   margin: 0;
 }
 
+/* <BoniOverride reason="Sets a fixed pixel size.">
 // Prevent zoom on touch devices in active inputs
 @include media-query($medium-down) {
   input,
@@ -35,6 +36,7 @@ form {
     font-size: 16px;
   }
 }
+</BoniOverride> */
 
 button,
 input[type="submit"],

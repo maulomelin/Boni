@@ -1,0 +1,641 @@
+//------------------------------------------------------------------------------
+// Boni theme css (\src\styles\global\header.scss) -----------------------------
+//------------------------------------------------------------------------------
+// This file defines the visual styles of all elements in the Boni theme.
+// It first defines styles for base elements (e.g. <p>, <button>) and utilities
+// (e.g. debugging, grid).  Then it defines styles for abstract constructs
+// (i.e. modules).  A reference to base elements can be found in various sites:
+//  - https://developer.mozilla.org/en-US/docs/Web/HTML/Element/
+//  - https://www.w3schools.com/html/
+//
+// Base elements include:
+//  - Debugging
+//  - Grid
+//  - Base Styles
+//  - Typography
+//  - Headings
+//  - Paragraphs
+//  - Quotations
+//  - Text Formatting
+//  - Anchors/Links
+//  - Buttons
+//  - Colors (color names (e.g. "red") vs. color variants (e.g. "primary"))
+//  - Lists
+//  - Forms
+//  - Tables
+//  - Images & Captions
+//
+// Abstract construts include:
+//  - Header
+//  - Menu Drawer (mini.css)
+//  - Navigation Bar
+//  - Cards
+//  - Text Sections
+//  - Media Sections
+//  - Groupings
+//  - Footer
+//  - Modal Dialog
+//  - Accordions
+//  - Icons (SVG elements vs. embedded in a <span class="icon-graphic"></span>)
+//  - Visibility Helpers
+//  - ARIA Helpers
+//  - Tooltips
+//
+// A few guiding principles for this framework:
+//  - Leverage existing html elements (e.g. <button>) instead of recasting
+//    other elements to look like them (e.g. <a class="button">).
+//  - Define new classes only under these two scenarios:
+//      1) Define abstract constructs (e.g. [class="header-bar"]).
+//      2) Augment existing elements (e.g. [class="color-blue"]).
+//  - Be semantic: structure content with semantically-appropriate tags whenever
+//    possible; worry about the meaning of the content, not its presentation.
+//  - Be kind to users and use relative/scalable units (i.e. "em") throughout
+//    the site.  Follow these simple rules:
+//      0) Do not use pixels.
+//      1) Size in "em" if property should scale according to its font-size.
+//      2) Size everything else in "rem".
+//------------------------------------------------------------------------------
+// Notes:
+//  - If some of these styles do not render as expected, look at the CSS style
+//    hierarchy to find the definition with higher order of precedence.
+//------------------------------------------------------------------------------
+// TODOs:
+//  - Use mixin prefix where typography (fonts) are defined.
+//  - Figure out how to use Autoprefixer and remove @include prefix() calls.
+//  - Select a style of commenting within a file that uses block comment at the
+//    top (to close off block comments from outside this file), and line
+//    comments within.
+//  - Review the breakpoints to determine if we want small or medium on
+//    iPhones in landscape mode, by default.  See landscape resolutions on:
+//    https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+//  - Update "section-header" to "section-title".
+//  - Add normalize.css to our templates.
+//  - How do we handle different colors for buttons?  We could create specific
+//    "button-primary" and "button-secondary" classes, or we could define
+//    "color-primary" and "color-secondary" classes and use those appropriately.
+//  - Decide if buttons will have "upper-case" labels, standard.
+//  - Implement definitions for these sections (and more or less):
+//      Debugging, Grid, Base Styles, Buttons, Typography, Lists, Forms, links,
+//      Code, Tables, Spacing, Ultilities, Media Queries, Utilities, etc.
+//  - Update <pre> definition.
+//  - See if/where we can use the var() and calc() CSS functions to set global
+//    variables used throughout our stylesheets.  See https://minicss.org/ CSS.
+//      - set variables:  :root { --name: value; }
+//      - reference variables:  var(--name)
+//      - perform a calculation:  calc(100% - 100px) OR calc(2*var(--name))
+//  - Adjust the abstract construct templates to fit whatever JS frameworks
+//    we decide to leverage.
+//  -
+//------------------------------------------------------------------------------
+
+// Debugging -------------------------------------------------------------------
+//  - Define classes for a collapsible container we can use for debug info.
+//------------------------------------------------------------------------------
+._debug-info {
+  display: block;
+  padding: 1rem;
+  margin: 1rem;
+  border: solid 5px red;
+}
+._debug-info::before {
+  display: table;
+  position: relative;
+  content: "DEBUG - INFO";
+  font-weight: bold;
+  background: red;
+  color: white;
+  top: -1rem;
+  left: -1rem;
+  padding: 0 1rem 0.5rem 0;
+  border-bottom-right-radius: 0.5rem;
+}
+._debug-new-code {
+  display: block;
+  padding: 1rem;
+  margin: 1rem;
+  border: solid 5px orange;
+}
+._debug-new-code::before {
+  display: table;
+  position: relative;
+  content: "DEBUG - NEW CODE";
+  font-weight: bold;
+  background: orange;
+  color: white;
+  top: -1rem;
+  left: -1rem;
+  padding: 0 1rem 0.5rem 0;
+  border-bottom-right-radius: 0.5rem;
+}
+._debug-original-code {
+  display: block;
+  padding: 1rem;
+  margin: 1rem;
+  border: solid 5px green;
+}
+._debug-original-code::before {
+  display: table;
+//  width: 25%;
+  position: relative;
+  content: "DEBUG - ORIGINAL CODE";
+  font-weight: bold;
+  background: green;
+  color: white;
+  top: -1rem;
+  left: -1rem;
+  padding: 0 1rem 0.5rem 0;
+  border-bottom-right-radius: 0.5rem;
+}
+
+/**********
+div { border: solid 1px yellow; }
+h1, h2, h3 { border: solid 1px blue; }
+nav { border: solid 1px red; }
+p { border: solid 1px orange; }
+sup, sub { border: solid 1px gray; }
+**********/
+
+// Grid ------------------------------------------------------------------------
+//  - For now, leverage the grid defined by Shopify's Slate theme.
+//  - For future, look at a flexbox-based grid system like Bootstrap.
+//------------------------------------------------------------------------------
+
+// Base Styles -----------------------------------------------------------------
+//  - Set the box model for all elements to be the traditional box model.
+//------------------------------------------------------------------------------
+* { @include prefix("box-sizing", "border-box", moz webkit); }
+
+// Typography ------------------------------------------------------------------
+//  - Set the base font for the root element (<html>) to 62.5%.
+//    This =10px since most browsers (but not all) set a 16px default base font.
+//    All "rem" measurements will be based off this size, so that 2.5rem = 25px.
+//    If the base font is set to a fixed size (e.g. "14px"), it won't resize if
+//    a user changes their browser zoom or default settings.
+//  - Set "line-height" to 1.
+//  - Set the default text color to black (or almost).
+//  - Set the background color to white (or almost).
+//  - Set the font to be a managed list.
+//------------------------------------------------------------------------------
+html { font-size: 62.5%; }
+
+body {
+  font-size: 1.2rem;
+  font-family: $font-stack-body;
+  font-weight: normal;
+  line-height: 1;
+  color: #222222;
+  background: #f8f8f8;
+}
+
+// Headings --------------------------------------------------------------------
+//  - Redefine the headings to match our desired styles.
+//------------------------------------------------------------------------------
+h1, h2, h3, h4, h5, h6 { margin: 0 0 2rem 0; font-weight: normal; }
+h1 { font-size: 4.0rem; line-height: 1.20; letter-spacing: -0.10rem; }
+h2 { font-size: 3.6rem; line-height: 1.25; letter-spacing: -0.10rem; }
+h3 { font-size: 3.0rem; line-height: 1.30; letter-spacing: -0.10rem; }
+h4 { font-size: 2.4rem; line-height: 1.35; letter-spacing: -0.08rem; }
+h5 { font-size: 1.8rem; line-height: 1.50; letter-spacing: -0.05rem; }
+h6 { font-size: 1.5rem; line-height: 1.60; letter-spacing: 0; }
+
+// Paragraphs ------------------------------------------------------------------
+//  - Define paragraph delineation elements:
+//      <p>, <br>, <pre>, <hr>
+//  - Line breaks (<br>) are not styled.
+//------------------------------------------------------------------------------
+
+// Paragraphs
+p { margin-top: 0; }
+
+// Preformatted Text
+pre {
+  font: Consolas, monaco, monospace;
+  color: #666666;
+  overflow: auto;
+  padding: 1em;
+  border: solid 1px black;
+  background: #cccccc;
+}
+
+// Horizontal Rules
+hr {
+  width: 80%;
+  border-width: 1px 0 0 0;
+//  border: 0;
+//  border-top: 0.1rem solid black;
+//  margin: 3rem 0;
+}
+
+// Quotations ------------------------------------------------------------------
+//  - Define quotation elements:
+//      <q>, <blockquote>, <abbr>, <cite>, <address>
+//------------------------------------------------------------------------------
+
+// Short Quotations
+q { display: inline; }
+q:before { content: open-quote; }
+q:after { content: close-quote; }
+
+// Long Quotations
+blockquote {
+  display: block;
+  border-left: 1rem solid #cccccc;
+  margin: 0 1rem;
+  padding: 0 1rem;
+}
+
+// Abbreviation
+abbr {
+  text-decoration: underline wavy red;
+}
+
+// Address (contact information for the author/owner of a document or article)
+address {
+  display: block;
+  font-style: italic;
+}
+
+// Text Formatting -------------------------------------------------------------
+//  - Define text formatting elements:
+//      <b>, <em>, <i>, <small>, <strong>, <sub>, <sup>, <ins>, <del>, <mark>
+//------------------------------------------------------------------------------
+
+// Bold text
+b { font-weight: bold; }
+
+// Important text
+strong { font-weight: bold; }
+
+// Italic text
+i { font-style: italic; }
+
+// Emphasized text
+em { font-style: italic; }
+
+// Marked text
+mark { background-color: yellow; }
+
+// Small text
+small {}
+
+// Deleted text
+del { text-decoration: line-through; }
+
+// Inserted text
+ins {
+  text-decoration: underline;
+  color: red;
+}
+
+// Underlined text
+u { text-decoration: underline; }
+
+// Subscript & Superscript text
+sub, sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+sup { top: -0.5em; }
+sub { bottom: -0.25em; }
+
+s {
+  text-decoration: line-through;
+  text-decoration-color: red;
+}
+
+// Anchors/Links ---------------------------------------------------------------
+//  - Use anchors as navigational elements only.
+//  - Don't configure anchors to look like buttons; they're spec'd for different
+//    things and activate with different keys (i.e. Enter key vs. Space key).
+//------------------------------------------------------------------------------
+a:link { color: blue; text-decoration: none; }
+a:hover { text-decoration: underline; }
+a:visited { color: blue; }
+a:active { color: blue; }
+
+// Buttons ---------------------------------------------------------------------
+//  - Follow the convention that buttons can only be made with these elements:
+//      - <input type="submit">
+//      - <input type="button">
+//      - <button>
+//  - Use buttons to submit or reset forms, or to execute custom behaviour only.
+//  - Do not use buttons for navigation.  That's what links are for.
+//------------------------------------------------------------------------------
+input[type="submit"] > span,
+input[type="button"] > span,
+button > span {
+  margin: 0 0.2em;
+}
+
+input[type="submit"],
+input[type="button"],
+button {
+  @include prefix("user-select", "none", moz ms webkit spec); // ???
+  @include prefix("appearance", "none", webkit moz spec); // ???
+
+  display: inline-flex;
+  align-items: center;
+
+  vertical-align: bottom;
+
+  text-decoration: none;
+  text-align: middle;
+  white-space: nowrap;
+  padding: 0.4rem 0.4rem;
+  margin: auto;
+  cursor: pointer;
+  border-radius: 4px;
+
+  text-transform: none;
+
+  font-family: Arial, sans-serif;
+  font-size: 1.4rem;
+  font-weight: 400;
+
+// DO WE DEFINE BASE COLOR STYLES HERE AND OVERRIDE VIA MODIFIERS?
+//  color: 0;
+  color: orange;
+  border:solid 1px yellow;
+  background-color: lightyellow;
+
+  line-height: 2rem;
+}
+
+input[type="submit"]:hover,
+input[type="submit"]:focus,
+input[type="button"]:hover,
+input[type="button"]:focus,
+button:hover,
+button:focus {
+//  xxxopacity: 0.75;
+}
+
+input[type="submit"][disabled],
+button[disabled] {
+  cursor: not-allowed;
+}
+
+// Colors ----------------------------------------------------------------------
+//  -
+//
+//                    v  v  v  v  v  v
+//  (black) #000000 - 0123456789abcdef - #ffffff (white)
+//                    ^  ^  ^  ^  ^  ^
+//------------------------------------------------------------------------------
+// TODO:
+//  - How do we define colors?  We could create specific classes:
+//        e.g. "button-primary", "button-secondary"
+//    or we could define abstract classes:
+//        e.g. "color-primary", "color-secondary"
+//  - What properties does a "color" modify?  background, color, border, etc.?
+//  - Abstract structure/position from presentation/visual styles of an object.
+//
+//------------------------------------------------------------------------------
+._color-white { background-color: #ffffff; }
+._color-pearl { background-color: #f2edd8; }
+._color-melon { background-color: #f5926c; }
+._color-hummus { background-color: #bea968; }
+._color-cinnamon { background-color: #a67247; }
+._color-chedron { background-color: #8f413d; color: white; }
+._color-kiwi { background-color: #bead3b; }
+._color-aqua { background-color: #7ed9c3; }
+._color-black { background-color: #28282d; color: white; }
+._color-gray { background-color: #595e62; color: white; }
+._color-indigo { background-color: #254e62; color: white; }
+._color-turquoise { background-color: #0082b5; color: white; }
+._color-lilac { background-color: #a17eb6; }
+._color-rosewood { background-color: #c0889d; }
+._color-coral { background-color: #d85863; }
+
+
+
+// Tables ----------------------------------------------------------------------
+//  -
+//------------------------------------------------------------------------------
+table,
+thead, tbody, tfoot,
+th, tr, td {
+  border-collapse: collapse;
+  border: solid 1px gray;
+  padding: 2px;
+}
+thead {
+  background: darkgray;
+  color: white;
+}
+
+
+// Menu ------------------------------------------------------------------------
+//  - A menu is a nested list of links.
+//------------------------------------------------------------------------------
+// TODO:
+//  - Clean <ul> to remove any default margins or paddings.
+//------------------------------------------------------------------------------
+._menu {
+  display: block;
+  margin: 0;
+  padding-left: 1rem;
+}
+._menu-item {
+  display: list-item;
+  border-bottom: solid 1px lightgray;
+  list-style: none;
+  padding: .5em;
+}
+._menu-item:hover {
+  background: lightgray;
+}
+
+// Switch Field ----------------------------------------------------------------
+//  - A switch field is a graphical element that allows the user to choose only
+//    one option from a set of mutually exclusive options.
+//  - A user can tab through every option before selecting it.
+//  - Each field supports the following states:
+//      - default - content is shown and clearly delineated from surroundings.
+//      - checked - option is selected.
+//      - focus - option has the current focus of the keyboard.
+//      - active - interaction with option has commenced (space, click-down).
+//  - All fields must be the same width; as wide as the longest option.
+//------------------------------------------------------------------------------
+//  - To hide the checkbox controls while still keeping them tabbable:
+//      - First, take them out of the layout (via "position: absolute;") to
+//        keep them from taking up space but still remain tabbable.
+//      - Last, shrink them to 0 dimensions (via "height: 0; width: 0;").
+//      - Do not use "display: none;"; that will remove them entirely, both
+//        from the layout and hidden to screen readers.
+//  - Since the <input> tag does not take children, we use a sibiling and the
+//    "+" or "~" selectors to target that sibling to implement an outline for
+//    checked, hover, etc.
+//------------------------------------------------------------------------------
+// Resources:
+//  - Radio buttons as toggle buttons:
+//    https://thestizmedia.com/radio-buttons-as-toggle-buttons-with-css/
+//------------------------------------------------------------------------------
+// TODOs:
+//  - "switch-field" --> "swatch"?
+//  - Update the focus of the radio button to have the same color as the default
+//    focus of any other element on the page.  When the user moves off the
+//    fieldset, then the checked style kicks in, which may be something else.
+//  - Tweak box-shadow properties to make the selection pop out more obviously.
+//  - Add "for" and "id" properties to <label> and <input> tags, respectively.
+//    We want and need these to ensure a click on a <label> element triggers
+//    its corresponding <input> element.
+//  - Consider refactoring code so that a switch is just a pair of adjoining
+//    <label> and <input> tags, instead of <input> nested under <label>.
+//    This may end up making the code cleaner, tidier, and better for screen
+//    readers.  We still need to add "for" and "id" properties to each.
+//  - Figure out design for :disabled state on an option.  Perhaps raise buttons
+//    that are available.  https://uxplanet.org/button-ux-design-best-practices-types-and-states-647cf4ae0fc6
+//------------------------------------------------------------------------------
+
+// SWATCH FIELD ----------------------------------------------------------------
+//  - A test to see if we can simplify the ._switch-field structure.
+//------------------------------------------------------------------------------
+._switch-field {
+  border: solid 1px purple;
+}
+._switch-field input[type="radio"] {
+  position: absolute;
+  height: 0;
+  width: 0;
+}
+._switches {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+}
+._switch {
+  border: solid 1px gray;/*dbg*///#ccc;
+  margin: 1rem;
+  padding: 0;
+}
+._switch-label {
+  display: flex; // Flexbox to center label content vertically & horizontally.
+  align-items: center; // Align flex items vertically.
+  justify-content: center; // Align flex items horizontally.
+  width: 4rem;
+  height: 4rem;
+///*dbg*/border: solid 1px yellow;
+}
+._shape-circle,
+._shape-circle ._switch-label {
+  border-radius: 50%; // Turn any square into a circle.
+}
+._switch-field input[type="radio"]:checked + ._switch-label {
+  box-shadow: 0 0 4px 4px yellow;
+        }
+._switch-field input[type="radio"]:disabled + ._switch-label {
+   background:linear-gradient(to bottom right, white, white 48%, black 50%, white 52%, white);
+}
+._switch-field input[type="radio"]:focus + ._switch-label {
+  box-shadow: 0 0 4px 4px blue;
+}
+
+// Tooltips --------------------------------------------------------------------
+//  - Implement it by allowing users to simply add a _tooltip="text" attribute
+//    to any element.  The implementation leverages the ::before and ::after
+//    pseudo-elements to define the tooltip arrow and tooltip text bubble,
+//    respectively.
+//  - Hide the tooltip by default.  We use opacity for this.
+//  - Show the tooltip on a hover.
+//------------------------------------------------------------------------------
+// TODOs:
+//  - Change "_tooltip" --> "_tooltip-text" ?  Matches "_tooltip-position".
+//  - Migrate tooltip attributes to HTML5-valid ones.  Namely, attributes that
+//    start with "data-" (e.g. "data-_tooltip-text", "data-_tooltip-position").\
+//  - Add tooltip to main menu (see https://productforums.google.com/forum/#!topic/websearch/El-_aS8HRnA).
+//------------------------------------------------------------------------------
+
+// Set up ancestor for any defined tooltips to be positioned with.
+[_tooltip] { position: relative; }
+
+// Draw the tooltip arrow from the geometry of a very wide box border.
+[_tooltip]::before {
+  position: absolute;
+  border: solid 0.5rem transparent;
+  content: "";
+  opacity: 0;
+}
+// Position the arrow with respect to the tooltipped element.
+[_tooltip]:not([_tooltip-position])::before { border-bottom-color: black; bottom: -1rem; left: 50%; transform: translatex(-50%); }
+[_tooltip-position="top"]::before { border-top-color: black; top: -0.5rem; left: 50%; transform: translatex(-50%); }
+[_tooltip-position="right"]::before { border-right-color: black; right: -0.5rem; top: 50%; transform: translatey(-50%); }
+[_tooltip-position="bottom"]::before { border-bottom-color: black; bottom: -0.5rem; left: 50%; transform: translatex(-50%); }
+[_tooltip-position="left"]::before { border-left-color: black; left: -0.5rem; top: 50%; transform: translatey(-50%); }
+
+// Draw the tooltip text bubble.
+[_tooltip]::after {
+  position: absolute;
+  border: solid 1px black;
+  border-radius: 0.5rem;
+  background: rgba(0,0,0,0.75);
+  content: attr(_tooltip);
+  text-align: center;
+  padding: 0.25rem 1rem;
+  color: white;
+  pointer-events: none;
+  opacity: 0;
+}
+// Position the bubble with respect to the tooltipped element, arrow-aligned.
+[_tooltip]:not([_tooltip-position])::after { bottom: -1rem; left: 50%; transform: translate(-50%, 100%); }
+[_tooltip-position="top"]::after { top: -0.5rem; left: 50%; transform: translate(-50%, -100%); }
+[_tooltip-position="right"]::after { right: -0.5rem; top: 50%; transform: translate(100%, -50%); }
+[_tooltip-position="bottom"]::after { bottom: -0.5rem; left: 50%; transform: translate(-50%, 100%); }
+[_tooltip-position="left"]::after { left: -0.5rem; top: 50%; transform: translate(-100%, -50%); }
+
+// Set conditions for showing a tooltip.
+[_tooltip]:hover::before { opacity: 1; z-index: 99; }
+[_tooltip]:hover::after { opacity: 1; z-index: 99; }
+
+
+// FORMS -----------------------------------------------------------------------
+//  - General styles for all forms.
+//------------------------------------------------------------------------------
+// TODOs:
+//------------------------------------------------------------------------------
+form { border: solid 1px green; }
+
+// IMAGE GALLERY ---------------------------------------------------------------
+//  - General styles for an image gallery.
+//  - The image gallery will be implemented as a responsive grid, much like
+//    many mobile apps (Instagram, Google Images, Pixel500, etc).
+//  - The images in the image gallery will be linked to a zoom plug-in with
+//    gestures for pinch & swipe.  This plug-in will be initialized at run-time
+//    via javascript by parsing the gallery structure.  It will also be tied
+//    to the individual selectors to filter the images according to color.
+//      - To support these run-time filters, all images in the gallery will
+//        have a number of data-* attributes:
+//          [data-title=title]
+//          [data-color=color]
+//          [data-width=width]
+//          [data-height=height]
+//      - To target images in the gallery of a given color use this selector:
+//          [data-color][data-color=chedron] { }
+//      - To target all images, except those of a given color:
+//          [data-color]:not([data-color=chedron]) { }
+//  - Fetching images:  https://www.shopify.com/partners/blog/img-url-filter/
+//------------------------------------------------------------------------------
+// TODOs:
+//  - Figure out an elegant way of terminating the gallery so the last image
+//    does not wrap and blow up by itself.
+//  - Can we turn the module into a section or snippet?
+//  - Consider inline media queries within each image in the gallery, to show
+//    larger thumbnails in desktop than mobile.
+//------------------------------------------------------------------------------
+._gallery {
+  display: flex;
+  flex-flow: row wrap;
+  outline: dashed 1px gray;
+  width: 100%;
+}
+._gallery ._thumbnail {
+  margin: 0;
+  padding: 0.5rem;
+  background-color: lightyellow;
+}
+._gallery ._thumbnail img {
+  width: 100%;
+  height: 100%;
+}

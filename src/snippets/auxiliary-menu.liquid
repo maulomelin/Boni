@@ -1,0 +1,22 @@
+{% comment %}
+DESCRIPTION:
+  - Renders a menu by recursively calling itself with children menu items.
+
+PARAMETERS:
+  {linklist object} menu[ required ] // A linklist containing the menu items.
+
+TODOs:
+  - configurable number of levels that can be rendered (via Shopify Admin).
+  - highlight link if it is currently active.
+  - PARAMETER: "limit", an integer limiting the number of nesting levels shown
+
+{% endcomment %}
+
+{%- if menu.links != blank -%}
+  <ul class="_menu">
+    {%- for link in menu.links %}
+      <li class="_menu-item"><a href='{{ link.url }}'>{{ link.title }}</a></li>
+      {%- include 'auxiliary-menu', menu: link -%}
+    {%- endfor %}
+  </ul>
+{%- endif %}

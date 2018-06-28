@@ -1,5 +1,24 @@
-<h1>{{ page.title }}</h1>
+<div class="grid">
 
+  <!-- sidebar navigation menu -->
+  <div class="grid__item one-quarter small--hide">
+    {% include "navigation-menu" %}
+  </div>
+
+  <!-- page content -->
+  <div class="grid__item three-quarters small--one-whole">
+    <div class="text-center">
+      <h1>{{ page.title }}</h1>
+    </div>
+    <div class="rte">
+      {{ page.content }}
+    </div>
+  </div>
+</div>
+
+<!-- ORIGINAL
+<h1>{{ page.title }}</h1>
 <div class="rte">
   {{ page.content }}
 </div>
+-->

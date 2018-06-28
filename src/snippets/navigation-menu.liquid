@@ -1,0 +1,18 @@
+{% comment %}
+DESCRIPTION:
+  - This snippet calls an auxiliary snippet to render the menu recurvsively.
+
+PARAMETERS:
+  none
+
+TODOs:
+  - configurable number of levels that can be rendered (via Shopify Admin).
+  - user can configure which Shopify Admin menu to generate menu from (instead of "main-menu").
+
+{% endcomment %}
+
+<!-- navigation menu snippet (\snippets\navigation-menu.liquid) -->
+<nav role="navigation">
+  {% assign menu = linklists.main-menu %}
+  {% include "auxiliary-menu", menu: menu %}
+</nav>

@@ -1,0 +1,117 @@
+<div class="_debug-info">
+  <h1>{{ product.title }}</h1>
+
+  <p>All product info (Type = {String, Number, Boolean, Nil, Array, EmptyDrop} )</p>
+  <table>
+    <thead>
+      <tr><td>Attribute</td><td>Type</td><td>Output</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>{{ "product.title" }}</td><td>String</td><td>{{ product.title }}</td></tr>
+      <tr><td>{{ "product.type" }}</td><td>String</td><td>{{ product.type }}</td></tr>
+      <tr><td>{{ "product.url" }}</td><td>String</td><td>{{ product.url }}</td></tr>
+      <tr><td>{{ "product.vendor" }}</td><td>String</td><td>{{ product.vendor }}</td></tr>
+      <tr><td>{{ "product.available" }}</td><td>Boolean</td><td>{{ product.available }}</td></tr>
+      <tr><td>{{ "product.compare_at_price_max" }}</td><td>Number</td><td>{{ product.compare_at_price_max }}</td></tr>
+      <tr><td>{{ "product.compare_at_price_min" }}</td><td>Number</td><td>{{ product.compare_at_price_min }}</td></tr>
+      <tr><td>{{ "product.compare_at_price_varies" }}</td><td>Number</td><td>{{ product.compare_at_price_varies }}</td></tr>
+      <tr><td>{{ "product.content" }}</td><td>String</td><td>{{ product.content }}</td></tr>
+      <tr><td>{{ "product.description" }}</td><td>String</td><td>{{ product.description }}</td></tr>
+      <tr><td>{{ "product.featured_image" }}</td><td>String</td><td>{{ product.featured_image }}</td></tr>
+      <tr><td>{{ "product.handle" }}</td><td></td><td>{{ product.handle }}</td></tr>
+      <tr><td>{{ "product.has_only_default_variant" }}</td><td>Boolean</td><td>{{ product.has_only_default_variant }}</td></tr>
+      <tr><td>{{ "product.id" }}</td><td></td><td>{{ product.id }}</td></tr>
+      <tr><td>{{ "product.price" }}</td><td></td><td>{{ product.price }}</td></tr>
+      <tr><td>{{ "product.price_max" }}</td><td></td><td>{{ product.price_max }}</td></tr>
+      <tr><td>{{ "product.price_min" }}</td><td></td><td>{{ product.price_min }}</td></tr>
+      <tr><td>{{ "product.price_varies" }}</td><td>Boolean</td><td>{{ product.price_varies }}</td></tr>
+      <tr><td>{{ "product.template_suffix" }}</td><td></td><td>{{ product.template_suffix }}</td></tr>
+      <tr><td>{{ "product.collections" }}</td><td>Array</td><td>[{{ product.collections.size }}]: {% for collection in product.collections %} [ {{ collection.title }} ] {% endfor %}</td></tr>
+      <tr><td>{{ "product.images" }}</td><td>Array</td><td>[{{ product.images.size }}]: {% for image in product.images %} [ <img src="{{ image.src | img_url: "pico" }}"> ] {% endfor %}</td></tr>
+      <tr><td>{{ "product.options" }}</td><td>Array</td><td>[{{ product.options.size }}]: {% for option in product.options %} [ {{ option }} ] {% endfor %}</td></tr>
+      <tr><td>{{ "product.options_with_values" }}</td><td>Array</td>
+        <td>
+          [{{ product.options_with_values | json }}]
+          <br/><br/>
+          [product.options_with_values.size={{ product.options_with_values.size }}]:
+          <ul>
+            {% for option in product.options_with_values %}
+              <li>option [{{ forloop.index0 }}]=[{{ option | json }}]
+                <ul>
+                  <br/>
+                  <li>option.name=[{{ option.name }}]</li>
+                  <li>option.position=[{{ option.position }}]</li>
+                  <li>option.selected_value=[{{ option.selected_value }}]</li>
+                  <li>option.values.size=[{{ option.values.size }}]</li>
+                  <li>option.values=[{{ option.values | json }}]:</li>
+                  <br/>
+                    <ul>
+                      {% for value in option.values %}
+                        <li>option.values[{{ forloop.index0 }}]=[{{ value }}]</li>
+                      {% endfor %}
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+              <br/>
+            {% endfor %}
+          </ul>
+        </td>
+      </tr>
+      <tr><td>{{ "product.tags" }}</td><td>Array</td><td>[{{ product.tags.size }}]: {% for tag in product.tags %} [ {{ tag }} ] {% endfor %}</td></tr>
+      <tr><td>{{ "product.variants" }}</td><td>Array</td>
+        <td>
+          [{{ product.variants.size }}]:
+          <ul>
+            {% for variant in product.variants %}
+              <li>[ .id=({{ variant.id }}) .title=({{ variant.title }}) .image.size=({{ variant.image.size }}) ({{ variant }})]</li>
+            {% endfor %}
+          </ul>
+        </td>
+      </tr>
+      <tr><td>{{ "product.selected_variant" }}</td><td>Object</td><td>.id=({{ product.selected_variant.id }}), .title=({{ product.selected_variant.title }})</td></tr>
+      <tr><td>{{ "product.first_available_variant" }}</td><td>Object</td><td>.id=({{ product.first_available_variant.id }})</td></tr>
+      <tr><td>{{ "product.selected_or_first_available_variant" }}</td><td>Object</td><td>.id=({{ product.selected_or_first_available_variant.id }})</td></tr>
+    </tbody>
+  </table>
+
+  <br/><br/>
+
+  <p>All product images</p>
+  <table>
+    <thead>
+      <tr>
+        <td>image</td>
+        <td>image.src</td>
+        <td>image.alt</td>
+        <td>image.position</td>
+        <td>image.id</td>
+        <td>image.product_id</td>
+        <td>image.height</td>
+        <td>image.width</td>
+        <td>image.aspect_ratio</td>
+        <td>image.attached_to_variant?</td>
+        <td>image.src | img_url: "pico"</td>
+      </tr>
+    </thead>
+    <tbody>
+      {% for image in product.images %}
+      <tr>
+        <td nowrap><img src="{{ image.src | img_url: "pico" }}"></td>
+        <td nowrap>{{ image.src }}</td>
+        <td nowrap>{{ image.alt }}</td>
+        <td nowrap>{{ image.position }}</td>
+        <td nowrap>{{ image.id }}</td>
+        <td nowrap>{{ image.product_id }}</td>
+        <td nowrap>{{ image.height }}</td>
+        <td nowrap>{{ image.width }}</td>
+        <td nowrap>{{ image.aspect_ratio }}</td>
+        <td nowrap>{{ image.attached_to_variant? }}</td>
+        <td nowrap>{{ image.src | img_url: "pico" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</div>

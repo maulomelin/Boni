@@ -1,1 +1,21 @@
-{% section 'product' %}
+<div class="grid">
+
+{% if true %}
+  {% section "product" %}
+{% else %}
+  <!-- sidebar navigation menu -->
+  <div class="grid__item one-quarter small--hide">
+    {% include "navigation-menu" %}
+  </div>
+
+  <!-- page content -->
+  <div class="grid__item three-quarters small--one-whole">
+    {% section "product" %}
+  </div>
+{% endif %}
+
+</div>
+
+<!-- ORIGINAL
+{   %   section   "product"   %   }
+-->

@@ -13,11 +13,85 @@
 </style>
 
 <div class="page-width">
-  <h1>{{ page.title }}</h1>
+  <h1 style="background: black; text-color: white; padding-top: 30px;">{{ page.title }}</h1>
 
   <p>This page is here to show off styles for standard page elements such as typography, form elements, and icons. These are hard coded in an alternate page template file, named <code>page.styles.liquid</code>.</p>
 
-  <hr>
+  <hr/>
+
+  <p>This section includes Boni elements.  The section below is the theme's default style guide.</p>
+
+  a<br/>b<br/>c<br/>d<br/>1<br/>2<br/>3<br/>4<br/>
+  <div class="_test">
+    Big container
+    <div style="background: red;">
+      Hola
+    </div>
+    <br/>
+    Text before the temp div.
+    <div style="position: absolute; top: 0px; text-align: center; z-index: 10; background: yellow;">
+      TEMP DIV
+    </div>
+    Text after the temp div.
+    More text.
+  </div>
+  <div style="position:sticky; top: 7px; text-align: center; background: lightpink;">
+    This is a sticky div 7px from the top.
+  </div>
+
+  This is more text.
+  <br/>
+  Mary had a little lamb.
+  <hr/>
+
+  <!-- Style guide bar -->
+  <div> <!-- Typography -->
+    This is how you <ins>insert text</ins> <del>delete text</del>.
+    <blockquote>
+      It is a period of civil war. Rebel spaceships, striking from a
+      hidden base, have won their first victory against the evil
+      Galactic Empire. During the battle, <mark>Rebel spies managed
+      to steal secret plans</mark> to the Empire’s ultimate weapon,
+      the DEATH STAR, an armored space station with enough power to
+      destroy an entire planet.
+    </blockquote>
+    <hr/>
+    <h3>Typography</h3>
+    <div>
+      <h1>Heading 1<sup>Sup</sup> One<sub>Sub</sub></h1>
+      <h2>Heading 2</h2>
+      <h3>Heading 3</h3>
+      <h4>Heading 4</h4>
+      <h5>Heading 5</h5>
+      <h6>Heading 6</h6>
+      <p>This is a paragraph.</p>
+      <a href="#">This is a link.</a>
+      <small>This is some small text.</small>
+      <p>This is <sub>Subscript</sub> text.</p>
+      <p>This is <sup>Superscript</sup> text.</p>
+      <code>This is inline code.</code>
+      <kbd>Keyboard Input.</kbd>
+      <em>Emphasized text.</em>
+      <hr/>
+      <pre>This is preformatted text.</pre>
+      <blockquote cite="https://www.source.com">
+        This is quoted text from some source website.
+      </blockquote>
+    </div>
+    <hr/>
+    <h3>Buttons</h3>
+    <button>Button label</button>
+    <form>
+      <input type="submit" value="Button label">input[type=submit]</input>
+      <input type="button" value="Sections">input[type=button]</input>
+    </form>
+    When you see <mark>marked content</mark> it is usually highlighted.
+    This is an
+    <abbr title="This is the long form of the abbr">abbreviation</abbr>.
+  </div>
+  <hr/>
+
+  <hr/>
 
   <h2 class="docs-title">Typography</h2>
 

@@ -13,14 +13,20 @@ window.theme = window.theme || {};
 
 /*================ Sections ================*/
 // =require sections/product.js
+// =require sections/header.js
+// =require sections/_XXX.js
 
 /*================ Templates ================*/
 // =require templates/customers-addresses.js
 // =require templates/customers-login.js
 
+/*================ Global ================*/
+// =require boni.js
+
 $(document).ready(function() {
   var sections = new slate.Sections();
   sections.register('product', theme.Product);
+  sections.register('section-header', theme.SectionHeader);
 
   // Common a11y fixes
   slate.a11y.pageLinkFocus($(window.location.hash));

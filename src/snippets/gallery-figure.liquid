@@ -1,0 +1,53 @@
+{% comment %}
+DESCRIPTION:
+  - Renders a <figure> intended to be rendered under a product gallery.
+  - It covers any element in the gallery, and the last one which has a different
+    behaviour than all others to push the space.
+  - Assumes that the image filename has the following format:
+
+        filename = item1-color1--item2-color2--...--itemN-colorN---picid.jpg
+                 = (item1-color1)(--itemX-colorX)*---picid.jpg
+
+  - With that filename format, the splitting process is as follows:
+
+        image.src     =>  [path/filename]
+        split: "/"    =>  [path] [filename]
+        split: "."    =>  [path] [(item1-color1)(--itemX-colorX)*---picid] [jpg]
+        split: "---"  =>  [path] [(item1-color1)(--itemX-colorX)*] [picid] [jpg]
+        split: "--"   =>  [path] [item1-color1] ... [itemN-colorN] [picid] [jpg]
+        split: "-"    =>  [path] [item1] [color1] ... [itemN] [colorN] [picid] [jpg]
+
+PARAMETERS:
+  {image object} image[ required ] // The current image.
+  {string} gid[ required ] // Gallery ID.
+  {string} pid[ required ] // Picture ID.
+  {boolean} blast[ = false] // Flag indicating if this is the last one.
+  {boolean} debug[ = false] // Flag to print out extra debug info.
+
+SAMPLE:
+  {% include "gallery-figure", image: image, gid: red, pid: 1, blast: true %}
+
+TODOs:
+  - Change delimiters to dashes, upload newly renamed filenes, and update product info via loaded file.
+
+{% endcomment %}
+{%- if true == blast %}
+  <figure class="_thumbnail" style="flex: 9999;"></figure>
+{% else %}
+  {% assign x = image.src | downcase -%}
+  {%- assign x = x | split: "/" -%}
+  {%- assign x = x[1] | split: "." -%}
+  {%- assign x = x[0] | split: "--" -%}
+  {%- assign x = x[0] | split: "-" -%}
+  {%- assign x = x[0] | split: "_" -%}
+  {%- assign flex_basis = image.aspect_ratio | times: 50 -%}
+  {%- assign flex_grow = image.aspect_ratio -%}
+  {%- assign data_thumbnail_title = x[0] -%}
+  {%- assign data_thumbnail_color = x[1] -%}
+
+  <figure class="_thumbnail" style="flex-basis: {{- flex_basis -}}px; flex-grow: {{- flex_grow -}};" data-thumbnail-title="{{ data_thumbnail_title }}" data-thumbnail-color="{{ data_thumbnail_color }}">
+    <a href="{{ image | image_url: "small" }}"><img src="{{ image | img_url: "thumb" }}" alt="" data-gallery-id="{{ gid }}" data-picture-id="{{ pid }}" /></a>
+    <figcaption class="visually-hidden">{{ product.title }}</figcaption>
+  </figure>
+
+{%- endif -%}
