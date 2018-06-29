@@ -21,7 +21,7 @@
 (function() {
 
   // Figuring out events.
-  $("[XXXdata-single-option-selector]").on("change", function(event) {
+  $("[data-single-option-selector]").on("change", function(event) {
     console.log("EVENT:");
     console.log("\tselector=[data-single-option-selector]");
     console.log("\tevent.type=[" + event.type + "]");
@@ -30,16 +30,17 @@
     console.log("\tevent.target.className=[" + event.target.className + "]");
     console.log("\tevent.target.name=[" + event.target.name + "]");
     console.log("\tevent.target.value=[" + event.target.value + "]");
+    console.log("\tevent.target.name.toLowerCase()=[" + event.target.name.toLowerCase() + "]");
     console.log("");
-    if("color" == event.target.name) {
+    if ("color" == event.target.name.toLowerCase()) {
       console.log("COLOR CHANGE!  FILTER OUT IMAGES\n");
-      var turn_off = "[data-color]:not([data-color=" + event.target.value + "])";
-      var turn_on = "[data-color=" + event.target.value + "]";
+      var turn_off = "[data-gallery-id]:not([data-gallery-id=" + event.target.value.toLowerCase() + "])";
+      var turn_on = "[data-gallery-id=" + event.target.value.toLowerCase() + "]";
       console.log("TURN OFF: " + turn_off);
       console.log("TURN ON: " + turn_on);
       console.log("");
-      $(turn_off).css("outline", "");
-      $(turn_on).css("outline", "solid 2px black");
+      $(turn_off).toggleClass("_hide", true);
+      $(turn_on).toggleClass("_hide", false);
 //      $("li [data-color=c" + event.target.value + "])").css("background-color", "blue");
 //      $("li [data-color] :not([data-color=c" + event.target.value + "])").css("background-color", "blue");
     }
@@ -61,7 +62,7 @@
   });
 
   // This is a global event handler. (tag where event took place) --> (ancestor tags) --> <body> --> <html> --> document --> window
-if(false) {
+if (false) {
   $(window).on("change", function(event) {
     console.log("window registered a change event");
   });
@@ -88,17 +89,16 @@ if(false) {
   //----------------------------------------------------------------------------
   function boniPhotos(gallerySelector) {
 
-    // Iterate through all galleries; tag them and bind events to each.
-    $(gallerySelector).each(function(index) {
-      $(this).attr("data-pswp-uid", $(this).attr("data-gallery-id")); // VERIFY WE DON'T NEED THIS IF WE USE data-gallery-id
+    console.log("boniPhotos()");
+
+    // Bind a click handler to each gallery, to listen for clicks on thumbnails.
+    $(gallerySelector).each( function(index) {
       $(this).on("click", onThumbnailClick);
     });
 
-    // Get URL params that can launch the gallery viewer (i.e. "#&pid=1&gid=3")
-    // and open the viewer automatically.
+    // Open the gallery viewer with the right URL params (i.e. "#&pid=1&gid=3").
     var p = getHashParams();
-    if(p.pid && p.gid) {
-console.log("launch from the URL");
+    if (p.pid && p.gid) {
       openGalleryViewer(p.gid, p.pid);
     }
 
@@ -106,39 +106,37 @@ console.log("launch from the URL");
     //--------------------------------------------------------------------------
     function onThumbnailClick(event) {
 
-console.log("onThumbnailClick()");
-
-      // Prevent click from launching the large image; ok in a no-js scenario.
+      // Hijack the click; ok in a no-js scenario.
       event.preventDefault();
 
-      // Extract the galleryID and pictureID from the clicked element.
-      var galleryID = $(event.target).data("gallery-id");
-      var pictureID = $(event.target).data("picture-id");
+      // Extract the gallery ID and picture ID from the clicked element.
+      var gID = $(event.target).data("gallery-id");
+      var pID = $(event.target).data("picture-id");
 
-console.log("\tgalleryID/pictureID=[" + galleryID + "/" + pictureID + "]");
-
-      openGalleryViewer(galleryID, pictureID);
+      // Open the gallery viewer if IDs are present (i.e. click on a thumbnail).
+      if (gID && pID) {
+        openGalleryViewer(gID, pID);
+      } else {
+        return false;
+      }
     }
 
     //--------------------------------------------------------------------------
-    // This function initializes the gallery viewer for the given gallery and
-    // launches it.
+    // This function initializes the gallery viewer and launches it.
     //
-    // @param {string} gID - XXX.
-    // @param {string} pID - XXX.
+    // @param {string} gID - Gallery ID to show.
+    // @param {string} pID - Picture ID to show.
     //----------------------------------------------------------------------------
     // TODOs:
     //  - Memoize each slides object that is created.
     //--------------------------------------------------------------------------
     function openGalleryViewer(gID, pID) {
 
-console.log("openGalleryViewer()");
-
-      // Validate the gID as a gallery ID and get its corresponding DOM element.
       var galleryID;
       var galleryElement;
 
-      $(gallerySelector).each(function() {
+      // Validate the gID (match against a [data-gallery-id]).
+      $(gallerySelector).each( function() {
         if (gID == $(this).data("gallery-id")) {
           // If gID matches a [data-gallery-id] on the page, grab its DOM node.
           galleryID = gID;
@@ -153,16 +151,14 @@ console.log("openGalleryViewer()");
         galleryElement = $(gallerySelector)[0];
       }
 
-console.log("\tgallerySelector=[" + gallerySelector + "]");
-console.log("\tgalleryID=[" + galleryID + "]");
-console.log("\tgalleryElement=[" + $(galleryElement) + "]");
-console.log("\t_test div=[" + document.getElementById("_test") + "]");
+      // Validate the pID (no validation for now).
+      var pictureID = pID;
 
       // Parse the selected gallery and generate the slides object for it.
       var slides = parseGalleryThumbnails(galleryElement);
 
       // Define any options needed.
-      var options = defineOptions(galleryID);
+      var options = defineOptions(galleryID, pictureID);
 
       // Target the photoswipe root element on the page.
       var pswpElement = $(".pswp")[0];
@@ -178,22 +174,22 @@ console.log("\t_test div=[" + document.getElementById("_test") + "]");
     //--------------------------------------------------------------------------
     function parseGalleryThumbnails(galleryElement) {
 
-console.log("parseGalleryThumbnails");
+console.log("parseGalleryThumbnails()");
 
-      var thumbnailElements = galleryElement.childNodes;
-//console.log("galleryElement.childNodes.length=[" + galleryElement.childNodes.length + "]");
+      var slides = [];
+      var slide = {};
+      var pic_url, pic_w, pic_h;
 
-//      for (var i = 0; i < galleryElement.childNodes.length, i++) {
+      $(galleryElement).children("._thumbnail").each( function(index, element) {
+        if (pic_url = $(this).data("item-pic-url")) {
+          pic_w = $(this).data("item-pic-width");
+          pic_h = $(this).data("item-pic-height");
 
-//      }
+          slide = { src: pic_url, w: pic_w, h: pic_h };
 
-
-      var slides = [
-        { src: 'https://farm2.staticflickr.com/1043/5186867718_06b2e9e551_b.jpg', w: 964, h: 1024 },
-        { src: 'https://farm7.staticflickr.com/6175/6176698785_7dee72237e_b.jpg', w: 1024, h: 683 },
-        { src: "https://farm3.staticflickr.com/2567/5697107145_a4c2eaa0cd_o.jpg", w: 1024, h: 1024 },
-        { src: "https://farm6.staticflickr.com/5023/5578283926_822e5e5791_b.jpg", w: 1024, h: 768 },
-      ];
+          slides.push(slide);
+        }
+      });
 
       return slides;
     }
@@ -201,46 +197,15 @@ console.log("parseGalleryThumbnails");
     //--------------------------------------------------------------------------
     // This function defines default gallery viewer options.
     // See http://photoswipe.com/documentation/options.html
-    // Specific overrides or settings should be made right before the gallery
-    // viewer is launched.
     //--------------------------------------------------------------------------
-    function defineOptions(galleryID) {
+    function defineOptions(galleryID, pictureID) {
+
       var options = {
         galleryUID: galleryID,
-        history: false,
+        index: pictureID,
         focus: false,
         showAnimationDuration: 0,
         hideAnimationDuration: 0,
-
-        /* Options reference (http://photoswipe.com/documentation/options.html):
-        index: , // [{integer} index[ = 0 ]]
-        getThumbBoundsFn: , // [ {function} getThumbBoundsFn({integer})[ = {see docs} ]]
-        showHideOpacity: , // [ {boolean} showHideOpacity[ = false ]]
-        showAnimationDuration: , // [ {integer} showAnimationDuration[ = 333 ]]
-        hideAnimationDuration: , // [ {integer} hideAnimationDuration[ = 333 ]]
-        bgOpacity: , // [ {number} bgOpacity[ = 1 ]]
-        spacing: , // [ {number} spacing[ = 0.12 ]]
-        allowPanToNext: , // [ {boolean} allowPanToNext[ = true ]]
-        maxSpreadZoom: , // [ {number} maxSpreadZoom[ = 2 ]]
-        getDoubleTapZoom: , // [ {function} getDoubleTapZoom({boolean}, {object})[ = {see docs} ]]
-        loop: , // [ {boolean} loop[ = true ]]
-        pinchToClose: , // [ {boolean} pinchToClose[ = true ]]
-        closeOnScroll: , // [ {boolean} closeOnScroll[ = true ]]
-        closeOnVerticalDrag: , // [ {boolean} closeOnVerticalDrag[ = true ]]
-        mouseUsed: , // [ {boolean} x[ = false ]]
-        escKey: , // [ {boolean} escKey[ = true ]]
-        arrowKeys: , // [ {boolean} arrowsKeys[ = true ]]
-        history: , // [ {boolean} history[ = true ]]
-        galleryUID: , // [ {integer} galleryUID[ = 1 ]]
-        galleryPIDs: , // [ {boolean} galleryPIDs[ = false ]]
-        errorMsg: , // [ {string} errorMsg[ = {see docs} ]]
-        preload: , // [ {array} preload[ = [1,1] ]]
-        mainClass: , // [ {string} mainClass[ = {see docs} ]]
-        getNumItemsFn: , // [ {function} getNumItemsFn({see docs})[ = {see docs} ]]
-        focus: , // [ {boolean} focus[ = true ]]
-        isClickableElement: , // [ {function} isClickableElement({element})[ = {see docs} ]]
-        modal: , // [ {boolean} modal[ = true ]]
-        *****/
       };
 
       return options;
@@ -250,13 +215,13 @@ console.log("parseGalleryThumbnails");
     // Parse hash params that launch the gallery viewer (i.e. "#&pid=1&gid=3").
     //--------------------------------------------------------------------------
     function getHashParams() {
+
       var hashParams = {};
 
       location.hash.slice(1).split("&").map(kvpair => {
         let kvarray = kvpair.split("=");
         hashParams[kvarray[0]] = kvarray[1];
       });
-      console.log("hash parameters = [" + JSON.stringify(hashParams) + "]");
 
       return hashParams;
     }
@@ -266,8 +231,9 @@ console.log("parseGalleryThumbnails");
   boniPhotos("._gallery");
 
 
-// This is how easy it is to launch the gallery viewer
-// VERIFY THAT THIS WORKS!  THIS SHOULD WORK...
-//  $("#_btn").on("click", openGalleryViewer(0, 0));
+// TODO: It should be this easy to launch the gallery viewer.  Make this work.
+//  $("#_btn").on("click", function(event) {
+//    boniPhotos.openGalleryViewer(0, 0);
+//  });
 
 })();

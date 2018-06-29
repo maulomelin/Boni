@@ -40,13 +40,16 @@ TODOs:
   {%- assign x = x[0] | split: "--" -%}
   {%- assign x = x[0] | split: "-" -%}
   {%- assign x = x[0] | split: "_" -%}
-  {%- assign flex_basis = image.aspect_ratio | times: 50 -%}
+  {%- assign flex_basis = image.aspect_ratio | times: 120 -%}
   {%- assign flex_grow = image.aspect_ratio -%}
-  {%- assign data_thumbnail_title = x[0] -%}
-  {%- assign data_thumbnail_color = x[1] -%}
+  {%- assign title = x[0] -%}
+  {%- assign color = x[1] -%}
+  {%- assign pic_url = image.src | img_url: "master" -%}
+  {%- assign pic_height = image.height -%}
+  {%- assign pic_width = image.width -%}
 
-  <figure class="_thumbnail" style="flex-basis: {{- flex_basis -}}px; flex-grow: {{- flex_grow -}};" data-thumbnail-title="{{ data_thumbnail_title }}" data-thumbnail-color="{{ data_thumbnail_color }}">
-    <a href="{{ image | image_url: "small" }}"><img src="{{ image | img_url: "thumb" }}" alt="" data-gallery-id="{{ gid }}" data-picture-id="{{ pid }}" /></a>
+  <figure class="_thumbnail" style="flex-basis: {{- flex_basis -}}px; flex-grow: {{- flex_grow -}};" data-item-title="{{ title }}" data-item-color="{{ color }}" data-item-pic-url="{{ pic_url }}" data-item-pic-height="{{ pic_height}}" data-item-pic-width="{{ pic_width }}">
+    <a href="{{ image | img_url: "master" }}"><img src="{{ image | img_url: "medium" }}" alt="" data-gallery-id="{{ gid }}" data-picture-id="{{ pid }}" /></a>
     <figcaption class="visually-hidden">{{ product.title }}</figcaption>
   </figure>
 

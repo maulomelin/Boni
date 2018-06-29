@@ -27,14 +27,11 @@ TODOs:
   - Place the image gallery inside a <section> element, or the more appropriate one.
   - Find a more elegant solution to close off the image gallery than a trailing filler <div>.
   - JSDoc everything.
+  - Enable deep-linking into variants on the ProductDetails page, so we can highlight specific ones on other parts of the site or outside (https://www.shopify.com/partners/blog/product-variants/).
 {% endcomment %}
 
 <!-- product section (\src\sections\product.liquid) -->
 <div data-section-id="{{ section.id }}" data-section-type="product" data-enable-history-state="true" itemscope itemtype="http://schema.org/Product">
-
-<!-- BONI_DEBUG -->
-<div class="grid"><div xclass="grid__item one-half"><div class="_debug-new-code">
-<!-- /BONI_DEBUG -->
 
   {% form "product", product, class: "_form" %}
 
@@ -44,7 +41,7 @@ TODOs:
   <!-- /HEADING -->
 
   <!-- PRODUCTSELECT -->
-    <fieldset class="XXXno-js _select-field">
+    <fieldset class="no-js _select-field">
       <legend class="_field-label">Product SELECTOR</legend>
       <select data-product-select name="id">{% for variant in product.variants %}
         <option value="{{ variant.id }}" {%- if variant == product.selected_or_first_available_variant %} {{ "selected" -}} {% endif -%} {%- unless variant.available %} {{ "disabled" -}} {% endunless -%}>
@@ -139,39 +136,34 @@ TODOs:
     - Do we make each color set a gallery?  YES.  Make each color set a gallery.
     - Change this gallery <div> to a <section> with an appropriate role.
   <!---->
-    <!-- master gallery -->
-    <h1>MASTER GALLERY VIA SNIPPET</h1>
-    <div class="_gallery" data-gallery-id="all">
-      {%- for image in product.images -%}
-        {%- include "gallery-figure", image: image, gid: "all", pid: forloop.index0, blast: false -%}
-      {%- endfor -%}
-      {%- include "gallery-figure", blast: true -%}
-    </div>
-
-<div id="_test">hola</div>
-
-    <!-- option galleries -->
-    <h1>COLOR-BASED GALLERIES</h1>
-
-    {% for option in product.options_with_values -%}
-      {%- assign current_option_name = option.name | downcase -%}
-      {%- if "color" == current_option_name -%}
-        {%- for value in option.values -%}
-          {%- assign current_color = value | downcase -%}
-          {%- assign i = 0 -%}
-          <div class="_gallery" data-gallery-id="{{ current_color }}">
-          {%- for image in product.images -%}
-            {%- include "function.image-filename-attribute", image: image, attribute: "primary-color" -%}
-            {%- if current_color == image_filename_attribute -%}
-              {%- include "gallery-figure", image: image, gid: current_color, pid: i, blast: false -%}
-              {%- assign i = i | plus: 1 -%}
-            {%- endif -%}
-          {%- endfor -%}
-          {%- include "gallery-figure", blast: true -%}
-          </div>
-        {% endfor -%}
-      {%- endif -%}
+  <!-- master gallery -->
+  <div class="no-js _gallery" data-gallery-id="all">
+    {%- for image in product.images -%}
+      {%- include "gallery-figure", image: image, gid: "all", pid: forloop.index0, blast: false -%}
     {%- endfor -%}
+    {%- include "gallery-figure", blast: true -%}
+  </div>
+
+  <!-- option-based galleries -->
+  {% for option in product.options_with_values -%}
+    {%- assign current_option_name = option.name | downcase -%}
+    {%- if "color" == current_option_name -%}
+      {%- for value in option.values -%}
+        {%- assign current_color = value | downcase -%}
+        {%- assign i = 0 -%}
+        <div class="_gallery {%- if option.selected_value != value %} _hide {% endif %}" data-gallery-id="{{ current_color }}">
+        {%- for image in product.images -%}
+          {%- include "function.image-filename-attribute", image: image, attribute: "primary-color" -%}
+          {%- if current_color == image_filename_attribute -%}
+            {%- include "gallery-figure", image: image, gid: current_color, pid: i, blast: false -%}
+            {%- assign i = i | plus: 1 -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- include "gallery-figure", blast: true -%}
+        </div>
+      {% endfor -%}
+    {%- endif -%}
+  {%- endfor -%}
 
   <!-- /IMAGEGALLERY -->
 
@@ -216,7 +208,6 @@ TODOs:
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe-ui-default.min.js"></script>
-  <button type="button" id="_btn">Open PhotoSwipe</button>
   <!-- /IMAGEGALLERYVIEWER -->
 
   <!-- SOCIAL -->
@@ -237,155 +228,9 @@ TODOs:
   <!-- TODO -->
   <!-- /MICRODATA -->
 
-<!-- BONI_DEBUG -->
-</div></div>
-<!-- /BONI_DEBUG -->
-
-<!-- BONI_DEBUG --
-<div class="grid__item one-half"><div class="_debug-original-code">
-<!-- /BONI_DEBUG -->
-
-<!-- REPLACED BY IMAGEGALLERY --
-  {%- assign current_variant = product.selected_or_first_available_variant -%}
-  {%- assign featured_image = current_variant.featured_image | default: product.featured_image -%}
-
-  {% if featured_image != blank %}
-    <img src="{{ featured_image | img_url: '120x120' }}" alt="{{ featured_image.alt | escape }}" data-product-featured-image>
-  {% endif %}
-  {% if product.images.size > 1 %}
-    {% for image in product.images %}
-      <a href="{{ image.src | img_url: '480x480' }}" data-product-single-thumbnail><img src="{{ image.src | img_url: 'pico' }}" alt="{{ image.alt | escape }}"></a>
-    {% endfor %}
-  {% endif %}
+<!-- BONI:DEBUG --
+  {% include "debug-product-info" %}
 <!---->
-
-<!-- REPLACED BY HEADING --
-
-  <h1>{{ product.title }}</h1>
-  <p>{{ product.vendor }}</p>
-
-<!---->
-
-<!-- REPLACED BY MICRODATA (replaces <div> above) --
-  <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
-    <meta itemprop="name" content="{{ product.title }}{% unless product.has_only_default_variant %} - {{ current_variant.title }}{% endunless %}">
-    <meta itemprop="url" content="{{ shop.url }}{{ current_variant.url }}">
-    <meta itemprop="brand" content="{{ product.vendor }}">
-    <meta itemprop="image" content="{{ featured_image | img_url: '600x600' }}">
-    <meta itemprop="description" content="{{ product.description | strip_html | escape }}">
-    <meta itemprop="priceCurrency" content="{{ shop.currency }}">
-    <meta itemprop="price" content="{{ current_variant.price | divided_by: 100.00 }}">
-    <link itemprop="availability" href="http://schema.org/{% if current_variant.available %}InStock{% else %}OutOfStock{% endif %}">
-<!---->
-
-<!-- REPLACED BY FORM ABOVE (REMEMBER TO (UN)COMMENT CLOSING TAG) --
-    <form action="/cart/add" method="post" enctype="multipart/form-data">
-<!---->
-
-<!-- REPLACED BY SINGLEOPTIONSELECTORS --
-      {% unless product.has_only_default_variant %}
-        {% for option in product.options_with_values %}
-          <div class="selector-wrapper js">
-            <label for="SingleOptionSelector-{{ forloop.index0 }}">
-              {{ option.name }}
-            </label>
-
-            <select
-              id="SingleOptionSelector-{{ forloop.index0 }}"
-              data-single-option-selector
-              data-index="option{{ option.position }}">
-              {% for value in option.values %}
-                <option
-                  value="{{ value | escape }}"
-                  {% if option.selected_value == value %}selected="selected"{% endif %}>
-                    {{ value }}
-                </option>
-              {% endfor %}
-            </select>
-          </div>
-        {% endfor %}
-      {% endunless %}
-<!---->
-
-<!-- REPLACED BY PRODUCTSELECT --
-      <select name="id" class="no-js" data-product-select>
-        {% for variant in product.variants %}
-          <option
-            {% if variant == current_variant %}selected="selected"{% endif %}
-            {% unless variant.available %}disabled="disabled"{% endunless %}
-            value="{{ variant.id }}">
-              {{ variant.title }}
-          </option>
-        {% endfor %}
-      </select>
-<!---->
-
-<!-- REPLACED BY QUANTITYSELECT --
-      <label for="Quantity">{{ 'products.product.quantity' | t }}</label>
-      <input type="number" id="Quantity" name="quantity" value="1" min="1">
-<!---->
-
-<!-- REPLACED BY PRICINGINFO --
-      <div data-price-wrapper>
-        <span data-product-price>
-          CURRENT PRICE: {{ current_variant.price | money }}
-        </span>
-
-        {% if product.compare_at_price_max > product.price %}
-          <span class="visually-hidden" data-compare-text>{{ 'products.product.regular_price' | t }}</span>
-          <s data-compare-price>
-            {% if current_variant.compare_at_price > current_variant.price %}
-              {{ current_variant.compare_at_price | money }}
-            {% endif %}
-          </s>
-        {% endif %}
-      </div>
-<!---->
-
-<!-- REPLACED BY ADDTOCARTBUTTON --
-      <button
-        type="submit"
-        name="add"
-        data-add-to-cart
-        {% unless current_variant.available %}disabled="disabled"{% endunless %}>
-          <span data-add-to-cart-text>
-            {% if current_variant.available %}
-              {{ 'products.product.add_to_cart' | t }}
-            {% else %}
-              {{ 'products.product.sold_out' | t }}
-            {% endif %}
-          </span>
-      </button>
-<!---->
-
-<!-- REPLACED BY FORM ABOVE (REMEMBER TO (UN)COMMENT CLOSING TAG) --
-    </form>
-<!---->
-
-<!-- REPLACED BY DESCRIPTION --
-  <div class="rte">
-    {{ product.description }}
-  </div>
-<!---->
-
-<!-- REPLACED BY SOCIAL -- {% comment %}
-  {% if section.settings.show_share_buttons %}
-    {% include 'social-sharing', share_title: product.title, share_permalink: product.url, share_image: product %}
-  {% endif %}
-{% endcomment %}<!---->
-
-<!-- REPLACED BY PRODUCTDATA --
-  {% unless product == empty %}
-    <script type="application/json" data-product-json>
-      {{ product | json }}
-    </script>
-  {% endunless %}
-<!---->
-
-<!-- BONI_DEBUG --
-</div><!-- ._debug-original-code --</div><!-- .grid__item .one-half --</div><!-- grid --
-<!-- /BONI_DEBUG -->
-{% include "debug-product-info" %}
 
 </div>
 

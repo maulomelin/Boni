@@ -165,6 +165,15 @@ sup, sub { border: solid 1px gray; }
 //------------------------------------------------------------------------------
 * { @include prefix("box-sizing", "border-box", moz webkit); }
 
+// Visibility ------------------------------------------------------------------
+//  - Classes to show/hide any element they're applied to.
+//  - To hide an element with ID "foo":  $("#foo").toggleClass("hide", true)
+//  - To show an element with ID "foo":  $("#foo").toggleClass("hide", false)
+//------------------------------------------------------------------------------
+._hide {
+  display: none !important;
+}
+
 // Typography ------------------------------------------------------------------
 //  - Set the base font for the root element (<html>) to 62.5%.
 //    This =10px since most browsers (but not all) set a 16px default base font.
