@@ -1,5 +1,6 @@
 window.slate = window.slate || {};
 window.theme = window.theme || {};
+window.boni = window.boni || {};
 
 /*================ Slate ================*/
 // =require slate/a11y.js
@@ -26,7 +27,7 @@ window.theme = window.theme || {};
 $(document).ready(function() {
   var sections = new slate.Sections();
   sections.register('product', theme.Product);
-  sections.register('section-header', theme.SectionHeader);
+  sections.register('section-header', boni.SectionHeader);
 
   // Common a11y fixes
   slate.a11y.pageLinkFocus($(window.location.hash));

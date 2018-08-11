@@ -1,46 +1,22 @@
 //------------------------------------------------------------------------------
-// Boni theme css (\src\styles\global\header.scss) -----------------------------
+// Boni theme css (\src\styles\global\boni.scss) -----------------------------
 //------------------------------------------------------------------------------
-// This file defines the visual styles of all elements in the Boni theme.
-// It first defines styles for base elements (e.g. <p>, <button>) and utilities
-// (e.g. debugging, grid).  Then it defines styles for abstract constructs
-// (i.e. modules).  A reference to base elements can be found in various sites:
-//  - https://developer.mozilla.org/en-US/docs/Web/HTML/Element/
-//  - https://www.w3schools.com/html/
-//
-// Base elements include:
-//  - Debugging
-//  - Grid
-//  - Base Styles
-//  - Typography
-//  - Headings
-//  - Paragraphs
-//  - Quotations
-//  - Text Formatting
-//  - Anchors/Links
-//  - Buttons
-//  - Colors (color names (e.g. "red") vs. color variants (e.g. "primary"))
-//  - Lists
-//  - Forms
-//  - Tables
-//  - Images & Captions
-//
-// Abstract construts include:
-//  - Header
-//  - Menu Drawer (mini.css)
-//  - Navigation Bar
-//  - Cards
-//  - Text Sections
-//  - Media Sections
-//  - Groupings
-//  - Footer
-//  - Modal Dialog
-//  - Accordions
-//  - Icons (SVG elements vs. embedded in a <span class="icon-graphic"></span>)
-//  - Visibility Helpers
-//  - ARIA Helpers
-//  - Tooltips
-//
+//  - This file defines the visual styles of all elements in the Boni theme:
+//      - Base elements (e.g. <p>, <button>).
+//          - https://developer.mozilla.org/en-US/docs/Web/HTML/Element/
+//          - https://www.w3schools.com/html/
+//      - Utilities (e.g. debugging, show/hide, grid).
+//      - Abstract constructs (i.e. modules).
+//  - Base elements include:
+//      - Debugging, Grid, Base Styles, Typography, Headings, Paragraphs,
+//        Quotations, Text Formatting, Anchors/Links, Buttons, Colors, Lists,
+//        Forms, Tables, Figures (including Images & Captions), etc.
+//  - Abstract construts include:
+//      - Header, Menu Drawer (mini.css), Navigation Bar, Cards, Text Sections,
+//        Media Sections, Groupings, Footer, Modal Dialog, Accordions,
+//        Icons (SVG elements vs. embedded <span class="icon-graphic"></span>),
+//        Visibility Helpers, ARIA Helpers, Tooltips, etc.
+//------------------------------------------------------------------------------
 // A few guiding principles for this framework:
 //  - Leverage existing html elements (e.g. <button>) instead of recasting
 //    other elements to look like them (e.g. <a class="button">).
@@ -58,6 +34,7 @@
 // Notes:
 //  - If some of these styles do not render as expected, look at the CSS style
 //    hierarchy to find the definition with higher order of precedence.
+//  - Use @mixin where necessary for cross-browser compatibility.
 //------------------------------------------------------------------------------
 // TODOs:
 //  - Use mixin prefix where typography (fonts) are defined.
@@ -75,8 +52,8 @@
 //    "color-primary" and "color-secondary" classes and use those appropriately.
 //  - Decide if buttons will have "upper-case" labels, standard.
 //  - Implement definitions for these sections (and more or less):
-//      Debugging, Grid, Base Styles, Buttons, Typography, Lists, Forms, links,
-//      Code, Tables, Spacing, Ultilities, Media Queries, Utilities, etc.
+//      - Debugging, Grid, Base Styles, Buttons, Typography, Lists, Forms, Code,
+//        links, Tables, Spacing, Ultilities, Media Queries, Utilities, etc.
 //  - Update <pre> definition.
 //  - See if/where we can use the var() and calc() CSS functions to set global
 //    variables used throughout our stylesheets.  See https://minicss.org/ CSS.
@@ -85,12 +62,29 @@
 //      - perform a calculation:  calc(100% - 100px) OR calc(2*var(--name))
 //  - Adjust the abstract construct templates to fit whatever JS frameworks
 //    we decide to leverage.
-//  -
+//  - Figure out how we define & style color names (e.g. "red") vs.
+//    color variants (e.g. "primary").
 //------------------------------------------------------------------------------
+
+// HACKS -----------------------------------------------------------------------
+//  - These settings should be removed before we ship.
+//------------------------------------------------------------------------------
+.shopify-preview-bar { display:none; }
+#preview-bar-iframe { display: none; }
 
 // Debugging -------------------------------------------------------------------
 //  - Define classes for a collapsible container we can use for debug info.
 //------------------------------------------------------------------------------
+._debug-flexrowwrap {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+}
+._debug-flexrownowrap {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+}
 ._debug-info {
   display: block;
   padding: 1rem;
@@ -148,6 +142,7 @@
 }
 
 /**********
+form { border: solid 1px green; }
 div { border: solid 1px yellow; }
 h1, h2, h3 { border: solid 1px blue; }
 nav { border: solid 1px red; }
@@ -155,50 +150,89 @@ p { border: solid 1px orange; }
 sup, sub { border: solid 1px gray; }
 **********/
 
+
+// Form Validation -------------------------------------------------------------
+//  - https://css-tricks.com/form-validation-ux-html-css/
+//  - https://developer.mozilla.org/en-US/docs/Learn/HTML/Forms/Form_validation/
+//------------------------------------------------------------------------------
+// TODOs:
+//  - Elegant UX for :valid and :invalid pseudo-classes.  These are not it:
+//      input[type="email"]:valid { outline: 1px solid green; }
+//      input[type="email"]:invalid { outline: 1px solid red; }
+//------------------------------------------------------------------------------
+
+
 // Grid ------------------------------------------------------------------------
 //  - For now, leverage the grid defined by Shopify's Slate theme.
 //  - For future, look at a flexbox-based grid system like Bootstrap.
 //------------------------------------------------------------------------------
 
+
 // Base Styles -----------------------------------------------------------------
 //  - Set the box model for all elements to be the traditional box model.
 //------------------------------------------------------------------------------
-* { @include prefix("box-sizing", "border-box", moz webkit); }
+* {
+  @include prefix("box-sizing", "border-box", moz webkit);
+}
+
 
 // Visibility ------------------------------------------------------------------
 //  - Classes to show/hide any element they're applied to.
 //  - To hide an element with ID "foo":  $("#foo").toggleClass("hide", true)
 //  - To show an element with ID "foo":  $("#foo").toggleClass("hide", false)
 //------------------------------------------------------------------------------
+// TODOs:
+//  - Visibility Helpers, ARIA Helpers, etc.
+//  - Classes to remove items, entirely.
+//  - Classes to remove items visually, but not from the flow or screen readers.
+//  - Classes to hide items from screen readers but keep them visually there.
+//------------------------------------------------------------------------------
 ._hide {
   display: none !important;
 }
 
+
 // Typography ------------------------------------------------------------------
-//  - Set the base font for the root element (<html>) to 62.5%.
+//  - By default, set the base font for the root element (<html>) to 62.5%.
 //    This =10px since most browsers (but not all) set a 16px default base font.
 //    All "rem" measurements will be based off this size, so that 2.5rem = 25px.
 //    If the base font is set to a fixed size (e.g. "14px"), it won't resize if
 //    a user changes their browser zoom or default settings.
+//      - The font size is managed in settings_schema.json, and via the Shopify
+//        Admin UI.
 //  - Set "line-height" to 1.
 //  - Set the default text color to black (or almost).
 //  - Set the background color to white (or almost).
 //  - Set the font to be a managed list.
 //------------------------------------------------------------------------------
-html { font-size: 62.5%; }
+html { font-size: $font-size-base; } //62.5%; }
 
 body {
-  font-size: 1.2rem;
+  font-size: 1rem; //1.2rem;
   font-family: $font-stack-body;
   font-weight: normal;
-  line-height: 1;
+  line-height: 1;//1.5; ???
   color: #222222;
   background: #f8f8f8;
 }
 
+
 // Headings --------------------------------------------------------------------
 //  - Redefine the headings to match our desired styles.
 //------------------------------------------------------------------------------
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-family: $font-stack-header;
+  font-weight: $font-weight-header;
+}
+h1 { font-size: 4.0rem; line-height: 1.20; letter-spacing: -0.10rem; }
+h2 { font-size: 3.6rem; line-height: 1.25; letter-spacing: -0.10rem; }
+h3 { font-size: 3.0rem; line-height: 1.30; letter-spacing: -0.10rem; }
+h4 { font-size: 2.4rem; line-height: 1.35; letter-spacing: -0.08rem; }
+h5 { font-size: 1.8rem; line-height: 1.50; letter-spacing: -0.05rem; }
+h6 { font-size: 1.5rem; line-height: 1.60; letter-spacing: 0; }
+
+/*
 h1, h2, h3, h4, h5, h6 { margin: 0 0 2rem 0; font-weight: normal; }
 h1 { font-size: 4.0rem; line-height: 1.20; letter-spacing: -0.10rem; }
 h2 { font-size: 3.6rem; line-height: 1.25; letter-spacing: -0.10rem; }
@@ -206,6 +240,8 @@ h3 { font-size: 3.0rem; line-height: 1.30; letter-spacing: -0.10rem; }
 h4 { font-size: 2.4rem; line-height: 1.35; letter-spacing: -0.08rem; }
 h5 { font-size: 1.8rem; line-height: 1.50; letter-spacing: -0.05rem; }
 h6 { font-size: 1.5rem; line-height: 1.60; letter-spacing: 0; }
+*/
+
 
 // Paragraphs ------------------------------------------------------------------
 //  - Define paragraph delineation elements:
@@ -235,6 +271,7 @@ hr {
 //  margin: 3rem 0;
 }
 
+
 // Quotations ------------------------------------------------------------------
 //  - Define quotation elements:
 //      <q>, <blockquote>, <abbr>, <cite>, <address>
@@ -242,8 +279,8 @@ hr {
 
 // Short Quotations
 q { display: inline; }
-q:before { content: open-quote; }
-q:after { content: close-quote; }
+q::before { content: open-quote; }
+q::after { content: close-quote; }
 
 // Long Quotations
 blockquote {
@@ -263,6 +300,7 @@ address {
   display: block;
   font-style: italic;
 }
+
 
 // Text Formatting -------------------------------------------------------------
 //  - Define text formatting elements:
@@ -314,6 +352,7 @@ s {
   text-decoration-color: red;
 }
 
+
 // Anchors/Links ---------------------------------------------------------------
 //  - Use anchors as navigational elements only.
 //  - Don't configure anchors to look like buttons; they're spec'd for different
@@ -323,6 +362,7 @@ a:link { color: blue; text-decoration: none; }
 a:hover { text-decoration: underline; }
 a:visited { color: blue; }
 a:active { color: blue; }
+
 
 // Buttons ---------------------------------------------------------------------
 //  - Follow the convention that buttons can only be made with these elements:
@@ -336,6 +376,7 @@ input[type="submit"] > span,
 input[type="button"] > span,
 button > span {
   margin: 0 0.2em;
+  xoutline: solid 1px pink;
 }
 
 input[type="submit"],
@@ -344,10 +385,9 @@ button {
   @include prefix("user-select", "none", moz ms webkit spec); // ???
   @include prefix("appearance", "none", webkit moz spec); // ???
 
-  display: inline-flex;
-  align-items: center;
-
-  vertical-align: bottom;
+  display: inline-flex; // Flexbox to center content vertically & horizontally.
+  align-items: center; // This aligns flex items vertically.
+  justify-content: center; // This aligns flex items horizontally.
 
   text-decoration: none;
   text-align: middle;
@@ -360,7 +400,7 @@ button {
   text-transform: none;
 
   font-family: Arial, sans-serif;
-  font-size: 1.4rem;
+  font-size: 2em; //1.4rem;
   font-weight: 400;
 
 // DO WE DEFINE BASE COLOR STYLES HERE AND OVERRIDE VIA MODIFIERS?
@@ -369,7 +409,7 @@ button {
   border:solid 1px yellow;
   background-color: lightyellow;
 
-  line-height: 2rem;
+  line-height: 2rem; //4rem;
 }
 
 input[type="submit"]:hover,
@@ -386,9 +426,29 @@ button[disabled] {
   cursor: not-allowed;
 }
 
-// Colors ----------------------------------------------------------------------
+
+// ICONS -----------------------------------------------------------------------
+//  - General styles for icons.
+//  - All icons are implemented as <svg>s.
+//  - The icon is aligned with the baseline of its parent.
+//------------------------------------------------------------------------------
+// TODOs:
 //  -
-//
+//------------------------------------------------------------------------------
+._icon {
+  display: inline-block;
+  width: 1.1em;//20px;
+  height: 1.1em;//20px;
+  vertical-align: middle;//baseline; // This will align the icon with the baseline.
+  xoutline: solid 1px red; // For debugging purposes.
+
+  .no-svg & {
+    display: none;
+  }
+}
+
+
+// Colors ----------------------------------------------------------------------
 //                    v  v  v  v  v  v
 //  (black) #000000 - 0123456789abcdef - #ffffff (white)
 //                    ^  ^  ^  ^  ^  ^
@@ -400,7 +460,6 @@ button[disabled] {
 //        e.g. "color-primary", "color-secondary"
 //  - What properties does a "color" modify?  background, color, border, etc.?
 //  - Abstract structure/position from presentation/visual styles of an object.
-//
 //------------------------------------------------------------------------------
 ._color-white { background-color: #ffffff; }
 ._color-pearl { background-color: #f2edd8; }
@@ -418,6 +477,27 @@ button[disabled] {
 ._color-rosewood { background-color: #c0889d; }
 ._color-coral { background-color: #d85863; }
 
+
+// Shapes ----------------------------------------------------------------------
+//  - A circle applies a border-radius of 50% to the target element.
+//    http://jessica-eldredge.com/2014/09/07/border-radius-50-or-100-percent/
+//  - A cross is implemented via a CSS linear-gradient on the pseudo-class
+//    "::before" (i.e. ".x::before { ... }").
+//      - The class is given a "position: absolute", which gives it its own
+//        stacking context and avoids issues with overlaying gradients.
+//      - This requires the target element be given a "position: relative",
+//        which keeps the cross neatly placed on top of the target element.
+//      - The cross is given "height: 100%" and "width: 100%", which sizes it
+//        the same as the target element.
+//      - The cross size is adjusted on a circle to fit across the corners of
+//        the bounding box of that circle.
+//      - The cross lines are dark with a white edge to allow it to blend on
+//        dark- and light-colored backgrounds.
+//      - The cross is drawn on the "::before" pseudo-class because in Safari,
+//        ".x::after { position: absolute; }" does not work.
+//        This would seem to be a bug.  https://stackoverflow.com/questions/30526801/absolute-after-pseudo-element-not-displaying-under-relative-parent/
+//------------------------------------------------------------------------------
+._shape-circle { border-radius: 50%; }
 
 
 // Tables ----------------------------------------------------------------------
@@ -457,6 +537,115 @@ thead {
   background: lightgray;
 }
 
+
+// Fieldset --------------------------------------------------------------------
+//  - See normalize.scss for adjusted settings.
+//------------------------------------------------------------------------------
+fieldset {
+//  padding: 0.25rem 0.25rem;
+//  border: 0;
+}
+fieldset legend {
+//  display: none;
+}
+
+
+// Options Field ---------------------------------------------------------------
+//  - An options field is a visual grouping of options a user can selectd from.
+//  - The field is implemented as a fieldset with a label and containing a
+//    set of {<input>, <label>} pairs representing an option.
+//      - The <input> elements maintain option state.
+//      - The <label> elements render the label, shape, and other properties
+//        of a given option.
+//  - Each option can support the following states:
+//      - :checked - option is selected.
+//      - :focus - option has the current focus of the keyboard.
+//      - :active - interaction with option has commenced (space, click-down).
+//      - [un]available - option is [un]available given the current selections.
+//  - To hide the <input> controls while still keeping the grouping tabbable:
+//      - First, take them out of the layout (via "position: absolute;") to
+//        keep them from taking up space but still remain tabbable.
+//      - Next, move them offscreen with "left: -999%".
+//      - Do not use "display: none;"; that will remove them entirely, both
+//        from the layout and hidden to screen readers.
+//      - Do not shrink them to 0 dimensions (via "height: 0; width: 0;"); that
+//        may leave a small dot in some browsers.
+//      - See https://stackoverflow.com/questions/4425282/how-can-i-stop-the-browser-viewport-moving-to-the-top-of-the-page-when-the-user/
+//  - Since the <input> tag does not take children, we implement all visual
+//    styling on the <label> element, and use the sibling "+" selector to
+//    target any desired <label> element for ":checked", ":focus", etc.
+//  - To turn any square into a circle, just add the "._shape-circle" class
+//    to the "._switch" element.
+//  - Do not use ":disabled" on the options; we want to allow users to select
+//    options that are unavailable, with a message that they will take longer
+//    to fulfill.
+//  - "._options" is a flexbox, so we can align and wrap all option elements.
+//  - "._option-label" is a flexbox, so we can center all label content.
+//------------------------------------------------------------------------------
+// Resources:
+//  - See the design pattern doc/spec/prototype.
+//  - Radio buttons as toggle buttons:
+//    https://thestizmedia.com/radio-buttons-as-toggle-buttons-with-css/
+//------------------------------------------------------------------------------
+// TODOs:
+//  - Update the focus of the radio button to have the same color as the default
+//    focus of any other element on the page.  When the user moves off the
+//    fieldset, then the checked style kicks in, which may be something else.
+//  - See https://uxplanet.org/button-ux-design-best-practices-types-and-states-647cf4ae0fc6
+//  - Figure out color combinations so that an unavailable selection clearly
+//    identifies an option as such, but doesn't call too much attention.
+//------------------------------------------------------------------------------
+._options-field { margin: 0; padding: 0; border: 0; }
+._field-label { padding: 0; margin: 0; border: 0; font-weight: bold; }
+._options { display: flex; flex-flow: row wrap; align-items: center; }
+._options input[type="radio"] { position: absolute; left: -999%; }
+._option {
+  display: flex; flex-flow: row nowrap; align-items: center; justify-content: center;
+  width: 4rem; height: 4rem;
+  margin: 0.25rem;
+}
+._option-label {
+  position: relative;
+  display: flex; flex-flow: row nowrap; align-items: center; justify-content: center;
+  height: 75%;
+  width: 75%;
+  border: solid 1px gray;
+}
+._x._option-label,
+._xx._option-label {
+  border: solid 1px transparent;
+}
+._x::before,
+._xx::before {
+  content: "";
+  position: absolute;
+  height: 130%;
+  width: 130%;
+  border: solid 1px gray;
+}
+._x::before {
+  background:
+    linear-gradient(to top left, transparent 0%, transparent calc(50% - 1px), white calc(50% - 1px), gray calc(50% + 1px), transparent calc(50% + 1px), transparent 100%);
+}
+._xx::before {
+  background:
+    linear-gradient(to top left, transparent 0%, transparent calc(50% - 1px), white calc(50% - 1px), gray calc(50% + 1px), transparent calc(50% + 1px), transparent 100%),
+    linear-gradient(to top right, transparent 0%, transparent calc(50% - 1px), white calc(50% - 1px), gray calc(50% + 1px), transparent calc(50% + 1px), transparent 100%);
+}
+._shape-circle._x::before,
+._shape-circle._xx::before {
+  xheight: 141.421356%;
+  xwidth: 141.421356%;
+  border-radius: 50%;
+}
+._options input[type="radio"]:checked + ._option {
+  outline: solid 0.25rem yellow;
+}
+._options input[type="radio"]:focus + ._option {
+  xbox-shadow: 0 0 1px 1px blue;
+}
+
+
 // Switch Field ----------------------------------------------------------------
 //  - A switch field is a graphical element that allows the user to choose only
 //    one option from a set of mutually exclusive options.
@@ -467,7 +656,6 @@ thead {
 //      - focus - option has the current focus of the keyboard.
 //      - active - interaction with option has commenced (space, click-down).
 //  - All fields must be the same width; as wide as the longest option.
-//------------------------------------------------------------------------------
 //  - To hide the checkbox controls while still keeping them tabbable:
 //      - First, take them out of the layout (via "position: absolute;") to
 //        keep them from taking up space but still remain tabbable.
@@ -477,6 +665,8 @@ thead {
 //  - Since the <input> tag does not take children, we use a sibiling and the
 //    "+" or "~" selectors to target that sibling to implement an outline for
 //    checked, hover, etc.
+//  - To turn any square into a circle, just add ._shape-circle to the same
+//    element with ._switch.
 //------------------------------------------------------------------------------
 // Resources:
 //  - Radio buttons as toggle buttons:
@@ -497,18 +687,18 @@ thead {
 //    readers.  We still need to add "for" and "id" properties to each.
 //  - Figure out design for :disabled state on an option.  Perhaps raise buttons
 //    that are available.  https://uxplanet.org/button-ux-design-best-practices-types-and-states-647cf4ae0fc6
+//  - Hide radio buttons by moving them offscreen left, instead of sizing to 0.
+//      - Update the design note above, and add this URL as reference:
+//        https://stackoverflow.com/questions/4425282/how-can-i-stop-the-browser-viewport-moving-to-the-top-of-the-page-when-the-user/
 //------------------------------------------------------------------------------
-
-// SWATCH FIELD ----------------------------------------------------------------
-//  - A test to see if we can simplify the ._switch-field structure.
-//------------------------------------------------------------------------------
-._switch-field {
-  border: solid 1px purple;
+fieldset._switch-field {
+  padding: 0;//0.25rem 0.25rem;
+  border: 0;
+  xborder: solid 1px purple;
 }
 ._switch-field input[type="radio"] {
   position: absolute;
-  height: 0;
-  width: 0;
+  left: -999%;
 }
 ._switches {
   display: flex;
@@ -516,25 +706,25 @@ thead {
   align-items: center;
 }
 ._switch {
-  border: solid 1px gray;/*dbg*///#ccc;
-  margin: 1rem;
+  border: solid 1px #ccc;
+  margin: 0.5rem; // Distance between switches.
   padding: 0;
 }
 ._switch-label {
-  display: flex; // Flexbox to center label content vertically & horizontally.
-  align-items: center; // Align flex items vertically.
-  justify-content: center; // Align flex items horizontally.
-  width: 4rem;
-  height: 4rem;
+  display: flex; // Flexbox to center content vertically & horizontally.
+  align-items: center; // This aligns flex items vertically.
+  justify-content: center; // This aligns flex items horizontally.
+  width: 2.5rem; // Width of the switch.
+  height: 2.5rem; // Height of the switch.
 ///*dbg*/border: solid 1px yellow;
 }
 ._shape-circle,
 ._shape-circle ._switch-label {
-  border-radius: 50%; // Turn any square into a circle.
+  border-radius: 50%;
 }
 ._switch-field input[type="radio"]:checked + ._switch-label {
   box-shadow: 0 0 4px 4px yellow;
-        }
+}
 ._switch-field input[type="radio"]:disabled + ._switch-label {
    background:linear-gradient(to bottom right, white, white 48%, black 50%, white 52%, white);
 }
@@ -555,6 +745,8 @@ thead {
 //  - Migrate tooltip attributes to HTML5-valid ones.  Namely, attributes that
 //    start with "data-" (e.g. "data-_tooltip-text", "data-_tooltip-position").\
 //  - Add tooltip to main menu (see https://productforums.google.com/forum/#!topic/websearch/El-_aS8HRnA).
+//  - Move tooltip position to top of mouse pointer, if any, so the cursor does
+//    not obstruct the text.
 //------------------------------------------------------------------------------
 
 // Set up ancestor for any defined tooltips to be positioned with.
@@ -604,7 +796,9 @@ thead {
 //------------------------------------------------------------------------------
 // TODOs:
 //------------------------------------------------------------------------------
-form { border: solid 1px green; }
+form {
+//  border: solid 1px green;
+}
 
 // IMAGE GALLERY ---------------------------------------------------------------
 //  - General styles for an image gallery.
@@ -625,6 +819,13 @@ form { border: solid 1px green; }
 //      - To target all images, except those of a given color:
 //          [data-color]:not([data-color=chedron]) { }
 //  - Fetching images:  https://www.shopify.com/partners/blog/img-url-filter/
+//  - The "position: relative;" statement in the ._gallery ensures the gallery
+//    does not create, in iOS/Safari, a white space that makes the page much
+//    wider than intended.
+//    https://stackoverflow.com/questions/14270084/overflow-xhidden-doesnt-prevent-content-from-overflowing-in-mobile-browsers/
+//  - To enable momentum scrolling of the gallery in Safari, set
+//    "-webkit-overflow-scrolling: touch;"
+//    https://css-tricks.com/snippets/css/momentum-scrolling-on-ios-overflow-elements/
 //------------------------------------------------------------------------------
 // TODOs:
 //  - Figure out an elegant way of terminating the gallery so the last image
@@ -632,19 +833,162 @@ form { border: solid 1px green; }
 //  - Can we turn the module into a section or snippet?
 //  - Consider inline media queries within each image in the gallery, to show
 //    larger thumbnails in desktop than mobile.
+//  - Translate the images when you swipe/flick; make a swipeable slider.
+//  - Test momentum scrolling on other mobile devices to support as appropriate.
 //------------------------------------------------------------------------------
+
+/* VERSION: Horizontal Filmstrip **********************************************/
+._gallery {
+  display: flex; flex-flow: row nowrap; // Render the gallery as a flexbox.
+  position: relative; // MAKES IT WORK...DESCRIBE WHY!
+  overflow-x: auto; // unique to horizontal scroll
+  -webkit-overflow-scrolling: touch; // Enable momentum scrolling in Safari.
+  -ms-overflow-style: none;  // Remove scrollbar in IE 10+
+  overflow: -moz-scrollbars-none;  // Remove scrollbar in Firefox
+//  border: dashed 1px red; // dbg
+}
+._gallery::-webkit-scrollbar {
+  display: none;  // Remove scrollbar in Safari and Chrome
+}
+._gallery ._thumbnail {
+  margin: 5px;
+  padding: 0;
+  height: 200px; // unique to horizontal scroll
+//  border: dashed 1px pink; // dbg
+}
+._gallery ._thumbnail img {
+  height: 100%;
+  max-width: none; // overrides a setting somewhere else *sigh*
+}
+/* VERSION: Responsive Grid ***************************************************
 ._gallery {
   display: flex;
   flex-flow: row wrap;
-  outline: dashed 1px gray;
+//  outline: dashed 1px #ddd;
   width: 100%;
 }
 ._gallery ._thumbnail {
   margin: 0;
   padding: 0.5rem;
-  background-color: lightyellow;
+//  background-color: #eee;
 }
 ._gallery ._thumbnail img {
   width: 100%;
   height: 100%;
+}
+/******************************************************************************/
+
+// ACCORDION -------------------------------------------------------------------
+//  - General styles for an accordion.
+//  - The accordion layout expects content in the following structure/format:
+//        <div class="_accordion">
+//          <input class="_state" type="checkbox" ... />
+//          <label class="_label" ...>...</label>
+//          <div class="_panel">...</div>
+//          ...
+//        </div>
+//
+//  - See the design pattern prototypes for details on any target schema.
+//  - The accordion design pattern is a CSS-only solution; no JS needed to work.
+//  - Radio buttons are hidden by moving them offscreen left (vs. sizing to 0).
+//    This keeps them in the flow, tabbable, and avoids a "jump" when changed.
+//    https://stackoverflow.com/questions/4425282/how-can-i-stop-the-browser-viewport-moving-to-the-top-of-the-page-when-the-user/
+//  - The implementation assumes checkboxes, which allows items to be opened or
+//    closed, independent of each other.
+//------------------------------------------------------------------------------
+// TODOs:
+//  - At some point figure out how to remove the "max-height" hack.
+//  - Figure out if we need a transition from :checked state back to default.
+//------------------------------------------------------------------------------
+._accordion {
+//  padding: 10px;
+}
+._accordion ._state {
+  position: absolute;
+  left: -999%;
+}
+._accordion ._label {
+  display: flex;
+  justify-content: flex-start;
+  padding: .7em 0em;
+  cursor: pointer;
+  border-top: solid 1px #eee;
+}
+._accordion ._label::before {
+  content: "\23F7";//"+";//"\25BC" = ▼//"\23F7" = ⏷
+  transition: all .25s;
+}
+._accordion ._panel {
+  max-height: 0;
+  overflow: auto;
+  transition: max-height 0.25s;
+}
+._accordion input[type="checkbox"]:checked + ._label + ._panel {
+  max-height: 99rem; /* hack */
+}
+._accordion input[type="checkbox"]:checked + ._label::before {
+  content: "\23F6";//transform: rotate(315deg);//content: "---";//"\25B2" = ▲//"\23F6" = ⏶
+}
+
+// TABS ------------------------------------------------------------------------
+//  - General styles for tabs.
+//  - The tabs layout expects content in the following structure/format:
+//        <div class="_tabs">
+//          <input class="_state" type="radio" ... />
+//          <label class="_label" ...>...</label>
+//          <div class="_panel">...</div>
+//          ...
+//        </div>
+//
+//  - The tabs design pattern is a CSS-only solution; no JS needed to work.
+//  - Radio buttons are hidden by moving them offscreen left (vs. sizing to 0).
+//    This keeps them in the flow, tabbable, and avoids a "jump" when changed.
+//    https://stackoverflow.com/questions/4425282/how-can-i-stop-the-browser-viewport-moving-to-the-top-of-the-page-when-the-user/
+//  - The implementation assumes radio buttons, which only allows a single tab
+//    to be shown at any given time.
+//------------------------------------------------------------------------------
+// TODOs:
+//  -
+//------------------------------------------------------------------------------
+._tabs {
+  display: flex;
+  flex-wrap: wrap;
+}
+._tabs ._state {
+  position: absolute;
+  left: -999%;
+}
+._tabs ._label {
+  order: 0;
+  padding: .7em 1em;
+  cursor: pointer;
+}
+._tabs ._panel {
+  order: 1;
+  width: 100%;
+  display: none;
+}
+._tabs input[type="radio"]:checked + ._label + ._panel {
+  display: block;
+}
+._tabs input[type="radio"]:checked + ._label {
+  border-bottom: solid 4px orange;
+}
+
+
+// PRICES ----------------------------------------------------------------------
+//  -
+//------------------------------------------------------------------------------
+// TODOs:
+//  -
+//------------------------------------------------------------------------------
+.x_product_price {
+  font-size: 2.4rem;
+  line-height: 1.35;
+  letter-spacing: -0.08rem;
+}
+.x_product_compare_at {
+  font-size: 1.4rem;
+  line-height: 1.35;
+  letter-spacing: -0.08rem;
 }

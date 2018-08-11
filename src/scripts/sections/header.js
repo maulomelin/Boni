@@ -10,7 +10,7 @@
 //  - Is it a bug if the sliding menu stays slid across breakpoint boundaries?
 //------------------------------------------------------------------------------
 
-theme.SectionHeader = (function() {
+boni.SectionHeader = (function() {
 
   // Header section constructor.
   // Runs on page load as well as Theme Editor "shopify:section:load" events.

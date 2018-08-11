@@ -19,6 +19,281 @@
 
   <hr/>
 
+  <h2>_selectOptions</h2>
+  <style>
+    .__option {
+      display: flex; flex-flow: row nowrap; align-items: center; justify-content: center;
+      width: 5rem; height: 5rem;
+      margin: 0.5rem;
+      border-bottom: solid 0.25rem transparent;
+    }
+    .__option-label {
+      position: relative;
+      display: flex; flex-flow: row nowrap; align-items: center; justify-content: center;
+      height: 75%;
+      width: 75%;
+      border: solid 1px #ddd;
+    }
+    .__shape-circle {
+      border-radius: 50%;
+    }
+    .__x::before {
+      content: "";
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      background:
+        linear-gradient(to top left,  transparent 0%, transparent calc(50% - 2px), white calc(50% - 1px), black 50%, white calc(50% + 1px), transparent calc(50% + 2px), transparent 100%),
+        linear-gradient(to top right, transparent 0%, transparent calc(50% - 2px), white calc(50% - 1px), black 50%, white calc(50% + 1px), transparent calc(50% + 2px), transparent 100%);
+    }
+    .__shape-circle.__x::before {
+      height: 141.421356%;
+      width: 141.421356%;
+      border-radius: 50%;
+    }
+    .__options { display: flex; flex-flow: row wrap; align-items: center; }
+    .__options input[type="radio"] { position: absolute; left: -999%; }
+    .__options input[type="radio"]:checked + .__option { border-bottom: solid 0.25rem orange; }
+    .__options input[type="radio"]:focus + .__option { box-shadow: 0 0 1px 1px blue; }
+    .__options-field { padding: 0; margin: 0; border: 0; position: relative; }
+    .__field-label { padding: 0; margin: 0; border: 0; }
+
+    .__options-field._debug { border: dashed 1px pink; }
+    .__options._debug { border: dashed 1px pink;}
+    .__option-label._debug { border: dashed 1px red; }
+    .__option._debug { outline: dashed 1px red; }
+    .__option._small { width: 2rem; height: 2rem; }
+
+  </style>
+
+  <table>
+    <tr>
+      <td>
+        <div class="__option _debug">
+          <div class="__option-label _color-pearl _debug">LABEL</div>
+        </div>
+      </td>
+      <td>
+        <xmp>
+<div class="_option">
+  <div class="_option-label _color-pearl">LABEL</div>
+</div>
+        </xmp>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class="__option _debug">
+          <div class="__option-label _color-pearl __shape-circle __x _debug">LABEL</div>
+        </div>
+      </td>
+      <td>
+        <xmp>
+<div class="_option">
+  <div class="_option-label _color-pearl _shape-circle _x">LABEL</div>
+</div>
+        </xmp>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <fieldset class="__options-field _debug">
+          <label class="__field-label _debug">COLOR: <i>colorName</i></label>
+          <div class="__options _debug" style="flex-wrap: nowrap;">
+            <input id="_refid-x1" type="radio" name="color-x1" checked />
+            <label for="_refid-x1" class="__option">
+              <div class="__option-label _color-pearl __shape-circle __x">Label A</div>
+            </label>
+            <input id="_refid-x2" type="radio" name="color-x1" />
+            <label for="_refid-x2" class="__option">
+              <div class="__option-label _color-chedron __shape-circle">Label B</div>
+            </label>
+          </div>
+        </fieldset>
+      </td>
+      <td>
+        <xmp>
+<fieldset class="_options-field">
+
+<label class="_field-label">Color: (select a color)</label>
+
+<div class="_options">
+
+  <input id="_refid-1" type="radio" name="color" checked />
+  <label for="_refid-1" class="_option">
+    <div class="_option-label _color-pearl _shape-circle _x">Label A</div>
+  </label>
+
+  <input id="_refid-2" type="radio" name="color" />
+  <label for="_refid-2" class="_option">
+    <div class="_option-label _color-chedron _shape-circle">Label B</div>
+  </label>
+
+</div>
+
+</fieldset>
+        </xmp>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <fieldset class="__options-field _debug">
+          <label class="__field-label _debug">FIELD LABEL: <i>selectedOptionName</i></label>
+          <div class="__options _debug" style="flex-wrap: nowrap;">
+            <input id="_refid-z1" type="radio" name="color-z" checked />
+            <label for="_refid-z1" class="__option">
+              <div class="__option-label">Label A</div>
+            </label>
+            <input id="_refid-z2" type="radio" name="color-z" />
+            <label for="_refid-z2" class="__option">
+              <div class="__option-label _color-pearl">Label B</div>
+            </label>
+            <input id="_refid-z3" type="radio" name="color-z" />
+            <label for="_refid-z3" class="__option">
+              <div class="__option-label _color-pearl __x">Label C</div>
+            </label>
+            <input id="_refid-z4" type="radio" name="color-z" />
+            <label for="_refid-z4" class="__option">
+              <div class="__option-label __shape-circle">Label D</div>
+            </label>
+            <input id="_refid-z5" type="radio" name="color-z" />
+            <label for="_refid-z5" class="__option">
+              <div class="__option-label __shape-circle _color-chedron">Label E</div>
+            </label>
+            <input id="_refid-z6" type="radio" name="color-z" />
+            <label for="_refid-z6" class="__option">
+              <div class="__option-label __shape-circle _color-chedron __x">Label F</div>
+            </label>
+          </div>
+        </fieldset>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <fieldset class="_options-field">
+          <label class="_field-label">FIELD LABEL: <i>selectedOptionName</i></label>
+          <div class="_options">
+            <input id="_refid-y1" type="radio" name="color-y" checked />
+            <label for="_refid-y1" class="_option">
+              <div class="_option-label">Label A</div>
+            </label>
+            <input id="_refid-y2" type="radio" name="color-y" />
+            <label for="_refid-y2" class="_option">
+              <div class="_option-label _color-pearl">Label B</div>
+            </label>
+            <input id="_refid-y3" type="radio" name="color-y" />
+            <label for="_refid-y3" class="_option">
+              <div class="_option-label _color-pearl _x">Label C</div>
+            </label>
+            <input id="_refid-y4" type="radio" name="color-y" />
+            <label for="_refid-y4" class="_option">
+              <div class="_option-label _shape-circle">Label D</div>
+            </label>
+            <input id="_refid-y5" type="radio" name="color-y" />
+            <label for="_refid-y5" class="_option">
+              <div class="_option-label _shape-circle _color-chedron">Label E</div>
+            </label>
+            <input id="_refid-y6" type="radio" name="color-y" />
+            <label for="_refid-y6" class="_option">
+              <div class="_option-label _shape-circle _color-chedron _x">Label F</div>
+            </label>
+
+            <input id="_refid-color-7x" type="radio" name="color-y" />
+            <label for="_refid-color-7x" class="_option" >
+              <div class="_option-label _shape-circle _color-indigo _x">CUZ THIS HAS A FUCKING LABEL</div>
+            </label>
+
+          </div>
+        </fieldset>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <fieldset class="js _options-field">
+          <legend class="_field-label _js-color-label">COLOR: White </legend>
+          <div class="_options">
+            <input data-single-option-selector data-index="option1 " id="_refid-color-0" type="radio" name="color" value="White" checked />
+            <label for="_refid-color-0" class="_option" data-option="white" data-options-unavailable-for="">
+              <div class="_option-label _shape-circle _color-white "></div>
+            </label>
+            <input data-single-option-selector data-index="option1 " id="_refid-color-1" type="radio" name="color" value="Pearl"  />
+            <label for="_refid-color-1" class="_option" data-option="pearl" data-options-unavailable-for=" s2 s3">
+              <div class="_option-label _shape-circle _color-pearl "></div>
+            </label>
+            <input data-single-option-selector data-index="option1 " id="_refid-color-2" type="radio" name="color" value="Hummus"  />
+            <label for="_refid-color-2" class="_option" data-option="hummus" data-options-unavailable-for="">
+              <div class="_option-label _shape-circle _color-hummus "></div>
+            </label>
+            <input data-single-option-selector data-index="option1 " id="_refid-color-3" type="radio" name="color" value="Cinnamon"  />
+            <label for="_refid-color-3" class="_option" data-option="cinnamon" data-options-unavailable-for=" s1">
+              <div class="_option-label _shape-circle _color-cinnamon "></div>
+            </label>
+            <input data-single-option-selector data-index="option1 " id="_refid-color-4" type="radio" name="color" value="Chedron"  />
+            <label for="_refid-color-4" class="_option" data-option="chedron" data-options-unavailable-for=" s1 s3">
+              <div class="_option-label _shape-circle _color-chedron "></div>
+            </label>
+            <input data-single-option-selector data-index="option1 " id="_refid-color-5" type="radio" name="color" value="Black"  />
+            <label for="_refid-color-5" class="_option" data-option="black" data-options-unavailable-for=" s2">
+              <div class="_option-label _shape-circle _color-black "></div>
+            </label>
+            <input data-single-option-selector data-index="option1 " id="_refid-color-6" type="radio" name="color" value="Gray"  />
+            <label for="_refid-color-6" class="_option" data-option="gray" data-options-unavailable-for=" s0">
+              <div class="_option-label _color-gray _x"></div>
+            </label>
+            <input id="_refid-color-7" type="radio" name="color" value="Indigo"  />
+            <label for="_refid-color-7" class="_option" data-option="indigo" data-options-unavailable-for=" s0 s1 s2 s3">
+              <div class="_option-label _shape-circle _color-indigo _x"></div>
+            </label>
+          </div>
+        </fieldset>
+      </td>
+    </tr>
+  </table>
+
+<style>
+  ._dbg_container {
+    xdisplay: flex; flex-flow: row nowrap; align-items: center; justify-content: center;
+    width: 10rem; height: 5rem;
+    margin: 0.25rem;
+    outline: solid 1px red;
+    padding: 10px;
+    xposition: relative;/*dbg.1*/
+  }
+  ._dbg_label {
+    xdisplay: flex; flex-flow: row nowrap; align-items: center; justify-content: center;
+    height: 75%;
+    width: 75%;
+    outline: dashed 1px pink;
+    position: relative;/*dbg.1*/
+  }
+  ._dbg_cross::before {
+    content: "";
+    position: absolute;
+    height: 150%;
+    width: 150%;
+    background:
+      linear-gradient(to top right, transparent 0%, transparent calc(50% - 2px), lightgray calc(50% - 1px), green 50%, lightgray calc(50% + 1px), transparent calc(50% + 2px), transparent 100%);
+    outline: dashed 1px green;
+  }
+  ._dbg_cross::after {
+    content: "";
+    position: absolute;
+    display: block;
+    height: 75%;
+    width: 75%;
+    background:
+      linear-gradient(to top left, transparent 0%, transparent calc(50% - 2px), lightgray calc(50% - 1px), blue 50%, lightgray calc(50% + 1px), transparent calc(50% + 2px), transparent 100%);
+    outline: dashed 1px blue;
+  }
+</style>
+<br/><br/><br/>
+<div class="_dbg_container">
+  <div class="_dbg_label _dbg_cross">
+    This is a
+  </div>
+</div>
+<br/><br/><br/>
+
   <p>This section includes Boni elements.  The section below is the theme's default style guide.</p>
 
   a<br/>b<br/>c<br/>d<br/>1<br/>2<br/>3<br/>4<br/>

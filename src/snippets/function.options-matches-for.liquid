@@ -1,0 +1,61 @@
+{%- comment -%}
+SNIPPET:
+  function.options-matches-for.Liquid
+
+USAGE:
+  {%- include "function.options-matches-for", options: product_outofstock_options, option_name: option_name -%}
+  {%- assign options_outofstock_for = options_matches_for -%}
+
+PARAMETERS:
+  {string} options[ required ] // A string-encoded array with all option combinations to match against.
+  {string} option_name[ required ] // The option name whose out-of-stock options we're looking for.
+
+OUTPUT:
+  - A string-encoded list of all options whose combination with the given option are matched.
+
+DESCRIPTION:
+  - This function searches option_name within options.
+    If it finds it, it pulls the corresponding pair (triad?) options and
+    stores them the output string.
+  - The function expects a "##"-delimited json-like string-encoded options list.
+
+TODOs:
+  - Update the function to work when 3 options are used.
+{%- endcomment -%}
+
+{%- comment -%} DEBUG INFO
+  Options: [{{ options }}]
+  Match: [{{ option_name }}]
+  Results:
+{%- endcomment -%}
+
+{%- comment -%} MAIN ROUTINE {%- endcomment -%}
+{%- assign _dc = "," -%}
+{%- assign _ds = " " -%}
+{%- assign _dhh = "##" -%}
+{%- assign _ops = options | split: _dhh -%}
+{%- assign _matching_ops = "" -%}
+{%- for _op in _ops -%}
+  {%- if _op contains option_name -%}
+    {%- assign _cs = _op | replace: "[", "" | replace: "]", "" | replace: '"', "" | split: _dc -%}
+    {%- for _c in _cs -%}
+      {%- unless _c == option_name -%}
+        {%- capture _matching_ops -%}{{ _matching_ops }}{{ _ds }}{{ _c }}{%- endcapture -%}
+      {%- endunless -%}
+    {%- endfor -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- assign _matching_ops = _matching_ops | strip -%}
+
+{%- comment -%} ASSIGN OUTPUT VARIABLES {%- endcomment -%}
+{%- assign options_matches_for = _matching_ops -%}
+
+{%- comment -%} CLEAN UP INTERNAL VARIABLES {%- endcomment -%}
+{%- assign _dc = "" -%}
+{%- assign _ds = "" -%}
+{%- assign _dhh = "" -%}
+{%- assign _ops = "" -%}
+{%- assign _op = "" -%}
+{%- assign _cs = "" -%}
+{%- assign _c = "" -%}
+{%- assign _matching_ops = "" -%}

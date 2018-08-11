@@ -1,0 +1,56 @@
+{%- comment -%}
+SNIPPET:
+  function.product-outofstock-options.liquid
+
+USAGE:
+  {%- include "function.product-outofstock-options", product: product -%}
+  {{ product_outofstock_options }}
+
+PARAMETERS:
+  {product object} product[ required ] // The product object to analyze.
+
+OUTPUT:
+  - A string containing the product's variant's option combinations where
+    variant.inventory_quantity == 0.
+  - The options and combinations are delimited.
+
+DESCRIPTION:
+  - This function finds all variants that are out of stock and generates a
+    string containing all option combinations for those variants.
+  - We walk through all product variants looking for ones with no inventory.
+      - If a variant has no inventory, concatenate that variant's options and
+        add them an aggregated "out of stock" list.
+      - If a variant has inventory, skip it.
+  - The items in the "out of stock" list are those whose option combinations
+    are out of stock.
+
+  - Note that this function is designed for only up to two options.  For more
+    options, the "outofstock" list needs to contain combination of options such
+    as "white:s0" and not just "s0".  This is a TODO for future.
+
+TODOs:
+  - Figure out how to block a certain variant in case {% "continue" != variant.inventory_policy %}
+  - Update the snippet to work when 3 options are used, using the "{{ variant.options | json }}" filter.
+  - Figure out what is the best delimiter to use for internal purposes.  "#"?
+  - Select a delimiter that allows for compound options (e.g. "jewel blue").  JSON-ENCODE?
+{%- endcomment -%}
+
+{%- comment -%} MAIN ROUTINE {%- endcomment -%}
+{%- assign _d2 = "##" -%}
+{%- assign _p_outofstock_ops = "" -%}
+{%- for _v in product.variants -%}
+  {%- if 0 == _v.inventory_quantity -%}
+    {%- assign _combo = _v.options | json -%}
+    {%- capture _p_outofstock_ops -%}{{ _p_outofstock_ops }}{{ _d2 }}{{ _combo }}{%- endcapture -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- assign _p_outofstock_ops = _p_outofstock_ops | remove_first: _d2 -%}
+
+{%- comment -%} ASSIGN OUTPUT VARIABLES {%- endcomment -%}
+{%- assign product_outofstock_options = _p_outofstock_ops -%}
+
+{%- comment -%} CLEAN UP INTERNAL VARIABLES {%- endcomment -%}
+{%- assign _p_outofstock_ops = "" -%}
+{%- assign _combo = "" -%}
+{%- assign _variant = "" -%}
+{%- assign _d2 = "" -%}

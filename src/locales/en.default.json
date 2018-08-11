@@ -224,7 +224,7 @@
   },
   "layout": {
     "cart": {
-      "title": "Cart",
+      "title": "Bag",
       "items_count": {
         "one": "item",
         "other": "items"

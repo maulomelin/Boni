@@ -1,0 +1,64 @@
+{% comment %}
+DESCRIPTION:
+  - Parses the product description data from Shopify into the requested
+    format for display (i.e. as tabs or as an accordion).
+  - Assumes that the description fields are delineated by <h3> headings.
+    As such, the splitting process is as follows:
+
+        product.description       =>  [<h3>heading</h3>content]*
+        split: "<h3>"             =>  [heading1</h3>content1] ... [headingN</h3>contentN]
+        foreach {split: "</h3>"}  =>  { [heading1] [content1] } ... { [headingN] [contentN] }
+
+  - See the design pattern prototypes for details on any target schema.
+
+PARAMETERS:
+  {string} description[ required ] // The product description.
+  {string} type[ = "accordion" ] // Target presentation (e.g. tabs, accordion).
+
+SAMPLE:
+  {% include "product-description", type: "tabs" %}
+
+TODOs:
+  -
+{% endcomment %}
+{%- if "accordion" == type %}
+
+  <div class="_accordion">
+  {% assign entries = product.description | strip | split: "<h3>" -%}
+  {% assign index = 0 %}
+  {% for entry in entries %}
+    {% unless blank == entry %}
+      {% assign x = entry | split: "</h3>" %}
+      {% assign label = x[0] %}
+      {% assign panel = x[1] %}
+
+    <input class="_state" type="checkbox" name="accordion" id="_refid-accordion-{{- forloop.index0 -}}" {% if 0 == index %}checked{% endif %} />
+    <label class="_label" for="_refid-accordion-{{- forloop.index0 -}}">{{- label -}}</label>
+    <div class="_panel">{{- panel -}}</div>
+
+      {% assign index = index | plus: 1 %}
+    {% endunless %}
+  {% endfor %}
+  </div>
+
+{% elsif "tabs" == type %}
+
+  <div class="_tabs">
+  {% assign entries = product.description | strip | split: "<h3>" -%}
+  {% assign index = 0 %}
+  {% for entry in entries %}
+    {% unless blank == entry %}
+      {% assign x = entry | split: "</h3>" %}
+      {% assign label = x[0] %}
+      {% assign panel = x[1] %}
+
+    <input class="_state" type="radio" name="tab" id="_refid-tab-{{- forloop.index0 -}}" {% if 0 == index %}checked{% endif %} />
+    <label class="_label" for="_refid-tab-{{- forloop.index0 -}}">{{- label -}}</label>
+    <div class="_panel">{{- panel -}}</div>
+
+      {% assign index = index | plus: 1 %}
+    {% endunless %}
+  {% endfor %}
+  </div>
+
+{%- endif -%}

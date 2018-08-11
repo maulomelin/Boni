@@ -15,9 +15,147 @@
 // We can, alternatively, add it in theme.liquid like it is done for vendor.js.
 //------------------------------------------------------------------------------
 // TODOs:
-//  -
+//  - Move the window.boni.strings to the variables settings file, to entries
+//    such as the ones shown below in the comments.  Add a note there that the
+//    strings must match their equivalents in the .liquid file.
 //------------------------------------------------------------------------------
 
+// TODO: Move these strings to the variables settings file.
+// TODO: Match these strings to their counterparts in the .liquid file.
+window.boni.strings = {
+  availableStatusPhrase: "This item is available.", // {{ 'products.product.add_to_cart' | t | json }},
+  outOfStockStatusPhrase: "This item is currently out of stock.",
+  soldOutStatusPhrase: "This item is sold out.", // {{ 'products.product.sold_out' | t | json }},
+  unavailableStatusPhrase: "This item is unavailable.", // {{ 'products.product.unavailable' | t | json }}
+  availableStatus: "Available",
+  outOfStockStatus: "Out Of Stock",
+  soldOutStatus: "Sold Out",
+  unavailableStatus: "Unavailable"
+};
+
+//------------------------------------------------------------------------------
+// TEMPLATE TO DO SOMETHING SPECIFIC
+//------------------------------------------------------------------------------
+(function() {})();
+
+//------------------------------------------------------------------------------
+// E-mail notification on items not available.
+//------------------------------------------------------------------------------
+(function() {
+
+  $("#notify-me").click(function() {
+    $("#notify-me-wrapper").fadeIn();
+    return false;
+  });
+
+})();
+
+//------------------------------------------------------------------------------
+// Set up individual select options.
+//------------------------------------------------------------------------------
+(function() {
+
+  console.log("Initialize: DesignPattern(_selectOptions)");
+
+  var selectors = {
+    singleOptionSelector: "[data-single-option-selector]",
+    selectedOption: "input:checked + ._option",
+    option: "._option",
+    optionLabel: "._option-label",
+  };
+
+  // Set a listener on changes to our single option selectors.
+  $(selectors.singleOptionSelector).on("change", updateSingleOptionSelectorsAvailability);
+
+  // Run the script when loaded, to update options based on default settings.
+  updateSingleOptionSelectorsAvailability();
+
+  //--------------------------------------------------------------------------
+  // This function updates "[data-single-option-selector] + label" elements
+  // to show which options are unavailable given the currently-selected ones.
+  // It basically toggles a class attribute (i.e. "._x") on unavailable ones
+  // to draw them as unavailabile (e.g. add an "X" across).
+  //
+  // This functions assumes the following data elements:
+  //    input[data-single-option-selector] + label[data-option]
+  //    input[data-single-option-selector] + label[data-options-unavailable-for]
+  //
+  // [data-option] gives the name of the option the label is associated with.
+  // this is required.
+  //
+  // [data-options-unavailable-for] gives the names of the options the given
+  // one is unavailable for, in a space-delimited list.  This is optional.
+  //----------------------------------------------------------------------------
+  // TODOs:
+  //  - Update the filter function so it works with labels that are "0".
+  //  - Update the code to "cross out" labels to work when 3 options are used.
+  //--------------------------------------------------------------------------
+  function updateSingleOptionSelectorsAvailability(event) {
+
+    if (event) {
+      console.log("\nOption changed.  option.name=[" + event.target.name + "]");
+    } else {
+      console.log("\nUpdating options based on default settings.");
+    }
+
+    // Get out-of-stock and unavailable options from currently-selected ones.
+    // Use attr() to get data from data-* attributes.  data() tries to convert
+    // the string into a js value, causing issues with options like "0".
+    // i.e. Do not use: let options = $(this).data("optionsUnavailableFor");
+    let oos_options = [];
+    let un_options = [];
+    $(selectors.selectedOption).each( function(index) {
+
+      // Get out-of-stock options from the data-* attribute.
+      let options = $(this).attr("data-outofstock-for");
+      console.log($(this).attr("for") + " data-outofstock-for=[" + options + "]");
+      // If out-of-stock exist, extract them, remove blanks, and store them.
+      if (undefined != options) {
+        oos_options = oos_options.concat(options.split(" ").filter(function(e){ return e; }));
+      }
+
+      // Get the unavailable options from the data-* attribute.
+      options = $(this).attr("data-unavailable-for");
+      console.log($(this).attr("for") + " data-unavailable-for=[" + options + "]");
+      // If unavailables exist, extract them, remove blanks, and store them.
+      if (undefined != options) {
+        un_options = un_options.concat(options.split(" ").filter(function(e){ return e; }));
+      }
+
+    });
+
+    // Loop through all options, to cross off out-of-stock and unavailable ones.
+    $(selectors.option).each( function(index) {
+      // First, reset the option by uncrossing it.
+      $(this).find(selectors.optionLabel).toggleClass("_x", false);
+      $(this).find(selectors.optionLabel).toggleClass("_xx", false);
+      // Last, cross off the option only if it is in one of the sets.
+      let option = $(this).data("option");
+      if (undefined != option) {
+        // Check against the out-of-stock set.
+        for (let i = 0; i < oos_options.length; i++) {
+          if (option == oos_options[i]) {
+            console.log("\tX! data-option=[" + option + "]");
+            $(this).find(selectors.optionLabel).toggleClass("_x", true);
+          }
+        }
+        // Check against the unavailable set.
+        for (let i = 0; i < un_options.length; i++) {
+          if (option == un_options[i]) {
+            console.log("\tXX! data-option=[" + option + "]");
+            $(this).find(selectors.optionLabel).toggleClass("_xx", true);
+          }
+        }
+      }
+    });
+
+  }
+
+})();
+
+//------------------------------------------------------------------------------
+// Set up the image viewer.
+//------------------------------------------------------------------------------
 (function() {
 
   // Figuring out events.
@@ -32,8 +170,9 @@
     console.log("\tevent.target.value=[" + event.target.value + "]");
     console.log("\tevent.target.name.toLowerCase()=[" + event.target.name.toLowerCase() + "]");
     console.log("");
+
     if ("color" == event.target.name.toLowerCase()) {
-      console.log("COLOR CHANGE!  FILTER OUT IMAGES\n");
+      console.log("COLOR CHANGE!  CHANGE IMAGES\n");
       var turn_off = "[data-gallery-id]:not([data-gallery-id=" + event.target.value.toLowerCase() + "])";
       var turn_on = "[data-gallery-id=" + event.target.value.toLowerCase() + "]";
       console.log("TURN OFF: " + turn_off);
@@ -43,7 +182,16 @@
       $(turn_on).toggleClass("_hide", false);
 //      $("li [data-color=c" + event.target.value + "])").css("background-color", "blue");
 //      $("li [data-color] :not([data-color=c" + event.target.value + "])").css("background-color", "blue");
+
+      console.log("COLOR CHANGE!  CHANGE LABEL\n");
+      $("._js-color-label").html("COLOR: " + event.target.value);
     }
+
+    if ("size" == event.target.name.toLowerCase()) {
+      console.log("SIZE CHANGE!  CHANGE LABEL\n");
+      $("._js-size-label").html("SIZE: " + event.target.value);
+    }
+
   });
 
   $("[XXXdata-section-id]").on("variantChange", function(event) {
@@ -62,16 +210,20 @@
   });
 
   // This is a global event handler. (tag where event took place) --> (ancestor tags) --> <body> --> <html> --> document --> window
-if (false) {
-  $(window).on("change", function(event) {
-    console.log("window registered a change event");
-  });
-}
+  if (false) {
+    $(window).on("change", function(event) {
+      console.log("window registered a change event");
+    });
+  }
 
-// This is to figure out why the gallery viewer is causing a submit.
-//  $("[data-add-to-cart]").on("submit", function(event) {
-//    event.preventDefault();
-//    console.log("Submitted!  Default suppressed.");
+
+  // TODO: Rename this to initializeGalleryViewer().
+  boniPhotos("._gallery");
+
+
+// TODO: It should be this easy to launch the gallery viewer.  Make this work.
+//  $("#_btn").on("click", function(event) {
+//    boniPhotos.openGalleryViewer(0, 0);
 //  });
 
   //----------------------------------------------------------------------------
@@ -96,9 +248,10 @@ if (false) {
       $(this).on("click", onThumbnailClick);
     });
 
-    // Open the gallery viewer with the right URL params (i.e. "#&pid=1&gid=3").
+    // Open the gallery viewer if hash params present (i.e. "#&pid=1&gid=3").
     var p = getHashParams();
-    if (p.pid && p.gid) {
+
+    if (p.gID && p.pID) {
       openGalleryViewer(p.gid, p.pid);
     }
 
@@ -114,6 +267,7 @@ if (false) {
       var pID = $(event.target).data("picture-id");
 
       // Open the gallery viewer if IDs are present (i.e. click on a thumbnail).
+// BUG: DOESN'T WORK WITH THE FIRST SLIDE, IF IT'S A 0-BASED INDEX.
       if (gID && pID) {
         openGalleryViewer(gID, pID);
       } else {
@@ -226,14 +380,5 @@ console.log("parseGalleryThumbnails()");
       return hashParams;
     }
   };
-
-  // TODO: Rename this to initializeGalleryViewer().
-  boniPhotos("._gallery");
-
-
-// TODO: It should be this easy to launch the gallery viewer.  Make this work.
-//  $("#_btn").on("click", function(event) {
-//    boniPhotos.openGalleryViewer(0, 0);
-//  });
 
 })();

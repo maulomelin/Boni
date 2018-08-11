@@ -6,17 +6,16 @@ NOTES:
   -
 
 TODOs:
-  - Adjust img tags to leverage other attributes (i.e. srcset, alt, itemprop,
-   etc).
-  See https://css-tricks.com/responsive-images-youre-just-changing-resolutions-use-srcset/
-  - Consider using <... itemscope & itemtype="http://schema.org/Organization">
-   after reviewing Google dev docs.
+  - Update img tags to use other attributes (i.e. srcset, alt, itemprop, etc).
+    See https://css-tricks.com/responsive-images-youre-just-changing-resolutions-use-srcset/
+  - Consider using <itemscope & itemtype="http://schema.org/Organization">
+    after reviewing Google dev docs.
   - HOW DO YOU ADD/REMOVE GUTTERS?!
   - Consider animating menu icon from "=" to "x" on state transitions.
   - Update "role" attribute for each section
-  (https://stackoverflow.com/questions/4170356/what-values-can-the-html5-xhtml-role-attribute-have)
-  - Create nested menus:
-  https://help.shopify.com/themes/development/building-nested-navigation
+    See https://stackoverflow.com/questions/4170356/what-values-can-the-html5-xhtml-role-attribute-have
+  - Create nested menus.
+    See https://help.shopify.com/themes/development/building-nested-navigation
   - Fade header, simple code: https://codepen.io/riogrande/pen/gbXxdx
   - Add ARIA tags and elements.
   - Add tags and classes for responsiveness at various breakpoints.
@@ -33,58 +32,50 @@ TODOs:
 <div data-section-id="{{ section.id }}" data-section-type="section-header">
 
   <header>
-
     <nav class="_navigation-bar">
-
       <div class="_row-container">
-
         <div class="_left-slot">
           <button type="button" class="_js-slide-menu-drawer">
-            <span class="_icon">{% include "icon-hamburger" %}</span>
+            <span>{% include "icons", icon: "menu" %}</span>
             <span class="small--hide">Menu</span>
-          </button>
-          <button type="button" class="_js-slide-search-drawer">
-            <span class="_icon">{% include "icon-search" %}</span>
-            <span class="small--hide">Search</span>
-          </button>
-        </div> <!-- /._left-slot -->
-
-        <div class="_center-slot">
-          <span class="_logo">MLCloset</span>
-        </div> <!-- /._center-slot -->
-
-        <div class="_right-slot">
-          <button type="button">
-            <span class="_icon">{% include "icon-snapchat" %}</span>
-            <span class="small--hide">Account</span>
-          </button>
-          <button type="button">
-            <span class="_icon">{% include "icon-cart" %}</span>
-            <span class="small--hide">
-              {{ "layout.cart.title" | t }}
-              ({{ cart.item_count }}) <!-- {{ "layout.cart.items_count" | t: count: cart.item_count }} -->
             </span>
           </button>
-        </div> <!-- /._right-slot -->
-
-      </div> <!-- /._row-container -->
-
+          <button type="button" class="_js-slide-search-drawer">
+            <span>{% include "icons", icon: "search" %}</span>
+            <span class="small--hide">Search</span>
+          </button>
+        </div>
+        <div class="_center-slot">
+          <span class="_logo">MLCloset</span>
+        </div>
+        <div class="_right-slot">
+          <button type="button">
+            <span>{% include "icons", icon: "account" %}</span>
+            <span class="small--hide">Sign in</span>
+          </button>
+          <button type="button">
+            <span>{% include "icons", icon: "bag" %}</span>
+            <span class="small--hide">
+              {{ "layout.cart.title" | t }}
+              ({{ cart.item_count }})
+            </span>
+          </button>
+        </div>
+      </div>
       <div class="_overlay _l-overlay"></div>
-
       <div class="_menu-drawer _l-left-sliding">
         {% include "navigation-menu" %}
-      </div> <!-- ._menu-drawer -->
-
+      </div>
       <div class="_search-drawer _l-top-sliding">
         Search drawer<br/>Slide it from somewhere.
-      </div> <!-- ._search-drawer -->
-
-    </nav> <!-- /._navigation-bar -->
-
+      </div>
+    </nav>
+    <div class="_header-spacer"></div>
+    {%- if section.settings.display_notification_bar -%}
     <div class="_notification-bar">
       Notification bar.<br/>Give it some configurable text.
-    </div> <!-- ._notification-bar -->
-
+    </div>
+    {%- endif -%}
   </header>
 
 </div>
@@ -94,24 +85,24 @@ TODOs:
     "name": "Header",
     "settings": [
       {
-        "type": "image_picker",
+        "label": "Logo image",
         "id": "logo",
-        "label": "Logo image"
+        "type": "image_picker"
       },
       {
-        "type": "range",
+        "label": "Custom logo width",
         "id": "logo_max_width",
+        "type": "range",
         "min": 50,
         "max": 450,
         "step": 10,
         "unit": "px",
-        "label": "Custom logo width",
         "default": 250
       },
       {
-        "type": "link_list",
-        "id": "main_linklist",
         "label": "Menu",
+        "id": "main_linklist",
+        "type": "link_list",
         "default": "main-menu"
       },
       {
@@ -119,39 +110,39 @@ TODOs:
         "content": "Notification Bar"
       },
       {
-        "type": "checkbox",
-        "id": "notification_bar_display",
         "label": "Show Notification Bar",
-        "default": true
-      },
-      {
+        "id": "display_notification_bar",
         "type": "checkbox",
-        "id": "notification_bar_location_home_page_only",
-        "label": "Home Page only",
         "default": false
       },
       {
-        "type": "text",
-        "id": "notificaton_bar_text",
+        "label": "Home Page only",
+        "id": "notification_bar_location_home_page_only",
+        "type": "checkbox",
+        "default": false
+      },
+      {
         "label": "Notification text",
+        "id": "notificaton_bar_text",
+        "type": "text",
         "default": "Information or Notification"
       },
       {
-        "type": "url",
-        "id": "notificaton_bar_link",
         "label": "Notification link",
+        "id": "notificaton_bar_link",
+        "type": "url",
         "info": "Optional"
       },
       {
-        "type": "color",
-        "id": "notificaton_bar_background_color",
         "label": "Background color",
+        "id": "notificaton_bar_background_color",
+        "type": "color",
         "default": "#cccccc"
       },
       {
-        "type": "color",
-        "id": "notificaton_bar_text_color",
         "label": "Text color",
+        "id": "notificaton_bar_text_color",
+        "type": "color",
         "default": "#ffffff"
       }
     ]

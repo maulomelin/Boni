@@ -1,0 +1,45 @@
+{%- comment -%}
+SNIPPET:
+  function.clean-string.Liquid
+
+USAGE:
+  {% assign class = "_option-label" | append: " " | append: option_label_shape | append: " " | append: option_label_color %}
+  {% include "function.clean-string", dirty_string: class %}
+  {% assign class = clean_string %}
+  <div class="{{ class }}"></div>
+
+PARAMETERS:
+  {string} dirty_string[ required ] // The string to be cleaned.
+
+OUTPUT:
+  - A string with extra spaces removed are in a variable named clean_string.
+
+DESCRIPTION:
+  - Function to remove any extra spaces from around and within a string.
+    Use it to cleanse things like class declarations that are concatenated with
+    a number of variables, some of which may be empty, that leave extra spaces.
+
+TODOs:
+{%- endcomment -%}
+
+{%- comment -%} MAIN ROUTINE {%- endcomment -%}
+{%- assign _ds = " " -%}
+{%- assign _clean_delimited_string = "" -%}
+{%- assign _dirty_array = dirty_string | split: " " -%}
+{%- for _dirty_item in _dirty_array -%}
+  {%- assign _clean_item = _dirty_item | strip -%}
+  {%- if "" != _clean_item -%}
+    {%- capture _clean_delimited_string -%}{{ _clean_delimited_string }}{{ _ds }}{{ _clean_item }}{%- endcapture -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- assign _clean_delimited_string = _clean_delimited_string | strip -%}
+
+{%- comment -%} ASSIGN OUTPUT VARIABLES {%- endcomment -%}
+{%- assign clean_string = _clean_delimited_string -%}
+
+{%- comment -%} CLEAN UP INTERNAL VARIABLES {%- endcomment -%}
+{%- assign _ds = "" -%}
+{%- assign _clean_delimited_string = "" -%}
+{%- assign _dirty_array = "" -%}
+{%- assign _dirty_item = "" -%}
+{%- assign _clean_item = "" -%}

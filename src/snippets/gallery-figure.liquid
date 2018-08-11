@@ -17,6 +17,8 @@ DESCRIPTION:
         split: "--"   =>  [path] [item1-color1] ... [itemN-colorN] [picid] [jpg]
         split: "-"    =>  [path] [item1] [color1] ... [itemN] [colorN] [picid] [jpg]
 
+  - Default factor for images is 120x.
+
 PARAMETERS:
   {image object} image[ required ] // The current image.
   {string} gid[ required ] // Gallery ID.
@@ -29,7 +31,8 @@ SAMPLE:
 
 TODOs:
   - Change delimiters to dashes, upload newly renamed filenes, and update product info via loaded file.
-
+  - Generate styles for all images that cover flex-basis and flex-grow, so that we can create media queries for them and have larger images at different breakpoints.
+  - Change layout of images to be more like IMDB's iPhone app's image layout.  Perhaps we need an implementation of the Viterbi algorithm for best alignment.
 {% endcomment %}
 {%- if true == blast %}
   <figure class="_thumbnail" style="flex: 9999;"></figure>
@@ -40,7 +43,7 @@ TODOs:
   {%- assign x = x[0] | split: "--" -%}
   {%- assign x = x[0] | split: "-" -%}
   {%- assign x = x[0] | split: "_" -%}
-  {%- assign flex_basis = image.aspect_ratio | times: 120 -%}
+  {%- assign flex_basis = image.aspect_ratio | times: 160 -%}
   {%- assign flex_grow = image.aspect_ratio -%}
   {%- assign title = x[0] -%}
   {%- assign color = x[1] -%}

@@ -9,17 +9,25 @@
 theme.Product = (function() {
 
   var selectors = {
-    addToCart: '[data-add-to-cart]',
+    statusPhrase: '._js-status-phrase',
+
+    addToCartButton: '[data-add-to-cart]',
     addToCartText: '[data-add-to-cart-text]',
+
+    pricingWrapper: '[data-pricing-wrapper]',
+    priceWrapper: '[data-price-wrapper]',
+    productPrice: '[data-product-price]',
+    compareWrapper: '[data-compare-wrapper]',
     comparePrice: '[data-compare-price]',
     comparePriceText: '[data-compare-text]',
+
     originalSelectorId: '[data-product-select]',
-    priceWrapper: '[data-price-wrapper]',
+    singleOptionSelector: '[data-single-option-selector]',
+
     productFeaturedImage: '[data-product-featured-image]',
-    productJson: '[data-product-json]',
-    productPrice: '[data-product-price]',
     productThumbs: '[data-product-single-thumbnail]',
-    singleOptionSelector: '[data-single-option-selector]'
+
+    productJson: '[data-product-json]'
   };
 
   /**
@@ -30,8 +38,8 @@ theme.Product = (function() {
   function Product(container) {
     this.$container = $(container);
 
-    // Stop parsing if we don't have the product json script tag when loading
-    // section in the Theme Editor
+    // Stop parsing if we don't have the product json script tag
+    // when loading section in the Theme Editor
     if (!$(selectors.productJson, this.$container).html()) {
       return;
     }
@@ -74,22 +82,62 @@ theme.Product = (function() {
     updateAddToCartState: function(evt) {
       var variant = evt.variant;
 
+      console.log("updateAddToCartState:()"); /*dbg*/
+      console.log("\tvariant="); /*dbg*/
+      console.log(variant); /*dbg*/
+
+// TODO: Break up selectors.priceWrapper into distinct "price" and "comparison" elements.
+// TODO: Remove compare text.
+// TODO: Update "contact[title]", even with unavailable variants.
+// TODO: Dismiss success and error messages.  See Bootstrap.
+
       if (variant) {
-        $(selectors.priceWrapper, this.$container).removeClass('hide');
+        if (0 < variant.inventory_quantity) {
+          console.log("\tvariant is AVAILABLE (0 < inventory_quantity)"); /*dbg*/
+          $(selectors.addToCartText, this.$container).html(boni.strings.availableStatus); //.html(theme.strings.addToCart);
+          $(selectors.addToCartButton, this.$container).prop('disabled', false);
+          $(selectors.pricingWrapper, this.$container).removeClass("_hide");
+          $(selectors.compareWrapper, this.$container).removeClass("_hide");
+          $(selectors.statusPhrase, this.$container).html(boni.strings.availableStatusPhrase);
+          $("._js-form").addClass("_hide");
+          $("._js-f-waitlist-status-input").prop("value", boni.strings.availableStatus);
+        } else {
+          if ("continue" == variant.inventory_policy) {
+            console.log("\tvariant is OUT OF STOCK (continue == inventory_policy)"); /*dbg*/
+            $(selectors.addToCartText, this.$container).html(boni.strings.outOfStockStatus); //.html(theme.strings.soldOut);
+            $(selectors.addToCartButton, this.$container).prop('disabled', false);
+            $(selectors.pricingWrapper, this.$container).removeClass("_hide");
+            $(selectors.compareWrapper, this.$container).addClass("_hide");
+            $(selectors.statusPhrase, this.$container).html(boni.strings.outOfStockStatusPhrase);
+            $("._js-form").removeClass("_hide");
+            $("._js-f-waitlist-status-input").prop("value", boni.strings.outOfStockStatus);
+          } else {
+            console.log("\tvariant is SOLD OUT (deny == inventory_policy)"); /*dbg*/
+            $(selectors.addToCartText, this.$container).html(boni.strings.soldOutStatus); //.html(theme.strings.unavailable);
+            $(selectors.addToCartButton, this.$container).prop('disabled', true);
+            $(selectors.pricingWrapper, this.$container).addClass("_hide");
+            $(selectors.compareWrapper, this.$container).addClass("_hide");
+            $(selectors.statusPhrase, this.$container).html(boni.strings.soldOutStatusPhrase);
+            $("._js-form").removeClass("_hide");
+            $("._js-f-waitlist-status-input").prop("value", boni.strings.soldOutStatus);
+          }
+        }
       } else {
-        $(selectors.addToCart, this.$container).prop('disabled', true);
-        $(selectors.addToCartText, this.$container).html(theme.strings.unavailable);
-        $(selectors.priceWrapper, this.$container).addClass('hide');
-        return;
+        console.log("\tvariant UNAVAILABLE (!variant)"); /*dbg*/
+        $(selectors.addToCartText, this.$container).html(boni.strings.unavailableStatus); //.html(theme.strings.unavailable);
+        $(selectors.addToCartButton, this.$container).prop('disabled', true);
+        $(selectors.pricingWrapper, this.$container).addClass("_hide");
+        $(selectors.compareWrapper, this.$container).addClass("_hide");
+        $(selectors.statusPhrase, this.$container).html(boni.strings.unavailableStatusPhrase);
+        $("._js-form").removeClass("_hide");
+        $("._js-f-waitlist-status-input").prop("value", boni.strings.unavailableStatus);
       }
 
-      if (variant.available) {
-        $(selectors.addToCart, this.$container).prop('disabled', false);
-        $(selectors.addToCartText, this.$container).html(theme.strings.addToCart);
-      } else {
-        $(selectors.addToCart, this.$container).prop('disabled', true);
-        $(selectors.addToCartText, this.$container).html(theme.strings.soldOut);
-      }
+      $("._js-f-waitlist-option1-input").prop("value", $("[data-single-option-selector][data-index=option1]:checked").prop("value"));
+      $("._js-f-waitlist-option2-input").prop("value", $("[data-single-option-selector][data-index=option2]:checked").prop("value"));
+      $("._js-f-waitlist-option3-input").prop("value", $("[data-single-option-selector][data-index=option3]:checked").prop("value"));
+
+      console.log(""); /*dbg*/
     },
 
     /**
@@ -102,16 +150,16 @@ theme.Product = (function() {
       var variant = evt.variant;
       var $comparePrice = $(selectors.comparePrice, this.$container);
       var $compareEls = $comparePrice.add(selectors.comparePriceText, this.$container);
+      var $compareEls = $compareEls.add(selectors.compareWrapper, this.$container);
 
-      $(selectors.productPrice, this.$container)
-        .html(slate.Currency.formatMoney(variant.price, theme.moneyFormat));
+      $(selectors.productPrice, this.$container).html(slate.Currency.formatMoney(variant.price, theme.moneyFormat));
 
       if (variant.compare_at_price > variant.price) {
         $comparePrice.html(slate.Currency.formatMoney(variant.compare_at_price, theme.moneyFormat));
-        $compareEls.removeClass('hide');
+        $compareEls.removeClass("_hide");
       } else {
-        $comparePrice.html('');
-        $compareEls.addClass('hide');
+        $comparePrice.html("");
+        $compareEls.addClass("_hide");
       }
     },
 

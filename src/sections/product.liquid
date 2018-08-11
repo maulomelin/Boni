@@ -28,205 +28,434 @@ TODOs:
   - Find a more elegant solution to close off the image gallery than a trailing filler <div>.
   - JSDoc everything.
   - Enable deep-linking into variants on the ProductDetails page, so we can highlight specific ones on other parts of the site or outside (https://www.shopify.com/partners/blog/product-variants/).
+  - Update all gallery <div> to a <section> with an appropriate role.
+  - Content:
+      - todo: header, breadcrumb, title, price, options, description, follow, footer, e-mail registration, reviews, add-to-cart, size guide, add-to-favorites, share, quantity, style/pair it with...
+      - done: header, breadcrumb, title, price, options, description, follow, footer, e-mail registration, reviews, add-to-cart, size guide, add-to-favorites, share, quantity, style/pair it with...
+  - Add role of "tablist" to the containing <div> of the tabs.
+  - Fine-tune the tabs (http://alistapart.com/article/radio-controlled-web-design/).
+  - Use the https://validator.w3.org/nu/ to test html.
+  - Implement dynamic checkout buttons (https://help.shopify.com/en/themes/customization/store/dynamic-checkout-buttons/).
+  - Link product options so that unavailable items (e.g. a size) is grayed out and/or not selectable.
+  - Implement a grayed out mode for colors and sizes.
+  - Test options with multi-word color names (e.g. "Jewel Blue").
+  - Refactor options crossing (i.e. "/" and "X") and generalize with the function.product-options-matrix.liquid and associated javascript.
+  - Refactor options crossing to use conditional identifiers, such as "X(White|s1)" or "X(Hummus|)" or "/(Blue|s1,s2)" where permutations are all drawn out (see notes).
+  - See ProductDetails page and pop-up view off ProductBrowse page on macys.com.  They change images on color mouse-over.
+  - Implement mouse-over/hover behaviour for options.  See https://www.aritzia.com/us/en/product/arjun-knit-top/66139.html?dwvar_66139_color=12696
+  - Implement breadcrumb.
+  - Ajaxify the add-to-cart button.
+      - Enable customers to stay on the product page when a product is added to te cart.
+        https://help.shopify.com/en/themes/customization/products/add-to-cart/stay-on-product-page-when-items-added-to-cart/
+      - Build a cart flyout on the header.
 {% endcomment %}
 
 <!-- product section (\src\sections\product.liquid) -->
 <div data-section-id="{{ section.id }}" data-section-type="product" data-enable-history-state="true" itemscope itemtype="http://schema.org/Product">
 
-  {% form "product", product, class: "_form" %}
+<br/>
 
-  <!-- HEADING -->
-    <h3>{{ product.title }}</h3>
-    <p>by {{ product.vendor }}</p>
-  <!-- /HEADING -->
+<div class="grid">
 
-  <!-- PRODUCTSELECT -->
-    <fieldset class="no-js _select-field">
-      <legend class="_field-label">Product SELECTOR</legend>
-      <select data-product-select name="id">{% for variant in product.variants %}
-        <option value="{{ variant.id }}" {%- if variant == product.selected_or_first_available_variant %} {{ "selected" -}} {% endif -%} {%- unless variant.available %} {{ "disabled" -}} {% endunless -%}>
-          {{- variant.id }} - {{ variant.title }} - {{ variant.price | money }} {%- if variant == product.selected_or_first_available_variant %} {{ "[*]" -}} {% endif -%}
-        </option>
-        {%- endfor %}
-      </select>
-    </fieldset>
-  <!-- /PRODUCTSELECT -->
+  <div class="grid__item medium-up--one-half">
 
-  <!-- SINGLEOPTIONSELECTORS -->
-    {%- unless product.has_only_default_variant -%}
-    {%- for option in product.options_with_values %}
-    <fieldset class="js _switch-field">
-      <legend class="_field-label">{{ option.name }} SELECTOR</legend>
-      <div class="_switches">
-        {%- for value in option.values %}
-        <div class="_switch _{{ option.name | downcase }}-{{ value | downcase }}" _tooltip="{{ value }}" _tooltip-position="bottom">
-          {% capture refid -%}
-            _refid-{{ option.name | downcase }}-{{ forloop.index0 -}}
-          {% endcapture -%}
-          <input data-single-option-selector data-index="option{{ option.position }}" id="{{ refid }}" type="radio" name="{{ option.name }}" value="{{ value }}" {%- if option.selected_value == value %} {{ "checked" -}} {% endif %}>
-          <label for="{{ refid }}" class="_switch-label">{{ value }}</label>
-        </div>
-        {%- endfor %}
-      </div>
-    </fieldset>
-    {%- endfor -%}
-    {%- endunless -%}
-  <!-- /SINGLEOPTIONSELECTORS -->
-
-  <!-- QUANTITYSELECT -->
-    <fieldset class="_XXX-field">
-      <legend class="_field-label">Quantity SELECTOR</legend>
-      <select name="quantity">
-        <option value="1" selected>1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="6">6</option>
-        <option value="7">7</option>
-        <option value="8">8</option>
-        <option value="9">9</option>
-      </select>
-    </fieldset>
-  <!-- /QUANTITYSELECT -->
-
-  <!-- PRICINGINFO -->
-    <div data-price-wrapper>
-      {% assign current_variant = product.selected_or_first_available_variant -%}
-      PRICE:
-      <span data-product-price>
-        {{ current_variant.price | money }}
-      </span>
-      <span data-compare-text>
-        (WAS: <s data-compare-price>{% if current_variant.price < current_variant.compare_at_price -%} {{- current_variant.compare_at_price | money -}} {%- endif %}</s>)
-        <!-- "WAS" string above should be replaced with {{ "products.product.regular_price" | t }}: -->
-      </span>
+    <!-- IMAGEGALLERY -->
+    <!-- master-gallery -->
+    <div class="no-js _gallery" data-gallery-id="all">
+      {%- for image in product.images -%}
+        {%- include "gallery-figure", image: image, gid: "all", pid: forloop.index0, blast: false -%}
+      {%- endfor -%}
+      {%- include "gallery-figure", blast: true -%}
     </div>
-  <!-- /PRICINGINFO -->
-
-  <!-- DESCRIPTION -->
-    <div class="rte">
-      {{ product.description }}
-    </div>
-  <!-- /DESCRIPTION -->
-
-  <!-- ADDTOCARTBUTTON -->
-    {% assign current_variant = product.selected_or_first_available_variant -%}
-    <button data-add-to-cart type="submit" {%- unless current_variant.available %} {{ "disabled" -}} {% endunless %}>
-      <span data-add-to-cart-text>
-        {% if current_variant.available %}
-          {{ "products.product.add_to_cart" | t }}
-        {% else %}
-          {{ "products.product.sold_out" | t }}
-        {% endif %}
-      </span>
-    </button>
-  <!-- /ADDTOCARTBUTTON -->
-
-  {% endform %}
-
-  <!-- IMAGEGALLERY
-  APPROACH:
-    - Create a master gallery that has all of the images.
-    - Create individual galleries for each option we choose.
-    - The code logic determines conditions under which to show/hide galleries.
-  TODOs:
-    - Insert a <figure> element as a thumbnail, instead of a naked <img> or <a><img></a>.
-    - Add a link to the large image, in case javascript breaks, at least users will see the large one.
-    - Do we make each color set a gallery?  YES.  Make each color set a gallery.
-    - Change this gallery <div> to a <section> with an appropriate role.
-  <!---->
-  <!-- master gallery -->
-  <div class="no-js _gallery" data-gallery-id="all">
-    {%- for image in product.images -%}
-      {%- include "gallery-figure", image: image, gid: "all", pid: forloop.index0, blast: false -%}
+    <!-- /master-gallery -->
+    <!-- option-based-galleries -->
+    {% for option in product.options_with_values -%}
+      {%- assign current_option_name = option.name | downcase -%}
+      {%- if "color" == current_option_name -%}
+        {%- for value in option.values -%}
+          {%- assign current_color = value | downcase -%}
+          {%- assign i = 0 -%}
+          <div class="_gallery {%- if option.selected_value != value %} _hide {% endif %}" data-gallery-id="{{ current_color }}">
+          {%- for image in product.images -%}
+            {%- include "function.image-filename-attribute", image: image, attribute: "primary-color" -%}
+            {%- if current_color == image_filename_attribute -%}
+              {%- include "gallery-figure", image: image, gid: current_color, pid: i, blast: false -%}
+              {%- assign i = i | plus: 1 -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {%- include "gallery-figure", blast: true -%}
+          </div>
+        {% endfor -%}
+      {%- endif -%}
     {%- endfor -%}
-    {%- include "gallery-figure", blast: true -%}
+    <!-- /option-based-galleries -->
+    <!-- /IMAGEGALLERY -->
+
   </div>
 
-  <!-- option-based galleries -->
-  {% for option in product.options_with_values -%}
-    {%- assign current_option_name = option.name | downcase -%}
-    {%- if "color" == current_option_name -%}
-      {%- for value in option.values -%}
-        {%- assign current_color = value | downcase -%}
-        {%- assign i = 0 -%}
-        <div class="_gallery {%- if option.selected_value != value %} _hide {% endif %}" data-gallery-id="{{ current_color }}">
-        {%- for image in product.images -%}
-          {%- include "function.image-filename-attribute", image: image, attribute: "primary-color" -%}
-          {%- if current_color == image_filename_attribute -%}
-            {%- include "gallery-figure", image: image, gid: current_color, pid: i, blast: false -%}
-            {%- assign i = i | plus: 1 -%}
+  <div class="grid__item medium-up--one-half">
+
+    <!-- HEADING -->
+    <h1>{{ product.title }}</h1>
+    <!-- /HEADING -->
+
+    <br/>
+
+    <!-- SINGLEOPTIONSELECTORS -->
+    {%- include "function.product-outofstock-options", product: product -%}
+    {%- assign product_outofstock_options = product_outofstock_options -%}
+
+    {%- include "function.product-unavailable-options", product: product %}
+    {%- assign product_unavailable_options = product_unavailable_options -%}
+
+    {%- for option in product.options_with_values -%}
+      {%- assign optiongroup_name = option.name | downcase -%}
+      {%- capture optiongroup_label -%} {{ optiongroup_name | upcase }}: {{ option.selected_value }} {%- endcapture-%}
+      {%- if "color" == optiongroup_name -%}
+        {%- assign js_hook = "_js-color-label" -%}
+      {%- elsif "size" == optiongroup_name -%}
+        {%- assign js_hook = "_js-size-label" -%}
+      {%- endif %}
+
+    <fieldset class="js _options-field">
+      <legend class="_field-label {{ js_hook -}}">{{ optiongroup_label }}</legend>
+      <div class="_options">
+
+        {%- for option_name in option.values -%}
+
+          {%- capture refid -%} _refid-{{- optiongroup_name -}}-{{- forloop.index0 -}} {%- endcapture -%}
+          {%- capture option_position -%} option{{- option.position -}} {%- endcapture -%}
+
+          {%- if "color" == optiongroup_name -%}
+            {%- assign option_label_shape = "_shape-circle" -%}
+            {%- capture option_label_color -%} _color-{{- option_name | downcase -}} {%- endcapture -%}
+            {%- assign option_label_text = "" -%}
+          {%- elsif "size" == optiongroup_name -%}
+            {%- assign option_label_shape = "" -%}
+            {%- assign option_label_color = "" -%}
+            {%- assign option_label_text = option_name -%}
           {%- endif -%}
-        {%- endfor -%}
-        {%- include "gallery-figure", blast: true -%}
-        </div>
-      {% endfor -%}
-    {%- endif -%}
-  {%- endfor -%}
 
-  <!-- /IMAGEGALLERY -->
+          {%- if option.selected_value == option_name %}
+            {%- assign option_checked = "checked" -%}
+          {%- else -%}
+            {%- assign option_checked = "" -%}
+          {%- endif -%}
 
-  <!-- IMAGEGALLERYVIEWER
-  TODOs:
-    - This *must* be outside the <form> container.  Clicking on the next/prev navigational arrows cause a form submit.
-    - Does it make sense to implement this as a snippet?
-  <!---->
-  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="pswp__bg"></div>
-      <div class="pswp__scroll-wrap">
-          <div class="pswp__container">
-              <div class="pswp__item"></div>
-              <div class="pswp__item"></div>
-              <div class="pswp__item"></div>
-          </div>
-          <div class="pswp__ui pswp__ui--hidden">
-              <div class="pswp__top-bar">
-                  <div class="pswp__counter"></div>
-                  <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-                  <button class="pswp__button pswp__button--share" title="Share"></button>
-                  <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-                  <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-                  <div class="pswp__preloader">
-                      <div class="pswp__preloader__icn">
-                        <div class="pswp__preloader__cut">
-                          <div class="pswp__preloader__donut"></div>
-                        </div>
-                      </div>
-                  </div>
-              </div>
-              <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-                  <div class="pswp__share-tooltip"></div>
-              </div>
-              <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
-              <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
-              <div class="pswp__caption">
-                  <div class="pswp__caption__center"></div>
-              </div>
-          </div>
+          {%- include "function.options-matches-for", options: product_outofstock_options, option_name: option_name -%}
+          {%- assign outofstock_for = options_matches_for -%}
+
+          {%- include "function.options-matches-for", options: product_unavailable_options, option_name: option_name -%}
+          {%- assign unavailable_for = options_matches_for -%}
+
+{% comment %}
+{%- include "function.options-unavailable-for", product: product, option_name: option_name, option_position: option.position -%}
+{% endcomment %}
+
+          {%- assign class = "_option-label" | append: " " | append: option_label_shape | append: " " | append: option_label_color -%}
+          {%- include "function.clean-string", dirty_string: class -%}
+          {%- assign class = clean_string %}
+
+        <input data-single-option-selector data-index="{{ option_position }}" id="{{ refid }}" type="radio" name="{{ optiongroup_name }}" value="{{ option_name }}" {{ option_checked }}/>
+        <label for="{{ refid }}" class="_option" data-option="{{ option_name | downcase }}" data-outofstock-for="{{ outofstock_for | downcase }}" data-unavailable-for="{{ unavailable_for | downcase }}">
+          <div class="{{ class }}">{{- option_label_text -}}</div>
+        </label>
+
+          {%- endfor %}
       </div>
+    </fieldset>
+    <br/>
+    {%- endfor -%}
+    <!-- /SINGLEOPTIONSELECTORS -->
+
+    <!-- GLOBALPRODUCTINFO
+    DESCRIPTION:
+      - This generates status info for the product variant being shown that is
+        used in determining what to render for pricing and for notification.
+      - Don't worry about "unavailable" products because the page only renders
+        for existing products: "available", "out of stock", or "sold out".
+    TODOs:
+      - Consider placing product_outofstock_options and other global data fields
+        in this section as well.
+    <!---->
+    {%- assign variant = product.selected_or_first_available_variant -%}
+    {%- assign g_status = "" -%}
+    {%- if 0 < variant.inventory_quantity -%}
+      {%- assign g_status = "available" -%}
+    {%- else -%}
+      {%- if "continue" == variant.inventory_policy -%}
+        {%- assign g_status = "outOfStock" -%}
+      {%- else -%}
+        {%- assign g_status = "soldOut" -%}
+      {%- endif -%}
+    {%- endif -%}
+    <!-- /GLOBALPRODUCTINFO -->
+
+    <!-- PRICINGINFO
+    TODOs:
+      - Update to use global product status.  Check with [Pearl/s3].  Check all other options.
+    <!---->
+    {%- assign current_variant = product.selected_or_first_available_variant -%}
+    {%- assign product_price = current_variant.price | money -%}
+    {%- assign compare_price = current_variant.compare_at_price | money -%}
+    {%- if compare_price > product_price -%}
+      {%- assign show_compare = true -%}
+    {%- else -%}
+      {%- assign show_compare = false -%}
+    {%- endif -%}
+    {%- if "available" == g_status or "outOfStock" == g_status -%}
+      {%- assign show_pricing = true -%}
+    {%- elsif "soldOut" == g_status -%}
+      {%- assign show_pricing = false -%}
+    {%- endif -%}
+
+    <div data-pricing-wrapper class="_debug-flexrowwrap {% unless show_pricing -%}_hide{%- endunless -%}">
+      <div data-price-wrapper>
+        <span data-product-price>{{- product_price -}}</span>
+      </div>
+      <div data-compare-wrapper {% unless show_compare -%}class="_hide"{%- endunless -%}>
+        (WAS: <span data-compare-price>{{- compare_price -}}</span>)
+      </div>
+    </div>
+    <!-- /PRICINGINFO -->
+
+    <br/>
+
+    <!-- NOTIFICATION
+    NOTEs:
+      - It is a "contact" form because that sends an e-mail.  A "customer" form creates a user account.
+      - https://help.shopify.com/en/themes/customization/forms/add-product-availability-reminder-form/
+      - If the request fails on an "unavailable" item, the form will never return to the same state...
+    TODOs:
+      - Make sure the form includes unavailable items, since they're not in the JSON.
+      - Clean up error messaging.  Figure out UX and implement it.  See Bootstrap.
+      - Add a "value=<default>" attribute to the e-mail <input> if a user is logged in.
+      - Cover the following scenario: After a user signs up for a variant's
+        notificadtion, they switch variant and sign up for its notification.
+          - Clear out the success field; fade it out.  Render it somewhere on
+            the page that is clearly visible, but unobtrusive.
+          - Clear out any error messages, in case previous form submit failed.
+          - Populate the form's various variant info fields with updated info.
+          - Show/hide the form as appropriate.  Make sure the form itself is
+            rendered, but hidden from view by default.  Show it under the right
+            circumstances.
+      - A few text alternatives, to include somewhere:
+          <p>AVAILABLE: THIS ITEM is a wonderful purchase!</p>
+          <p>OUT OF STOCK: THIS ITEM is currently out of stock.  It may take a few weeks before we can deliver it.  Or, add your e-mail to the waitlist.</p>
+          <p>SOLD OUT: THIS ITEM is sold out.  Add your e-mail to the waitlist.</p>
+          <p>UNAVAILABLE: THIS ITEM is unavailable.  Add your e-mail to the waitlist.</p>
+    <!---->
+    {%- form "contact", id: "_f-waitlist"-%}
+
+      {%- if form.posted_successfully? -%}
+      <div class="_js-f-waitlist-success-message">Thank you! We will notify you when this item becomes available.</div>
+      {%- endif -%}
+
+      {%- if form.errors -%}
+      <div class="_js-f-waitlist-error-message">There was a problem.  Please try again.  Please provide a valid e-mail address.</div>
+      {%- endif -%}
+
+      {%- assign variant = product.selected_or_first_available_variant -%}
+
+      {%- if "available" == g_status -%}
+        {%- assign status_phrase = "This item is available." -%}
+      {%- elsif "outOfStock" == g_status -%}
+        {%- assign status_phrase = "This item is currently out of stock." -%}
+      {%- elsif "soldOut" == g_status -%}
+        {%- assign status_phrase = "This item is sold out." -%}
+      {%- endif -%}
+
+      {%- if "outOfStock" == g_status or "soldOut" == g_status -%}
+        {%- assign class = "_js-form" -%}
+      {%- else -%}
+        {%- assign class = "_js-form _hide" -%}
+      {%- endif -%}
+
+      <div class="{{- class -}}">
+        <div class="_js-status-phrase">{{- status_phrase -}}</div>
+        <input type="hidden" name="contact[body]" value="Tell me when this item becomes available." />
+        <input type="hidden" name="contact[title]" value="{{- product.title -}}" class="_js-f-waitlist-title-input" form="_f-waitlist" />
+        <input type="hidden" name="contact[option1]" value="{{- variant.option1 -}}" class="_js-f-waitlist-option1-input" form="_f-waitlist" />
+        <input type="hidden" name="contact[option2]" value="{{- variant.option2 -}}" class="_js-f-waitlist-option2-input" form="_f-waitlist" />
+        <input type="hidden" name="contact[option3]" value="{{- variant.option3 -}}" class="_js-f-waitlist-option3-input" form="_f-waitlist" />
+        <input type="hidden" name="contact[status]" value="{{- g_status -}}" class="_js-f-waitlist-status-input" form="_f-waitlist" />
+        <input type="email" name="contact[email]" placeholder="email@example.com" form="_f-waitlist" value="{{ contact.fields.email }}" required />
+        <input type="submit" value="Submit" form="_f-waitlist" />
+      </div>
+
+    {%- endform -%}
+
+    <!-- /NOTIFICATION -->
+
+    <!-- NOTIFICATIONFROMHELPSITE --
+    <h6>notif3</h6>
+    {% form "contact" %}
+
+      {% if form.posted_successfully? %}
+      <p class="accent-text">Thanks! We will notify you when this product becomes available!</p>
+      {% else %}
+      <p>Click <a id="notify-me" href="#"><strong>here</strong></a> to be notified by email when {{ product.title }} becomes available.</p>
+      {% endif %}
+
+      {% if form.errors %}
+      <div class="error feedback accent-text">
+        <p>Please provide a valid email address.</p>
+      </div>
+      {% endif %}
+
+      {% unless form.posted_successfully? %}
+      <div id="notify-me-wrapper" class="clearfix" style="display:none">
+        {% if customer %}
+        <input type="hidden" name="contact[email]" value="{{ customer.email }}" />
+        {% else %}
+        <input style="float:left; width:180px;" required="required" type="email" name="contact[email]" placeholder="your@email.com" class="styled-input{% if form.errors contains 'email' %} error{% endif %}" value="{{ contact.fields.email }}" />
+        {% endif %}
+
+        <input type="hidden" name="contact[name]" value="this is the contact[name]" />
+        <input type="hidden" name="contact[phone]" value="this is the contact[phone]" />
+        <input type="hidden" name="contact[product title]" value="this is the contact[product title]" />
+        <input type="hidden" name="contact[product url]" value="this is the contact[product url]" />
+        <input type="hidden" name="contact[foobar]" value="this is the contact[foobar]" />
+
+        <input type="hidden" name="contact[body]" value="Please notify me when {{ product.title | escape }} becomes available." />
+        <input style="float:left; margin-left:5px;" class="btn styled-submit" type="submit" value="Send It" />
+      </div>
+      {% endunless %}
+
+    {% endform %}
+    <!-- /NOTIFICATIONFROMHELPSITE -->
+
+    <!-- QUANTITYSELECT -->
+    <fieldset class="_select-field _hide">
+      <legend class="_field-label _js-quantity-label">Quantity</legend>
+      <select name="quantity" form="_f-product_form">
+      {%- for i in (1..9) %}
+        <option value="{{ i }}" {%- if 1 == i %} {{ "selected" -}} {% endif -%}>{{ i }}</option>
+      {%- endfor %}
+      </select>
+    </fieldset>
+    <!-- /QUANTITYSELECT -->
+
+    <br/>
+
+    {% form "product", product, id: "_f-product_form", class: "_form" %}
+
+      <!-- PRODUCTSELECT -->
+      <fieldset class="no-js _select-field">
+        <legend class="_field-label">Product</legend>
+        <select data-product-select name="id" form="_f-product_form">{% for variant in product.variants %}
+          <option value="{{ variant.id }}" {%- if variant == product.selected_or_first_available_variant %} {{ "selected" -}} {% endif -%} {%- unless variant.available %} {{ "disabled" -}} {% endunless -%}>
+            {{--}}({{- variant.id -}}) - {{ variant.title }} - {{ variant.price | money -}} {%- if variant == product.selected_or_first_available_variant %} {{- "[*]" -}} {%- endif -%}
+          </option>
+          {%- endfor %}
+        </select>
+      </fieldset>
+      <!-- /PRODUCTSELECT -->
+
+      <!-- TODO:PRODUCTOPTIONSMATRIX --
+      {%- include "function.product-options-matrix", product: product, -%}
+      {{ product_options_matrix }}
+      <!-- /TODO:PRODUCTOPTIONSMATRIX -->
+
+      <!-- ADDTOCARTBUTTON -->
+      <!-- TODO: Update it to use the label appropriate for all g_state(s). -->
+      {% assign current_variant = product.selected_or_first_available_variant -%}
+      <button data-add-to-cart type="submit" form="_f-product_form" {%- unless current_variant.available %} {{ "disabled" -}} {% endunless %}>
+        <span data-add-to-cart-text>
+        {%- if current_variant.available -%}
+          {{- "products.product.add_to_cart" | t -}}
+        {%- else -%}
+          {{- "products.product.sold_out" | t -}}
+        {%- endif -%}
+        </span>
+      </button>
+      <!-- /ADDTOCARTBUTTON -->
+
+      <!-- DYNAMICCHECKOUTBUTTONS -->
+      <!-- TODO: Figure out if we want them, and if we do how to do so --
+      {{ form | payment_button }}
+      <!-- /DYNAMICCHECKOUTBUTTONS -->
+
+    {% endform %}
+
+    <br/>
+
+    <!-- DESCRIPTION -->
+    <div class="rte">
+      {% include "product-description", type: "accordion" %}
+{%- comment -%}
+      <br/><br/>
+      {% include "product-description", type: "tabs" %}
+{%- endcomment -%}
+    </div>
+    <!-- /DESCRIPTION -->
+
   </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe-ui-default.min.js"></script>
-  <!-- /IMAGEGALLERYVIEWER -->
 
-  <!-- SOCIAL -->
-  {% if section.settings.show_share_buttons %}
-    {% include 'social-sharing', share_title: product.title, share_permalink: product.url, share_image: product %}
-  {% endif %}
-  <!-- /SOCIAL -->
+</div>
 
-  <!-- PRODUCTDATA -->
-  {% unless product == empty %}
-  <script data-product-json type="application/json">
-    {{ product | json }}
-  </script>
-  {% endunless %}
-  <!-- /PRODUCTDATA -->
+<br/>
 
-  <!-- MICRODATA -->
-  <!-- TODO -->
-  <!-- /MICRODATA -->
+<!-- SOCIAL -->
+{% if section.settings.show_share_buttons %}
+  {% include 'social-sharing', share_title: product.title, share_permalink: product.url, share_image: product %}
+{% endif %}
+<!-- /SOCIAL -->
+
+<!-- IMAGEGALLERYVIEWER
+TODOs:
+  - This *must* be outside the <form> container.  Clicking on the next/prev navigational arrows cause a form submit.
+  - Does it make sense to implement this as a snippet?
+<!---->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="pswp__bg"></div>
+    <div class="pswp__scroll-wrap">
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe-ui-default.min.js"></script>
+<!-- /IMAGEGALLERYVIEWER -->
+
+<!-- PRODUCTDATA -->
+{% unless product == empty %}
+<script data-product-json type="application/json">
+  {{ product | json }}
+</script>
+{% endunless %}
+<!-- /PRODUCTDATA -->
+
+<!-- MICRODATA -->
+<!-- TODO -->
+<!-- /MICRODATA -->
 
 <!-- BONI:DEBUG --
   {% include "debug-product-info" %}
@@ -234,7 +463,7 @@ TODOs:
 
 </div>
 
-<div style="padding: 4rem; background: lightgray; text-align: center;">BOTTOM SPACER</div>
+<div style="padding: 1rem; background: lightgray; text-align: center;">BOTTOM SPACER</div>
 
 {% schema %}
   {

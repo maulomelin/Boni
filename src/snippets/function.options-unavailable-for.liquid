@@ -1,0 +1,60 @@
+{%- comment -%}
+DESCRIPTION:
+  - Function to retrieve all option combinations that are unavailable for a
+    given option.
+  - Walk through each variant of the product looking for ones with no inventory.
+    If a variant has no inventory, check if the given option is in that variant.
+      - If it is not, move on.
+      - If it is, take the other options and add them to an "outofstock" list.
+        The items in this list are those whose combination with the given option
+        are out of stock.
+  - Note that this function is designed for only up to two options.  For more
+    options, the "outofstock" list needs to contain combination of options such
+    as "white:s0" and not just "s0".  This is a TODO for future.
+
+PARAMETERS:
+  {product object} product[ required ] // The product object we're looking at all options for.
+  {string} option_name[ required ] // The option whose unavailable options we're looking for.
+  {integer} option_position[ required ] // The option position within the product object.
+
+OUTPUT:
+  - Downcased, space-delimited list of unoptions in the variable "options_unavailable_for".
+
+SAMPLE:
+  {% include "function.options-unavailable-for", product: product, option_name: option_name, option_position: option_position %}
+  <p>{{ option_name }} is unavailable for these options: {{ options_unavailable_for }}</p>
+
+TODOs:
+  - Figure out how to block a certain variant in case {% "continue" != variant.inventory_policy %}
+  - We don't use option_position, so why did we include it as an input parameter?
+  - This function needs to be redesigned if needed to support 3+ options.
+{%- endcomment -%}
+{%- assign unoptions = "" -%}
+{%- assign unoptions_dbg = "" -%}
+{%- for variant in product.variants -%}
+
+  {%- if 0 == variant.inventory_quantity -%}
+    {%- if option_name == variant.option1 -%}
+      {%- assign unoptions = unoptions | append: " " | append: variant.option2 | append: " " | append: variant.option3 | downcase -%}
+    {%- elsif option_name == variant.option2 -%}
+      {%- assign unoptions = unoptions | append: " " | append: variant.option1 | append: " " | append: variant.option3 | downcase -%}
+    {%- elsif option_name == variant.option3 -%}
+      {%- assign unoptions = unoptions | append: " " | append: variant.option1 | append: " " | append: variant.option2 | downcase -%}
+    {%- endif -%}
+  {%- endif -%}
+
+{% comment %} THIS CODE WAS WRITTEN FOR DEBUGGING PURPOSES ONLY.
+{% endcomment %}
+  {%- if option_name == variant.option1 -%}
+    {%- capture unoptions_dbg -%}{{ unoptions_dbg }}([{{ option_name }}][*23][{{ variant.option2 }}-{{ variant.option3 }}][{{ variant.inventory_quantity }}]){%- endcapture -%}
+  {%- elsif option_name == variant.option2 -%}
+    {%- capture unoptions_dbg -%}{{ unoptions_dbg }}([{{ option_name }}][1*3][{{ variant.option1 }}-{{ variant.option3 }}][{{ variant.inventory_quantity }}]){%- endcapture -%}
+  {%- elsif option_name == variant.option3 -%}
+    {%- capture unoptions_dbg -%}{{ unoptions_dbg }}([{{ option_name }}][12*][{{ variant.option1 }}-{{ variant.option2 }}][{{ variant.inventory_quantity }}]){%- endcapture -%}
+  {%- endif -%}
+
+{%- endfor -%}
+{%- assign options_unavailable_for_dbg = unoptions_dbg | split: "@" | uniq | join: " " | strip | downcase -%}
+
+{%- include "function.clean-string", dirty_string: unoptions -%}
+{%- assign options_unavailable_for = clean_string -%}

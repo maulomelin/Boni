@@ -1,0 +1,95 @@
+{%- comment -%}
+SNIPPET:
+  function.product-options-matrix.Liquid
+
+USAGE:
+  {%- include "function.product-options-matrix", product: product, -%}
+  {{ product_options_matrix }}
+
+PARAMETERS:
+  {product object} product[ required ] // The product object we're looking at all options for.
+
+OUTPUT:
+  - x.
+
+DESCRIPTION:
+  - x.
+
+TODOs:
+  - x.
+{%- endcomment -%}
+
+{%- comment -%} MAIN ROUTINE {%- endcomment -%}
+{%- assign _d1 = "," -%}
+{%- assign _d2 = "##" -%}
+
+  {%- comment -%} Get a master list of all possible option combos. {%- endcomment -%}
+{%- assign _p_ops = "" -%}
+{%- assign _ops1 = product.options_with_values[0].values -%}
+{%- assign _ops2 = product.options_with_values[1].values -%}
+{%- assign _ops3 = product.options_with_values[2].values -%}
+
+<br/>
+_ops1: {{ _ops1 | json }}
+<br/>
+_ops2: {{ _ops2 | json }}
+<br/>
+_ops3: {{ _ops3 | json }}
+<br/>
+
+{%- if nil != _ops1 and nil != _ops2 and nil != _ops3 -%}
+  {%- for _op1 in _ops1 -%}{%- for _op2 in _ops2 -%}{%- for _op3 in _ops3 %}
+    {%- capture _combo -%}[{{ _op1 | json }}{{ _d1 }}{{ _op2 | json }}{{ _d1 }}{{ _op3 | json }}]{%- endcapture -%}
+    {%- capture _p_ops -%}{{ _p_ops }}{{ _d2 }}{{ _combo }}{%- endcapture -%}
+  {%- endfor -%}{%- endfor -%}{%- endfor -%}
+{%- elsif nil != _ops1 and nil != _ops2 and nil == _ops3 -%}
+  {%- for _op1 in _ops1 -%}{%- for _op2 in _ops2 -%}
+    {%- capture _combo -%}[{{ _op1 | json }}{{ _d1 }}{{ _op2 | json }}]{%- endcapture -%}
+    {%- capture _p_ops -%}{{ _p_ops }}{{ _d2 }}{{ _combo }}{%- endcapture -%}
+  {%- endfor -%}{%- endfor -%}
+{%- elsif nil != _ops1 and nil == _ops2 and nil == _ops3 -%}
+  {%- for _op1 in _ops1 -%}
+    {%- capture _combo -%}[{{ _op1 | json }}]{%- endcapture -%}
+    {%- capture _p_ops -%}{{ _p_ops }}{{ _d2 }}{{ _combo }}{%- endcapture -%}
+  {%- endfor -%}
+{%- else -%}
+  ERROR: Unknown condition for _p_ops in function.product-unavailable-options.liquid
+{%- endif -%}
+{%- assign _p_ops = _p_ops | remove_first: _d2 -%}
+
+  {%- comment -%} Get a list of all existing variant option combos. {%- endcomment -%}
+{%- assign _v_ops = "" -%}
+{% for _v in product.variants %}
+  {%- assign _combo = _v.options | json -%}
+  {%- capture _v_ops -%}{{ _v_ops }}{{ _d2 }}{{ _combo }}{%- endcapture -%}
+{%- endfor -%}
+{%- assign _v_ops = _v_ops | remove_first: _d2 -%}
+
+  {%- comment -%} Compare master vs. variants; differences are unavailables. {%- endcomment -%}
+{%- assign _unavailable_ops = "" -%}
+{%- assign _p_ops_array = _p_ops | split: _d2 -%}
+{%- for _p_op in _p_ops_array -%}
+  {%- unless _v_ops contains _p_op -%}
+    {%- capture _unavailable_ops -%}{{ _unavailable_ops }}{{ _d2 }}{{ _p_op }}{%- endcapture -%}
+  {%- endunless -%}
+{%- endfor %}
+{%- assign _unavailable_ops = _unavailable_ops | remove_first: _d2 -%}
+
+{%- comment -%} ASSIGN OUTPUT VARIABLES {%- endcomment -%}
+{%- assign product_unavailable_options = _unavailable_ops -%}
+
+{%- comment -%} CLEAN UP INTERNAL VARIABLES {%- endcomment -%}
+{%- assign _p_ops = "" -%}
+{%- assign _p_ops_array = "" -%}
+{%- assign _p_op = "" -%}
+{%- assign _v_ops = "" -%}
+{%- assign _unavailable_ops = "" -%}
+{%- assign _v = "" -%}
+{%- assign _ops1 = "" -%}
+{%- assign _ops2 = "" -%}
+{%- assign _ops3 = "" -%}
+{%- assign _op1 = "" -%}
+{%- assign _op2 = "" -%}
+{%- assign _op3 = "" -%}
+{%- assign _d1 = "" -%}
+{%- assign _d2 = "" -%}

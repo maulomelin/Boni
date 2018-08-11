@@ -3,14 +3,6 @@
 //------------------------------------------------------------------------------
 // The header section includes the header bar and the message bar
 //------------------------------------------------------------------------------
-// TODOs:
-//  - Figure out which CSS property names need a prefix.
-//  - Figure out which prefixes we should use.  (moz ms webkit spec)
-//  - Use mixin prefix where typography (fonts) are defined.
-//  - Change "site-header" references to "header" ("footer" vs. "site-footer").
-//------------------------------------------------------------------------------
-
-// Header ----------------------------------------------------------------------
 //  - The header is the rectangular area that runs across the top of all pages.
 //  - The purpose of the header is to promote the brand, to provide global
 //    navigation, and to provide general announcements.
@@ -62,27 +54,34 @@
 //    is removed from the flow of the page by giving it a fixed position.
 //    This gap is filled by adding a margin-top to the notification bar.
 //    Remove this hack.  Somehow.  When the tools exist.
+//  - Figure out which CSS property names need a prefix.
+//  - Figure out which prefixes we should use.  (moz ms webkit spec)
+//  - Use mixin prefix where typography (fonts) are defined.
+//  - Change "site-header" references to "header" ("footer" vs. "site-footer").
 //------------------------------------------------------------------------------
 
-/* DEBUG **********************************************************************/
-/*
-._header { border: solid 1px black; background: orange; }
-._header ._header-bar { border: solid 1px yellow; }
-._header ._header-bar > .left { border: solid 1px blue; }
-._header ._header-bar > .center { border: solid 1px green; }
-._header ._header-bar > .right { border: solid 1px purple; }
-._header > .menu-drawer { border: solid 1px purple; }
-._header > .search-drawer { border: solid 1px pink; }
-._header > .notification-bar { border: solid 1px yellow; background: lightgray; }
-/******************************************************************************/
-
-// Navigation Bar
+header {
+  position: relative;
+  z-index: 99;
+}
+header button {
+  color: #333;
+  background-color: #fff;
+  border: none;//solid 1px #ccc;
+}
+header button:hover {
+  color: #1a1a1a; // darken(#333, 10%)
+  background-color: #e6e6e6; // darken(#fff, 10%)
+  border-color: none;//#b3b3b3; // darken(#ccc, 10%)
+}
 ._navigation-bar {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%; //DEBUG: width: 80%; left: 10%; //SHIP: width: 100%;
-  background-color: ivory;
+  background-color: #fff; //ivory;
+  box-shadow: 0 0 1px 0 gray;
+  xborder-bottom: solid 1px lightgray;
 }
 ._row-container {
   display: flex;
@@ -108,28 +107,19 @@
   text-align: right;
   white-space: nowrap;
 }
-
 ._logo {
   font-size: 3.0rem;
   color: black;
  }
-
-header button {
-  color: #333;
-  background-color: #fff;
-  border:solid 1px #ccc;
-}
-header button:hover {
-  color: #1a1a1a; // darken(#333, 10%)
-  background-color: #e6e6e6; // darken(#fff, 10%)
-  border-color: #b3b3b3; // darken(#ccc, 10%)
-}
-
-// Notification Bar
+ ._header-spacer {
+   height: 4.2rem; // hack: fill space left by navbar's "position: fixed;"
+   width: 100%;
+ }
 ._notification-bar {
-  margin-top: 4.2rem; // hack: fill space left by navbar's "position: fixed;"
-  background-color: lightgray;
   text-align: center;
+  box-shadow: 0 0 1px 0 gray;
+  background-color: #fff; //ivory;
+  xborder-bottom: solid 1px lightgray;
 }
 
 // Menu Drawer
@@ -157,10 +147,10 @@ header button:hover {
 
 ._l-overlay {
   position: fixed;
-  background: green;
+  background: lightgray;
   width: 0;
   height: 0;
-  opacity: 0.2;
+  opacity: 0.5;
   transition: all 0.2s linear;
 }
 ._l-overlay._t-slide {
