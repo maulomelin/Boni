@@ -1,20 +1,28 @@
-<div class="grid">
+{% comment %}
+  - https://help.shopify.com/en/themes/development/templates/product-liquid
+  - The contents of /template/product.liquid are in /sections/product.liquid.
+  - Implementing it as a section lets us configure it in the ThemeAdmin page.
 
-{% if true %}
+TODOs:
+  - Remove the if/else clause allow for the navigation menu to render on a wider screen.
+{% endcomment %}
+
+{% if false %}
   {% section "product" %}
 {% else %}
+
+<div class="grid">
   <!-- sidebar navigation menu -->
-  <div class="grid__item one-quarter small--hide">
+  <div class="grid__item medium-up--one-quarter small--hide">
     {% include "navigation-menu" %}
   </div>
-
   <!-- page content -->
-  <div class="grid__item three-quarters small--one-whole">
+  <div class="grid__item medium-up--three-quarters">
     {% section "product" %}
   </div>
-{% endif %}
-
 </div>
+
+{% endif %}
 
 <!-- ORIGINAL
 {   %   section   "product"   %   }

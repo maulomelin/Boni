@@ -34,72 +34,39 @@ RESOURCES:
   https://www.w3.org/Graphics/SVG/IG/resources/svgprimer.html
 
 TODOs:
-  - How do we implement an "unknown" option?
-  - Do we need the xmlns attribute?
+  - Do we need the following attribute in all svgs?  xmlns="http://www.w3.org/2000/svg"
+  - Do we leave these default attributes in all svgs?  Would class definition override them?  width="20" height="20"
+  - Establish a consistent class name for the images of different sizes.  For example, is "_icon" a 20x20?  If so, what is "_img"?  What about others?
+  - Review all ARIA attributes for SVGs, such as "role" and [aria-hidden="true"].
+  - Review and decide whether we want [tabindex="1"] in all <svg> elements to allow focus.
+  - Move any [stroke*] attributes out of <svg> and into their corresponding elements.
 {%- endcomment -%}
 
 {%- comment -%} MAIN ROUTINE {%- endcomment -%}
 
-{%- assign _bflag = false -%}
-{%- if nil == class -%}
-  {%- assign _class = "_icon" -%}
-{%- else -%}
-  {%- assign _class = class -%}
-{%- endif -%}
+{%- assign _bfound = false -%}
+{%- assign _class = class | default: "_icon" -%}
 
-{%- if "search" == icon or nil == icon -%}
+{%- if "search" == icon or nil == icon -%}    <svg class="{{ _class }}" viewBox="0 0 100 100"><circle cx="40" cy="40" r="35" stroke-width="10" stroke="black" fill="transparent"/><line x1="64.74873734152916" y1="64.74873734152916" x2="95" y2="95" stroke-width="10" fill="black" color="black" stroke="black" stroke-linecap="round"/></svg>{%- assign _bfound = icon -%}{%- endif -%}
+{%- if "account" == icon or nil == icon -%}   <svg class="{{ _class }}" viewBox="0 0 4 4"><circle cx="2" cy="1.05" r="1.05"/><circle cx="2" cy="4.5" r="2.5"/></svg>{%- assign _bfound = icon -%}{%- endif -%}
+{%- if "cart" == icon or nil == icon -%}      <svg class="{{ _class }}" viewBox="0 0 20 20"><path fill="#444" d="M18.936 5.564c-.144-.175-.35-.207-.55-.207h-.003L6.774 4.286c-.272 0-.417.089-.491.18-.079.096-.16.263-.094.585l2.016 5.705c.163.407.642.673 1.068.673h8.401c.433 0 .854-.285.941-.725l.484-4.571c.045-.221-.015-.388-.163-.567z"/><path fill="#444" d="M17.107 12.5H7.659L4.98 4.117l-.362-1.059c-.138-.401-.292-.559-.695-.559H.924c-.411 0-.748.303-.748.714s.337.714.748.714h2.413l3.002 9.48c.126.38.295.52.942.52h9.825c.411 0 .748-.303.748-.714s-.336-.714-.748-.714zM10.424 16.23a1.498 1.498 0 1 1-2.997 0 1.498 1.498 0 0 1 2.997 0zM16.853 16.23a1.498 1.498 0 1 1-2.997 0 1.498 1.498 0 0 1 2.997 0z"/></svg>{%- assign _bfound = icon -%}{%- endif -%}
+{%- if "bag" == icon or nil == icon -%}       <svg class="{{ _class }}" viewBox="0 0 10 10" stroke-width="1" stroke="black" stroke-linecap="butt"><polygon points="0.5,3 9.5,3 10,10 0,10" stroke-width="0"/><circle cx="5" cy="3" r="2.5" fill="transparent"/></svg>{%- assign _bfound = icon -%}{%- endif -%}
+{%- if "menu" == icon or nil == icon -%}      <svg class="{{ _class }}" viewBox="0 0 12 12" stroke-width="2" stroke="black" stroke-linecap="round"><line x1="1" y1="2" x2="11" y2="2"/><line x1="1" y1="6" x2="11" y2="6"/><line x1="1" y1="10" x2="11" y2="10"/></svg>{%- assign _bfound = icon -%}{%- endif -%}
+{%- if "favorite" == icon or nil == icon -%}  <svg class="{{ _class }}" viewBox="0 -0.1464466094 3.4142135624 3.4142135624"><circle cx="1" cy="1" r="1"/><circle cx="2.4142135624" cy="1" r="1"/><polygon points="0.2928932188,1.7071067812 1.7071067812,3.1213203436 3.1213203436,1.7071067812"/></svg>{%- assign _bfound = icon -%}{%- endif -%}
+{%- if "plus" == icon or nil == icon -%}      <svg class="{{ _class }}" viewBox="0 0 20 20"><path xfill="#444" d="M17.409 8.929h-6.695V2.258c0-.566-.506-1.029-1.071-1.029s-1.071.463-1.071 1.029v6.671H1.967C1.401 8.929.938 9.435.938 10s.463 1.071 1.029 1.071h6.605V17.7c0 .566.506 1.029 1.071 1.029s1.071-.463 1.071-1.029v-6.629h6.695c.566 0 1.029-.506 1.029-1.071s-.463-1.071-1.029-1.071z"/></svg>{%- assign _bfound = icon -%}{%- endif -%}
+{%- if "minus" == icon or nil == icon -%}     <svg class="{{ _class }}" viewBox="0 0 20 20"><path xfill="#444" d="M17.543 11.029H2.1A1.032 1.032 0 0 1 1.071 10c0-.566.463-1.029 1.029-1.029h15.443c.566 0 1.029.463 1.029 1.029 0 .566-.463 1.029-1.029 1.029z"/></svg>{%- assign _bfound = icon -%}{%- endif -%}
+{%- if "times" == icon or nil == icon -%}     <svg class="{{ _class }}" viewBox="0 0 20 20"><path xfill="#444" d="M15.89 14.696l-4.734-4.734 4.717-4.717c.4-.4.37-1.085-.03-1.485s-1.085-.43-1.485-.03L9.641 8.447 4.97 3.776c-.4-.4-1.085-.37-1.485.03s-.43 1.085-.03 1.485l4.671 4.671-4.688 4.688c-.4.4-.37 1.085.03 1.485s1.085.43 1.485.03l4.688-4.687 4.734 4.734c.4.4 1.085.37 1.485-.03s.43-1.085.03-1.485z"/></svg>{%- assign _bfound = icon -%}{%- endif -%}
+{%- if "facebook" == icon or nil == icon -%}  <svg class="{{ _class }}" viewBox="0 0 20 20"><path xfill="#444" d="M18.05.811q.439 0 .744.305t.305.744v16.637q0 .439-.305.744t-.744.305h-4.732v-7.221h2.415l.342-2.854h-2.757v-1.83q0-.659.293-1t1.073-.342h1.488V3.762q-.976-.098-2.171-.098-1.634 0-2.635.964t-1 2.72V9.47H7.951v2.854h2.415v7.221H1.413q-.439 0-.744-.305t-.305-.744V1.859q0-.439.305-.744T1.413.81H18.05z"/></svg>{%- assign _bfound = icon -%}{%- endif -%}
+{%- if "twitter" == icon or nil == icon -%}   <svg class="{{ _class }}" viewBox="0 0 20 20"><path xfill="#444" d="M19.551 4.208q-.815 1.202-1.956 2.038 0 .082.02.255t.02.255q0 1.589-.469 3.179t-1.426 3.036-2.272 2.567-3.158 1.793-3.963.672q-3.301 0-6.031-1.773.571.041.937.041 2.751 0 4.911-1.671-1.284-.02-2.292-.784T2.456 11.85q.346.082.754.082.55 0 1.039-.163-1.365-.285-2.262-1.365T1.09 7.918v-.041q.774.408 1.773.448-.795-.53-1.263-1.396t-.469-1.864q0-1.019.509-1.997 1.487 1.854 3.596 2.924T9.81 7.184q-.143-.509-.143-.897 0-1.63 1.161-2.781t2.832-1.151q.815 0 1.569.326t1.284.917q1.345-.265 2.506-.958-.428 1.386-1.732 2.18 1.243-.163 2.262-.611z"/></svg>{%- assign _bfound = icon -%}{%- endif -%}
+{%- if "instagram" == icon or nil == icon -%} <svg class="{{ _class }}" viewBox="0 0 512 512"><path d="M256 49.5c67.3 0 75.2.3 101.8 1.5 24.6 1.1 37.9 5.2 46.8 8.7 11.8 4.6 20.2 10 29 18.8s14.3 17.2 18.8 29c3.4 8.9 7.6 22.2 8.7 46.8 1.2 26.6 1.5 34.5 1.5 101.8s-.3 75.2-1.5 101.8c-1.1 24.6-5.2 37.9-8.7 46.8-4.6 11.8-10 20.2-18.8 29s-17.2 14.3-29 18.8c-8.9 3.4-22.2 7.6-46.8 8.7-26.6 1.2-34.5 1.5-101.8 1.5s-75.2-.3-101.8-1.5c-24.6-1.1-37.9-5.2-46.8-8.7-11.8-4.6-20.2-10-29-18.8s-14.3-17.2-18.8-29c-3.4-8.9-7.6-22.2-8.7-46.8-1.2-26.6-1.5-34.5-1.5-101.8s.3-75.2 1.5-101.8c1.1-24.6 5.2-37.9 8.7-46.8 4.6-11.8 10-20.2 18.8-29s17.2-14.3 29-18.8c8.9-3.4 22.2-7.6 46.8-8.7 26.6-1.3 34.5-1.5 101.8-1.5m0-45.4c-68.4 0-77 .3-103.9 1.5C125.3 6.8 107 11.1 91 17.3c-16.6 6.4-30.6 15.1-44.6 29.1-14 14-22.6 28.1-29.1 44.6-6.2 16-10.5 34.3-11.7 61.2C4.4 179 4.1 187.6 4.1 256s.3 77 1.5 103.9c1.2 26.8 5.5 45.1 11.7 61.2 6.4 16.6 15.1 30.6 29.1 44.6 14 14 28.1 22.6 44.6 29.1 16 6.2 34.3 10.5 61.2 11.7 26.9 1.2 35.4 1.5 103.9 1.5s77-.3 103.9-1.5c26.8-1.2 45.1-5.5 61.2-11.7 16.6-6.4 30.6-15.1 44.6-29.1 14-14 22.6-28.1 29.1-44.6 6.2-16 10.5-34.3 11.7-61.2 1.2-26.9 1.5-35.4 1.5-103.9s-.3-77-1.5-103.9c-1.2-26.8-5.5-45.1-11.7-61.2-6.4-16.6-15.1-30.6-29.1-44.6-14-14-28.1-22.6-44.6-29.1-16-6.2-34.3-10.5-61.2-11.7-27-1.1-35.6-1.4-104-1.4z"/><path d="M256 126.6c-71.4 0-129.4 57.9-129.4 129.4s58 129.4 129.4 129.4 129.4-58 129.4-129.4-58-129.4-129.4-129.4zm0 213.4c-46.4 0-84-37.6-84-84s37.6-84 84-84 84 37.6 84 84-37.6 84-84 84z"/><circle cx="390.5" cy="121.5" r="30.2"/></svg>{%- assign _bfound = icon -%}{%- endif -%}
+{%- if "pinterest" == icon or nil == icon -%} <svg class="{{ _class }}" viewBox="0 0 20 20"><path xfill="#444" d="M9.958.811q1.903 0 3.635.744t2.988 2 2 2.988.744 3.635q0 2.537-1.256 4.696t-3.415 3.415-4.696 1.256q-1.39 0-2.659-.366.707-1.147.951-2.025l.659-2.561q.244.463.903.817t1.39.354q1.464 0 2.622-.842t1.793-2.305.634-3.293q0-2.171-1.671-3.769t-4.257-1.598q-1.586 0-2.903.537T5.298 5.897 4.066 7.775t-.427 2.037q0 1.268.476 2.22t1.427 1.342q.171.073.293.012t.171-.232q.171-.61.195-.756.098-.268-.122-.512-.634-.707-.634-1.83 0-1.854 1.281-3.183t3.354-1.329q1.83 0 2.854 1t1.025 2.61q0 1.342-.366 2.476t-1.049 1.817-1.561.683q-.732 0-1.195-.537t-.293-1.269q.098-.342.256-.878t.268-.915.207-.817.098-.732q0-.61-.317-1t-.927-.39q-.756 0-1.269.695t-.512 1.744q0 .39.061.756t.134.537l.073.171q-1 4.342-1.22 5.098-.195.927-.146 2.171-2.513-1.122-4.062-3.44T.59 10.177q0-3.879 2.744-6.623T9.957.81z"/></svg>{%- assign _bfound = icon -%}{%- endif -%}
+{%- if "youtube" == icon or nil == icon -%}   <svg class="{{ _class }}" viewBox="0 0 21 20"><path xfill="#444" d="M-.196 15.803q0 1.23.812 2.092t1.977.861h14.946q1.165 0 1.977-.861t.812-2.092V3.909q0-1.23-.82-2.116T17.539.907H2.593q-1.148 0-1.969.886t-.82 2.116v11.894zm7.465-2.149V6.058q0-.115.066-.18.049-.016.082-.016l.082.016 7.153 3.806q.066.066.066.164 0 .066-.066.131l-7.153 3.806q-.033.033-.066.033-.066 0-.098-.033-.066-.066-.066-.131z"/></svg>{%- assign _bfound = icon -%}{%- endif -%}
+{%- if "remove" == icon or nil == icon -%}    <svg class="{{ _class }}" viewBox="2 -4 16 16"><path d="M10-4C5.6-4 2-.4 2 4s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm3.7 10.7l-1 1L10 5.1 7.3 7.7l-1-1L8.9 4 6.3 1.3l1-1L10 2.9 12.7.3l1 1L11.1 4l2.6 2.7z"></path></svg>{%- assign _bfound = icon -%}{%- endif -%}
 
-  <svg class="{{ _class }}" viewBox="0 0 100 100" aria-hidden="true" focusable="false" role="presentation">
-    <circle cx="40" cy="40" r="35" stroke-width="10" stroke="black" fill="transparent"/>
-    <line x1="64.74873734152916" y1="64.74873734152916" x2="95" y2="95" stroke-width="10" fill="black" color="black" stroke="black" stroke-linecap="round"/>
-  </svg>
-
-{%- if "" != icon -%}{%- assign bflag = true -%}{%- endif -%}{%- endif -%}
-
-{%- if "account" == icon or nil == icon -%}
-
-  <svg class="{{ _class }}" viewBox="0 0 4 4" aria-hidden="true" focusable="false" role="presentation">
-    <circle cx="2" cy="1.05" r="1.05"/>
-    <circle cx="2" cy="4.5" r="2.5"/>
-  </svg>
-
-{%- if "" != icon -%}{%- assign bflag = true -%}{%- endif -%}{%- endif -%}
-
-{%- if "bag" == icon or nil == icon -%}
-
-  <svg class="{{ _class }}" viewBox="0 0 10 10" stroke-width="1" stroke="black" stroke-linecap="butt" aria-hidden="true" focusable="false" role="presentation">
-    <polygon points="0.5,3 9.5,3 10,10 0,10" stroke-width="0"/>
-    <circle cx="5" cy="3" r="2.5" fill="transparent"/>
-  </svg>
-
-{%- if "" != icon -%}{%- assign bflag = true -%}{%- endif -%}{%- endif -%}
-
-{%- if "menu" == icon or nil == icon -%}
-
-  <svg class="{{ _class }}" viewBox="0 0 12 12" stroke-width="2" stroke="black" stroke-linecap="round" aria-hidden="true" focusable="false" role="presentation">
-    <line x1="1" y1="2" x2="11" y2="2"/>
-    <line x1="1" y1="6" x2="11" y2="6"/>
-    <line x1="1" y1="10" x2="11" y2="10"/>
-  </svg>
-
-{%- if "" != icon -%}{%- assign bflag = true -%}{%- endif -%}{%- endif -%}
-
-{%- if "favorite" == icon or nil == icon -%}
-
-  <svg class="{{ _class }}" viewBox="0 -0.1464466094 3.4142135624 3.4142135624" aria-hidden="true" focusable="false" role="presentation">
-    <circle cx="1" cy="1" r="1"/>
-    <circle cx="2.4142135624" cy="1" r="1"/>
-    <polygon points="0.2928932188,1.7071067812 1.7071067812,3.1213203436 3.1213203436,1.7071067812"/>
-  </svg>
-
-{%- if "" != icon -%}{%- assign bflag = true -%}{%- endif -%}{%- endif -%}
-
-{%- if false == bflag or nil == icon -%}
-
-  <p>[X]</p>
-
-{%- endif -%}
+{%- unless _bfound -%}
+<p>[UNKNOWN_ICON]</p>
+{%- endunless -%}
 
 {%- comment -%} CLEAN UP INTERNAL VARIABLES {%- endcomment -%}
-{%- assign _bflag = "" -%}
+{%- assign _bfound = "" -%}
 {%- assign _class = "" -%}

@@ -1,168 +1,66 @@
-//------------------------------------------------------------------------------
+/*------------------------------------------------------------------------------
 // Header section css (\src\styles\modules\header.scss)
 //------------------------------------------------------------------------------
-// The header section includes the header bar and the message bar
-//------------------------------------------------------------------------------
-//  - The header is the rectangular area that runs across the top of all pages.
-//  - The purpose of the header is to promote the brand, to provide global
-//    navigation, and to provide general announcements.
-//  - The header is made up of the following elements:
-//      - Header Bar - shows the brand and offers global navigation elements.
-//      - Notification Bar - shows announcements and notifications.
-//      - Menu Drawer - a sliding menu for small screens.
-//      - Search Drawer - a sliding search bar for small screens.
-//  - The header elements are constructed as follows:
-//      - Header - a container element for all header elements.
-//      - Header Bar - a flex container with three items (left, center, right).
-//      - Notification Bar - a div.
-//      - Menu drawer - a div that is assigned state & transition classes,
-//        and js hooks to toggle those classes, making it move on/off screen.
-//      - Search drawer - a div that is assigned state & transition classes,
-//        and js hooks to toggle those classes, making it move on/off screen.
-//  - The Header bar is affixed to the top of the page via "position: fixed;".
-//      - There is a hack in place to fill the gap left when the header element
-//        is removed from the flow of the page by giving it a fixed position.
-//      - "position: sticky;" would not do exactly what we want because it
-//        would need the header to sit within an element that includes all
-//        scrollable content on the page.
-//  - The "left", "center", and "right" flex items are visible by default.
-//      - All items are laid out in a row in their named positions.
-//      - All items are vertically-aligned along their centers.
-//      - The container is set to nowrap to force all items into 1 line.
-//      - The content in each item is aligned with that item's name:
-//          - left => left-aligned contentt
-//          - center => centered content
-//          - right => right-aligned content
-//      - To ensure the center flex item is always centered, regardless of the
-//        content in the left or right flex items:
-//          - The left and right items are 50% wide, forcing them to "push"
-//            into the center item and squeezing it.
-//          - The center item has "flex-shrink: 0;" so it doesn't shrink and
-//            pushes against the left and right flex items with its content.
-//  - Sliding menus are implemented as follows:
-//      - The drawers are styled as desired.
-//      - A transition layout style is constructed (e.g. ".l-left-sliding")
-//        that defines the default transition state (e.g. hidden) and
-//        defines transition effects.
-//      - A transition style is constructed (e.g. ".t-slide") that defines the
-//        target transition state (e.g. visible).
-//      - A javascript snippet is written tho toggle the action style on the
-//        intended drawer (e.g. $(".menu-drawer").classToggle(".t-slide"); ).
-//------------------------------------------------------------------------------
 // TODOs:
-//  - There is a hack in place to fill the gap left when the header element
-//    is removed from the flow of the page by giving it a fixed position.
-//    This gap is filled by adding a margin-top to the notification bar.
-//    Remove this hack.  Somehow.  When the tools exist.
-//  - Figure out which CSS property names need a prefix.
-//  - Figure out which prefixes we should use.  (moz ms webkit spec)
-//  - Use mixin prefix where typography (fonts) are defined.
-//  - Change "site-header" references to "header" ("footer" vs. "site-footer").
-//------------------------------------------------------------------------------
+//  - Change the breakpoints back to what we had before.
+//  - Change breakpoints to px.
+//----------------------------------------------------------------------------*/
 
-header {
-  position: relative;
-  z-index: 99;
-}
-header button {
-  color: #333;
-  background-color: #fff;
-  border: none;//solid 1px #ccc;
-}
-header button:hover {
-  color: #1a1a1a; // darken(#333, 10%)
-  background-color: #e6e6e6; // darken(#fff, 10%)
-  border-color: none;//#b3b3b3; // darken(#ccc, 10%)
-}
-._navigation-bar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%; //DEBUG: width: 80%; left: 10%; //SHIP: width: 100%;
-  background-color: #fff; //ivory;
-  box-shadow: 0 0 1px 0 gray;
-  xborder-bottom: solid 1px lightgray;
-}
-._row-container {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  padding: 0.5em;
-}
-._row-container > ._left-slot {
-  order: 0;
-  width: 50%;
-  text-align: left;
-  white-space: nowrap;
-}
-._row-container > ._center-slot {
-  order: 1;
-  flex-shrink: 0;
-  text-align: center;
-  white-space: nowrap;
-}
-._row-container > ._right-slot {
-  order: 2;
-  width: 50%;
-  text-align: right;
-  white-space: nowrap;
-}
-._logo {
-  font-size: 3.0rem;
-  color: black;
- }
- ._header-spacer {
-   height: 4.2rem; // hack: fill space left by navbar's "position: fixed;"
-   width: 100%;
- }
-._notification-bar {
-  text-align: center;
-  box-shadow: 0 0 1px 0 gray;
-  background-color: #fff; //ivory;
-  xborder-bottom: solid 1px lightgray;
-}
+/* TO MAKE A FIXED HEADER, PLAY WITH THIS  *
+header { position: fixed; width: 100%; }
+header::before { position: absolute; content: ""; width: 100%; height: 100px; border: solid 1px red; }
+/*****/
 
-// Menu Drawer
-._menu-drawer {
-  text-align: left;
-  background: inherit;
-}
+/* Header Structure & Layout */
+header { margin: 0.5rem 0.5rem 0; }
 
-// Search Drawer
-._search-drawer {
-  text-align: center;
-  background: inherit;
-}
+/* Navbar Structure & Layout */
+header ._navbar { display: grid; grid-template-columns: 1fr auto 1fr; grid-template-areas: "l m r"; align-items: center; justify-content: space-between; }
+header ._navbar ._navitem { display: flex; flex-flow: row nowrap; align-items: center; white-space: nowrap; z-index: 1; }
+header ._navbar ._navitem._l { grid-area: l; justify-content: flex-start; }
+header ._navbar ._navitem._m { grid-area: m; justify-content: center;  }
+header ._navbar ._navitem._r { grid-area: r; justify-content: flex-end; }
 
-// Layout States ("l-") and Transitions ("t-")
-._l-left-sliding {
-  position: absolute;
-  width: 50%;
-  left: -50%;
-  transition: left 0.2s linear;
-}
-._l-left-sliding._t-slide {
-  left: 0;
-}
+/* Navbar Items */
+._navitem ._button { display: inline-flex; flex-flow: row nowrap; justify-content: flex-start; align-items: center; white-space: nowrap; border: none; border-radius: 4px; padding: 0.4rem 0.4rem; color: #666666; background-color: #ffffff; font: inherit; cursor: pointer; }
+._navitem ._button:hover { color: #1a1a1a; background-color: #e6e6e6; }
+._navitem ._button ._img { display: inline; width: 1rem; height: 1rem; align-self: center; }
+._navitem ._button ._img + ._label { margin-left: 0.25rem; }
+._navitem ._button ._icon { display: inline; align-self: center; }
+._navitem ._button ._icon + ._label { margin-left: 0.25rem; }
 
-._l-overlay {
-  position: fixed;
-  background: lightgray;
-  width: 0;
-  height: 0;
-  opacity: 0.5;
-  transition: all 0.2s linear;
-}
-._l-overlay._t-slide {
-  width: 100%;
-  height: 100%;
-}
+/* Drawers Structure & Layout */
+header ._drawers { position: relative; }
+header ._drawers ._overlay-drawer { position: fixed; top: 0; left: 0; width: 0; height: 0;  background: #999; opacity: 0.5; transition: all 0.2s linear; }
+header ._drawers ._menu-drawer { position: absolute; left: -8rem; background: #fff; visibility: hidden; transition: all 0.2s linear; }
+header ._drawers ._search-drawer { position: absolute; top: -2rem; background: #fff; visibility: hidden; transition: all 0.2s linear; }
+header ._drawers ._cart-drawer { position: absolute; top: -2rem; right: 0; background: #fff; visibility: hidden; transition: all 0.2s linear; }
+header ._drawers ._overlay-drawer._t-slide { width: 100%; height: 100%; }
+header ._drawers ._menu-drawer._t-slide { left: 0; visibility: visible; }
+header ._drawers ._search-drawer._t-slide { top: 0; visibility: visible; }
+header ._drawers ._cart-drawer._t-slide { top: 0; visibility: visible; }
 
-._l-top-sliding {
-  overflow: hidden;
-  height: 0;
-  transition: height 0.2s linear;
+/* Noticebar Structure & Layout */
+header ._noticebar { text-align: center; background: #f9f9f9; }
+
+/* Menu (horizontal, one level) */
+._horizontal-menu ul { list-style: none; margin: 0; padding: 0; white-space: nowrap; }
+._horizontal-menu li { display: inline-block; }
+._horizontal-menu li + li { margin-left: 0.5rem; }
+
+/* Menu (vertical, multi-level nested) */
+._vertical-menu { position: relative; margin: 0; padding: 0.5rem 0; border: dashed 1px pink; }
+._vertical-menu ul { margin: 0; padding: 0 1rem; }
+._vertical-menu li { display: block; line-height: 1.75rem; list-style-type: none; }
+
+/* Module-Specific Breakpoints */
+@media only screen and (max-width: 30rem) { /* 5rem --> 30rem */
+  ._bp-button-label { display: none !important; }
+  ._bp-linklist { display: none !important; }
 }
-._l-top-sliding._t-slide {
-  height: 30px;
+@media only screen and (min-width: 30rem) and (max-width: 45rem) { /* 5rem --> 30rem; 15rem --> 45rem */
+  ._bp-linklist { display: none !important; }
+}
+@media only screen and (min-width: 45rem) { /* 15rem --> 45rem */
+  ._bp-button { display: none !important; }
 }

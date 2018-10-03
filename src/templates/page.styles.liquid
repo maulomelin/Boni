@@ -738,3 +738,66 @@
     <li>{% include 'icon-search' %}</li>
   </ul>
 </div>
+
+
+<style>
+  input._n {
+    text-align: center;
+  }
+  ._nspinner button {
+  }
+</style>
+
+<div class="_nspinner">
+  <button data-action="_decrement">-</button>
+  <input class="_n" type="text" value="0" min="1" max="5" size="2" readonly />
+  <button data-action="_increment">+</button>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+  $("._nspinner button").click(function () {
+    // Get the spinner's incput and control fields associated with the button
+    // that was clicked (there may be more than one spinner on the page).
+    let input = $(this).closest("._nspinner").find("input");
+    let decrement_button = input.closest("._nspinner").find("[data-action=_decrement]");
+    let increment_button = input.closest("._nspinner").find("[data-action=_increment]");
+
+    console.log("Numeric spinner's [min, n, max]:");
+
+    // Get the numeric spinner's current settings.
+    let n = parseInt(input.val().trim());
+    let min = parseInt(input.prop("min").trim());
+    let max = parseInt(input.prop("max").trim());
+    console.log("\tinitial=[" + min + ", " + n + ", " + max + "]");
+
+    // Force dirty values and orrect bad initial settings.
+    n = n || 0;
+    min = min || 1;
+    max = max || 10;
+    if (min > max) { min = 1; max = 10; }
+    console.log("\tthunked=[" + min + ", " + n + ", " + max + "]");
+
+    // Update the value; respect limits and disable buttons as appropriate.
+    if ("_increment" == $(this).attr("data-action")) {
+      n++;
+      decrement_button.prop("disabled", false);
+      if (n >= max) {
+        n = max;
+        increment_button.prop("disabled", true);
+      }
+    } else {
+      n--;
+      increment_button.prop("disabled", false);
+      if (n <= min) {
+        n = min;
+        decrement_button.prop("disabled", true);
+      }
+    }
+    console.log("\tupdated=[" + min + ", " + n + ", " + max + "]");
+
+    // Set the numeric spinner's new value.
+    input.val(n);
+    console.log("");
+  });
+</script>

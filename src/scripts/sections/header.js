@@ -8,9 +8,9 @@
 //------------------------------------------------------------------------------
 // TODOs:
 //  - Is it a bug if the sliding menu stays slid across breakpoint boundaries?
+//  - Decide if we will keep the code here or in boni.scss.
 //------------------------------------------------------------------------------
-
-boni.SectionHeader = (function() {
+boni.Header = (function() {
 
   // Header section constructor.
   // Runs on page load as well as Theme Editor "shopify:section:load" events.
@@ -25,6 +25,7 @@ boni.SectionHeader = (function() {
 //    this.selectors = {
 //      hamburgerMenu: "#sliding-menu"
 //    };
+    console.log("boni.Header()");
 
     // Execute the onLoad() callback
     this.onLoad();
@@ -35,10 +36,13 @@ boni.SectionHeader = (function() {
   Header.prototype = $.extend({}, Header.prototype, {
 
     // WHY DO WE HAVE THIS???  WHOSE EVENT IS THIS???
-    menu: function() {},
+    menu: function() {
+      console.log("boni.Header.menu()");
+    },
 
     // Event callback for Theme Editor "shopify:section:load" event
     onLoad: function() {
+      console.log("boni.Header.onLoad()");
 
       // When the Menu button is clicked
       $("._js-slide-menu-drawer").on("click", function() {
@@ -70,22 +74,35 @@ boni.SectionHeader = (function() {
 
 
     // Event callback for Theme Editor "shopify:section:unload" event
-    onUnload: function() {},
+    onUnload: function() {
+      console.log("boni.Header.onUnload()");
+    },
 
     // Event callback for Theme Editor "shopify:section:select" event
-    onSelect: function() {},
+    onSelect: function() {
+      console.log("boni.Header.onSelect()");
+    },
 
     // Event callback for Theme Editor "shopify:section:deselect" event
-    onDeselect: function() {},
+    onDeselect: function() {
+      console.log("boni.Header.onDeselect()");
+    },
 
     // Event callback for Theme Editor "shopify:section:reorder" event
-    onReorder: function() {},
+    onReorder: function() {
+      console.log("boni.Header.onReorder()");
+    },
 
     // Event callback for Theme Editor "shopify:block:select" event
-    onBlockSelect: function() {},
+    onBlockSelect: function() {
+      console.log("boni.Header.onBlockSelect()");
+    },
 
     // Event callback for Theme Editor "shopify:block:deselect" event
-    onBlockDeselect: function() {}
+    onBlockDeselect: function() {
+      console.log("boni.Header.onBlockDeselect()");
+    }
+
   });
 
   return Header;

@@ -63,11 +63,16 @@
         ]
       },
       {
-        "label": "Header Font",
+        "label": "Header Font (amalgam)",
         "id": "type_header_family",
         "type": "select",
-        "default": "'HelveticaNeue', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+        "default": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
         "options": [
+          {
+            "label": "System",
+            "value": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
+            "group": "Sans-serif"
+          },
           {
             "value": "'Avant Garde', Avantgarde, 'Century Gothic', CenturyGothic, 'AppleGothic', sans-serif",
             "label": "Avant Garde",
@@ -296,11 +301,16 @@
         ]
       },
       {
-        "label": "Body Font",
+        "label": "Body Font (amalgam)",
         "id": "type_base_family",
         "type": "select",
-        "default": "'HelveticaNeue', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+        "default": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
         "options": [
+          {
+            "label": "System",
+            "value": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
+            "group": "Sans-serif"
+          },
           {
             "value": "'Avant Garde', Avantgarde, 'Century Gothic', CenturyGothic, 'AppleGothic', sans-serif",
             "label": "Avant Garde",

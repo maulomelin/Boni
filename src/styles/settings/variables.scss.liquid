@@ -32,8 +32,8 @@ $font-size-base: {{ settings.type_base_size }};
   Grid Breakpoints and Class Names
     - Do not change the variable names
 ==============================================================================*/
-$grid-medium: 600px;  // WAS: 750px;
-$grid-large: 900px; // WAS: 990px;
+$grid-medium: 450px;  // WAS: 750px;
+$grid-large: 600px; // WAS: 990px;
 $grid-widescreen: 1200px; // WAS: 1400px;
 $grid-gutter: 0px; // WAS: 30px;
 
@@ -75,7 +75,9 @@ $breakpoint-has-widths: ( // WAS: $breakpoint-has-widths: ($small, $medium-up);
   $large-up,
   $widescreen
 );
-$breakpoint-has-push: ();
+$breakpoint-has-push: ( // WAS: empty
+  $small
+);
 
 /*================ Sizing Variables ================*/
 $width-site: 1180px;

@@ -18,6 +18,8 @@
 //  - Move the window.boni.strings to the variables settings file, to entries
 //    such as the ones shown below in the comments.  Add a note there that the
 //    strings must match their equivalents in the .liquid file.
+//  - Clean up header.js and decide whether to keep the drawer-based functions
+//    there or here.
 //------------------------------------------------------------------------------
 
 // TODO: Move these strings to the variables settings file.
@@ -36,7 +38,49 @@ window.boni.strings = {
 //------------------------------------------------------------------------------
 // TEMPLATE TO DO SOMETHING SPECIFIC
 //------------------------------------------------------------------------------
-(function() {})();
+(function() {
+  console.log("Do something here.");
+})();
+
+
+//------------------------------------------------------------------------------
+// Header drawer actions.
+//------------------------------------------------------------------------------
+(function() {
+  $("._js-menu-button").on("click", function() {
+    $("._js-overlay-drawer").toggleClass("_t-slide");
+    $("._js-menu-drawer").toggleClass("_t-slide");
+    $("._js-cart-drawer").toggleClass("_t-slide", false);
+    $("._js-search-drawer").toggleClass("_t-slide", false);
+    return false;
+  });
+
+  $("._js-search-button").on("click", function() {
+    $("._js-overlay-drawer").toggleClass("_t-slide", false);
+    $("._js-menu-drawer").toggleClass("_t-slide", false);
+    $("._js-cart-drawer").toggleClass("_t-slide", false);
+    $("._js-search-drawer").toggleClass("_t-slide");
+    return false;
+  });
+
+  $("._js-cart-button").on("click", function() {
+    $("._js-overlay-drawer").toggleClass("_t-slide", false);
+    $("._js-menu-drawer").toggleClass("_t-slide", false);
+    $("._js-cart-drawer").toggleClass("_t-slide");
+    $("._js-search-drawer").toggleClass("_t-slide", false);
+    return false;
+  });
+
+  $("._js-overlay-drawer").on("click", function() {
+    $("._js-overlay-drawer").toggleClass("_t-slide", false);
+    $("._js-menu-drawer").toggleClass("_t-slide", false);
+    $("._js-cart-drawer").toggleClass("_t-slide", false);
+    $("._js-search-drawer").toggleClass("_t-slide", false);
+    return false;
+  });
+
+})();
+
 
 //------------------------------------------------------------------------------
 // E-mail notification on items not available.
@@ -47,6 +91,48 @@ window.boni.strings = {
     $("#notify-me-wrapper").fadeIn();
     return false;
   });
+
+})();
+
+
+//------------------------------------------------------------------------------
+// Set up any spinner controls.
+//------------------------------------------------------------------------------
+(function() {
+
+  // Set a listener to the plus/minus buttons of any spinner control.
+  $("._js-spinner ._js-button").on("click", onSpinnerButtonClick);
+
+  //--------------------------------------------------------------------------
+  //  - This function executes on a click to a spinner's plus/minus button.
+  //    It updates the value of a hidden <input> field, and it updates the
+  //    label of the widget to reflect the updated value.
+  //  - Strictly speaking, the label does not need to be updated if the button
+  //    submits the form after the function executes.
+  //  - Because the function is hooked to the button, and not some parent node,
+  //    we can use $(this), instead of $(event.target).
+  //--------------------------------------------------------------------------
+  function onSpinnerButtonClick() {
+
+    console.log("onSpinnerButtonClick()");
+
+    let $spinner = $(this).closest("._js-spinner");
+    let $input = $spinner.find("._js-input");
+    let $label = $spinner.find("._js-label");
+
+    let action = $(this).attr("data-action");
+    let n = parseInt($input.val());
+
+    console.log("\tCurrent n=[" + n + "]");
+
+    if ("decrement" == action) { n--; }
+    if ("increment" == action) { n++; }
+
+    console.log("\tNew n=[" + n + "]");
+
+    $input.val(n);
+    $label.html("&times;&nbsp;" + n);
+  }
 
 })();
 
@@ -250,6 +336,10 @@ window.boni.strings = {
 
     // Open the gallery viewer if hash params present (i.e. "#&pid=1&gid=3").
     var p = getHashParams();
+
+console.log("p.gID & p.pID:");
+console.log(p.gID);
+console.log(p.pID);
 
     if (p.gID && p.pID) {
       openGalleryViewer(p.gid, p.pid);

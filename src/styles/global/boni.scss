@@ -1,35 +1,28 @@
-//------------------------------------------------------------------------------
-// Boni theme css (\src\styles\global\boni.scss) -----------------------------
-//------------------------------------------------------------------------------
+/* BONI THEME CSS (\src\styles\global\boni.scss) -------------------------------
 //  - This file defines the visual styles of all elements in the Boni theme:
-//      - Base elements (e.g. <p>, <button>).
+//      - Base elements (e.g. <p>, <button>, figures/images, etc.).
 //          - https://developer.mozilla.org/en-US/docs/Web/HTML/Element/
 //          - https://www.w3schools.com/html/
+//      - Abstract constructs (i.e. drawer, navbar, accordion, tooltip, etc.).
 //      - Utilities (e.g. debugging, show/hide, grid).
-//      - Abstract constructs (i.e. modules).
-//  - Base elements include:
-//      - Debugging, Grid, Base Styles, Typography, Headings, Paragraphs,
-//        Quotations, Text Formatting, Anchors/Links, Buttons, Colors, Lists,
-//        Forms, Tables, Figures (including Images & Captions), etc.
-//  - Abstract construts include:
-//      - Header, Menu Drawer (mini.css), Navigation Bar, Cards, Text Sections,
-//        Media Sections, Groupings, Footer, Modal Dialog, Accordions,
-//        Icons (SVG elements vs. embedded <span class="icon-graphic"></span>),
-//        Visibility Helpers, ARIA Helpers, Tooltips, etc.
-//------------------------------------------------------------------------------
-// A few guiding principles for this framework:
-//  - Leverage existing html elements (e.g. <button>) instead of recasting
-//    other elements to look like them (e.g. <a class="button">).
-//  - Define new classes only under these two scenarios:
-//      1) Define abstract constructs (e.g. [class="header-bar"]).
-//      2) Augment existing elements (e.g. [class="color-blue"]).
-//  - Be semantic: structure content with semantically-appropriate tags whenever
-//    possible; worry about the meaning of the content, not its presentation.
-//  - Be kind to users and use relative/scalable units (i.e. "em") throughout
-//    the site.  Follow these simple rules:
-//      0) Do not use pixels.
-//      1) Size in "em" if property should scale according to its font-size.
-//      2) Size everything else in "rem".
+//  - Guiding Principles:
+//      - Leverage existing html elements (e.g. <button>).
+//          - Avoid recasting elements to mimic a UX (e.g. <a class="button">).
+//      - Define new classes only under these two scenarios:
+//          1) When defining abstract constructs (e.g. [class="header-bar"]).
+//          2) When augmenting existing elements (e.g. [class="color-blue"]).
+//      - Be semantic.
+//          - Structure content with semantically-appropriate tags whenever
+//            possible.
+//          - Worry about the meaning of the content, not its presentation.
+//      - Be kind to users.
+//          - Use relative/scalable units (e.g. "em", "rem").  Rules to follow:
+//              0) Do not use pixels.
+//              1) Use "em" if property should scale according to its font-size.
+//              2) Size everything else in "rem".
+//      - Be kind to developers.
+//          - Use c-style comments (allows code to be copy/pasted outside).
+//          - Limit width of comment blocks to 80 chars.
 //------------------------------------------------------------------------------
 // Notes:
 //  - If some of these styles do not render as expected, look at the CSS style
@@ -37,6 +30,11 @@
 //  - Use @mixin where necessary for cross-browser compatibility.
 //------------------------------------------------------------------------------
 // TODOs:
+//  - Create basic static CSS framework for use in stand-alone projects:
+//      - grid.css
+//      - media-queries.css
+//  - Update comment delimiters to use / * and * / (without space) so we can
+//    copy/paste CSS into stand-alone files that aren't pre-processed.
 //  - Use mixin prefix where typography (fonts) are defined.
 //  - Figure out how to use Autoprefixer and remove @include prefix() calls.
 //  - Select a style of commenting within a file that uses block comment at the
@@ -64,307 +62,153 @@
 //    we decide to leverage.
 //  - Figure out how we define & style color names (e.g. "red") vs.
 //    color variants (e.g. "primary").
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------*/
 
-// HACKS -----------------------------------------------------------------------
-//  - These settings should be removed before we ship.
-//------------------------------------------------------------------------------
+
+/* Hacks -----------------------------------------------------------------------
+//  - REMOVE BEFORE PUSHING CODE TO PRODUCTION.
+//----------------------------------------------------------------------------*/
 .shopify-preview-bar { display:none; }
 #preview-bar-iframe { display: none; }
 
-// Debugging -------------------------------------------------------------------
+
+/* Debugging -------------------------------------------------------------------
 //  - Define classes for a collapsible container we can use for debug info.
-//------------------------------------------------------------------------------
-._debug-flexrowwrap {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-}
-._debug-flexrownowrap {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-}
-._debug-info {
-  display: block;
-  padding: 1rem;
-  margin: 1rem;
-  border: solid 5px red;
-}
-._debug-info::before {
-  display: table;
-  position: relative;
-  content: "DEBUG - INFO";
-  font-weight: bold;
-  background: red;
-  color: white;
-  top: -1rem;
-  left: -1rem;
-  padding: 0 1rem 0.5rem 0;
-  border-bottom-right-radius: 0.5rem;
-}
-._debug-new-code {
-  display: block;
-  padding: 1rem;
-  margin: 1rem;
-  border: solid 5px orange;
-}
-._debug-new-code::before {
-  display: table;
-  position: relative;
-  content: "DEBUG - NEW CODE";
-  font-weight: bold;
-  background: orange;
-  color: white;
-  top: -1rem;
-  left: -1rem;
-  padding: 0 1rem 0.5rem 0;
-  border-bottom-right-radius: 0.5rem;
-}
-._debug-original-code {
-  display: block;
-  padding: 1rem;
-  margin: 1rem;
-  border: solid 5px green;
-}
-._debug-original-code::before {
-  display: table;
-//  width: 25%;
-  position: relative;
-  content: "DEBUG - ORIGINAL CODE";
-  font-weight: bold;
-  background: green;
-  color: white;
-  top: -1rem;
-  left: -1rem;
-  padding: 0 1rem 0.5rem 0;
-  border-bottom-right-radius: 0.5rem;
-}
+//----------------------------------------------------------------------------*/
+._debug-flexrowwrap { display: flex; flex-flow: row wrap; align-items: center; }
+._debug-flexrownowrap { display: flex; flex-flow: row nowrap; align-items: center; }
 
-/**********
-form { border: solid 1px green; }
-div { border: solid 1px yellow; }
-h1, h2, h3 { border: solid 1px blue; }
-nav { border: solid 1px red; }
-p { border: solid 1px orange; }
-sup, sub { border: solid 1px gray; }
-**********/
+._debug-info, ._debug-new-code, ._debug-original-code { display: block; padding: 1rem; margin: 1rem; }
+._debug-info::before, ._debug-new-code::before, ._debug-original-code::before { display: table; position: relative; font-weight: bold; color: white; top: -1rem; left: -1rem; padding: 0 1rem 0.5rem 0; border-bottom-right-radius: 0.5rem; }
+._debug-info { border: solid 5px red; }
+._debug-info::before { content: "DEBUG - INFO"; background: red; }
+._debug-new-code { border: solid 5px orange; }
+._debug-new-code::before { content: "DEBUG - NEW CODE"; background: orange; }
+._debug-original-code { border: solid 5px green; }
+._debug-original-code::before { content: "DEBUG - ORIGINAL CODE"; background: green; }
 
 
-// Form Validation -------------------------------------------------------------
-//  - https://css-tricks.com/form-validation-ux-html-css/
-//  - https://developer.mozilla.org/en-US/docs/Learn/HTML/Forms/Form_validation/
-//------------------------------------------------------------------------------
-// TODOs:
-//  - Elegant UX for :valid and :invalid pseudo-classes.  These are not it:
-//      input[type="email"]:valid { outline: 1px solid green; }
-//      input[type="email"]:invalid { outline: 1px solid red; }
-//------------------------------------------------------------------------------
-
-
-// Grid ------------------------------------------------------------------------
+/* Grid ------------------------------------------------------------------------
+//  - css/_grid.css
 //  - For now, leverage the grid defined by Shopify's Slate theme.
-//  - For future, look at a flexbox-based grid system like Bootstrap.
-//------------------------------------------------------------------------------
+//  - Includes grid framework and element visibility, text alignment,
+//    column widths, and push column widths for defined breakpoints.
+//----------------------------------------------------------------------------*/
+._hide { display: none !important; }
+._show { display: block !important; }
 
 
-// Base Styles -----------------------------------------------------------------
-//  - Set the box model for all elements to be the traditional box model.
-//------------------------------------------------------------------------------
-* {
-  @include prefix("box-sizing", "border-box", moz webkit);
-}
-
-
-// Visibility ------------------------------------------------------------------
-//  - Classes to show/hide any element they're applied to.
-//  - To hide an element with ID "foo":  $("#foo").toggleClass("hide", true)
-//  - To show an element with ID "foo":  $("#foo").toggleClass("hide", false)
+/* Fonts -----------------------------------------------------------------------
+//  - css/_fonts.css
 //------------------------------------------------------------------------------
 // TODOs:
-//  - Visibility Helpers, ARIA Helpers, etc.
-//  - Classes to remove items, entirely.
-//  - Classes to remove items visually, but not from the flow or screen readers.
-//  - Classes to hide items from screen readers but keep them visually there.
-//------------------------------------------------------------------------------
-._hide {
-  display: none !important;
+//  - Figure out if we need margins around any of the header classes.
+//  - Figure out the right "line-height" setting.
+//  - Implement responsive typography (desktop 16px?  mobile 14px?).
+//      https://getbootstrap.com/docs/4.1/content/typography/#responsive-typography
+//      https://www.readz.com/best-font-size
+//  - Remove dependency on font-size in <html> from variables.scss.liquid.
+//  - Review choice for font
+//      https://opinionator.blogs.nytimes.com/2012/08/08/hear-all-ye-people-hearken-o-earth/
+//  - Play around with fonts
+//      https://medium.muz.li/typography-in-mobile-design-15-best-practices-to-excellent-ui-5eaf18280ad
+//  - Track why SCSS does not allow use of non-Liquid CSS variables.
+//      - https://github.com/Shopify/slate/issues/524
+//      - Fix made on Slate v1.0
+//----------------------------------------------------------------------------*/
+:root {
+/*  --p: calc(16/14); /* Waiting on https://github.com/Shopify/slate/issues/524 */
 }
+html { font-size: 87.5%; }
+body { font-size: 1rem; font-weight: 400; line-height: 1.3; font-family: $font-stack-body; }
 
+h1, h2, h3, h4, h5, h6, ._h1, ._h2, ._h3, ._h4, ._h5, ._h6 { font-weight: 400; line-height: 1.3; font-family: $font-stack-header; margin: 0; }
 
-// Typography ------------------------------------------------------------------
-//  - By default, set the base font for the root element (<html>) to 62.5%.
-//    This =10px since most browsers (but not all) set a 16px default base font.
-//    All "rem" measurements will be based off this size, so that 2.5rem = 25px.
-//    If the base font is set to a fixed size (e.g. "14px"), it won't resize if
-//    a user changes their browser zoom or default settings.
-//      - The font size is managed in settings_schema.json, and via the Shopify
-//        Admin UI.
-//  - Set "line-height" to 1.
-//  - Set the default text color to black (or almost).
-//  - Set the background color to white (or almost).
-//  - Set the font to be a managed list.
-//------------------------------------------------------------------------------
-html { font-size: $font-size-base; } //62.5%; }
-
-body {
-  font-size: 1rem; //1.2rem;
-  font-family: $font-stack-body;
-  font-weight: normal;
-  line-height: 1;//1.5; ???
-  color: #222222;
-  background: #f8f8f8;
-}
-
-
-// Headings --------------------------------------------------------------------
-//  - Redefine the headings to match our desired styles.
-//------------------------------------------------------------------------------
-h1, h2, h3, h4, h5, h6 {
-  margin: 0;
-  font-family: $font-stack-header;
-  font-weight: $font-weight-header;
-}
-h1 { font-size: 4.0rem; line-height: 1.20; letter-spacing: -0.10rem; }
-h2 { font-size: 3.6rem; line-height: 1.25; letter-spacing: -0.10rem; }
-h3 { font-size: 3.0rem; line-height: 1.30; letter-spacing: -0.10rem; }
-h4 { font-size: 2.4rem; line-height: 1.35; letter-spacing: -0.08rem; }
-h5 { font-size: 1.8rem; line-height: 1.50; letter-spacing: -0.05rem; }
-h6 { font-size: 1.5rem; line-height: 1.60; letter-spacing: 0; }
+h1, ._h1, ._text-xxxlarge { font-size: calc(1rem * 24/14); }
+          ._text-xxlarge  { font-size: calc(1rem * 21/14); }
+h2, ._h2, ._text-xlarge   { font-size: calc(1rem * 18/14); }
+          ._text-large    { font-size: calc(1rem * 16/14); }
+h3, ._h3, ._text-normal   { font-size: calc(1rem); }
+h4, ._h4, ._text-small    { font-size: calc(1rem * 12/14); }
+h5, ._h5, ._text-xsmall   { font-size: calc(1rem * 10/14); }
+h6, ._h6, ._text-xxsmall  { font-size: calc(1rem * 8/14); }
 
 /*
-h1, h2, h3, h4, h5, h6 { margin: 0 0 2rem 0; font-weight: normal; }
-h1 { font-size: 4.0rem; line-height: 1.20; letter-spacing: -0.10rem; }
-h2 { font-size: 3.6rem; line-height: 1.25; letter-spacing: -0.10rem; }
-h3 { font-size: 3.0rem; line-height: 1.30; letter-spacing: -0.10rem; }
-h4 { font-size: 2.4rem; line-height: 1.35; letter-spacing: -0.08rem; }
-h5 { font-size: 1.8rem; line-height: 1.50; letter-spacing: -0.05rem; }
-h6 { font-size: 1.5rem; line-height: 1.60; letter-spacing: 0; }
+  Replace this section with the one below once we upgrade to Slate v1.0.
+  Also uncomment the CSS variable declaration in the :root pseudo-element.
+  https://github.com/Shopify/slate/issues/524
 */
+._text-xxxlarger { font-size: calc(1em * calc(16/14) * calc(16/14) * calc(16/14) * calc(16/14)); }
+._text-xxlarger  { font-size: calc(1em * calc(16/14) * calc(16/14) * calc(16/14)); }
+._text-xlarger   { font-size: calc(1em * calc(16/14) * calc(16/14)); }
+._text-larger    { font-size: calc(1em * calc(16/14)); }
+._text-smaller   { font-size: calc(1em / calc(16/14)); }
+._text-xsmaller  { font-size: calc(1em / calc(16/14) / calc(16/14)); }
+._text-xxsmaller { font-size: calc(1em / calc(16/14) / calc(16/14) / calc(16/14)); }
+/*
+._text-xxxlarger { font-size: calc(1em * var(--p) * var(--p) * var(--p) * var(--p)); }
+._text-xxlarger  { font-size: calc(1em * var(--p) * var(--p) * var(--p)); }
+._text-xlarger   { font-size: calc(1em * var(--p) * var(--p)); }
+._text-larger    { font-size: calc(1em * var(--p)); }
+._text-smaller   { font-size: calc(1em / var(--p)); }
+._text-xsmaller  { font-size: calc(1em / var(--p) / var(--p)); }
+._text-xxsmaller { font-size: calc(1em / var(--p) / var(--p) / var(--p)); }
+*/
+._text-red { color: red; }
+._text-green { color: green; }
+._text-blue { color: blue; }
+._text-orange { color: orange; }
+._text-gray { color: gray; }
+._text-black { color: black; }
+._text-white { color: white; }
+._text-yellow { color: yellow; }
 
 
-// Paragraphs ------------------------------------------------------------------
-//  - Define paragraph delineation elements:
-//      <p>, <br>, <pre>, <hr>
-//  - Line breaks (<br>) are not styled.
+/* Paragraphs & Text Formatting ------------------------------------------------
+//
 //------------------------------------------------------------------------------
+// TODOs:
+//  - Consider redefining <hr> with opacity to get a thinner line; see cart.
+//----------------------------------------------------------------------------*/
+._nowrap { white-space: nowrap; }
+p { margin: 0 0 1rem 0; }
 
-// Paragraphs
-p { margin-top: 0; }
+pre { font: Consolas, monaco, monospace; color: #666; overflow: auto; padding: 1em; border: solid 1px black; background: #ccc; }
+hr { width: 95%; border-width: 1px 0 0 0; } //  border-top: 0.1rem solid black; margin: 3rem 0;
 
-// Preformatted Text
-pre {
-  font: Consolas, monaco, monospace;
-  color: #666666;
-  overflow: auto;
-  padding: 1em;
-  border: solid 1px black;
-  background: #cccccc;
-}
-
-// Horizontal Rules
-hr {
-  width: 80%;
-  border-width: 1px 0 0 0;
-//  border: 0;
-//  border-top: 0.1rem solid black;
-//  margin: 3rem 0;
-}
-
-
-// Quotations ------------------------------------------------------------------
-//  - Define quotation elements:
-//      <q>, <blockquote>, <abbr>, <cite>, <address>
-//------------------------------------------------------------------------------
-
-// Short Quotations
 q { display: inline; }
 q::before { content: open-quote; }
 q::after { content: close-quote; }
+blockquote { display: block; border-left: 1rem solid #ccc; margin: 0 1rem; padding: 0 1rem; }
+abbr { text-decoration: underline wavy red; }
+address { display: block; font-style: italic; }
 
-// Long Quotations
-blockquote {
-  display: block;
-  border-left: 1rem solid #cccccc;
-  margin: 0 1rem;
-  padding: 0 1rem;
-}
-
-// Abbreviation
-abbr {
-  text-decoration: underline wavy red;
-}
-
-// Address (contact information for the author/owner of a document or article)
-address {
-  display: block;
-  font-style: italic;
-}
-
-
-// Text Formatting -------------------------------------------------------------
-//  - Define text formatting elements:
-//      <b>, <em>, <i>, <small>, <strong>, <sub>, <sup>, <ins>, <del>, <mark>
-//------------------------------------------------------------------------------
-
-// Bold text
-b { font-weight: bold; }
-
-// Important text
-strong { font-weight: bold; }
-
-// Italic text
+b { font-weight: 500; }
+strong { font-weight: 500; }
 i { font-style: italic; }
-
-// Emphasized text
-em { font-style: italic; }
-
-// Marked text
+em { font-weight: 500; }
 mark { background-color: yellow; }
-
-// Small text
-small {}
-
-// Deleted text
 del { text-decoration: line-through; }
-
-// Inserted text
-ins {
-  text-decoration: underline;
-  color: red;
-}
-
-// Underlined text
+ins { text-decoration: underline; color: red; }
 u { text-decoration: underline; }
-
-// Subscript & Superscript text
-sub, sup {
-  font-size: 75%;
-  line-height: 0;
-  position: relative;
-  vertical-align: baseline;
-}
+sub, sup { font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; }
 sup { top: -0.5em; }
 sub { bottom: -0.25em; }
-
-s {
-  text-decoration: line-through;
-  text-decoration-color: red;
-}
+s { text-decoration: line-through; }
 
 
-// Anchors/Links ---------------------------------------------------------------
+/* Anchors/Links ---------------------------------------------------------------
 //  - Use anchors as navigational elements only.
 //  - Don't configure anchors to look like buttons; they're spec'd for different
 //    things and activate with different keys (i.e. Enter key vs. Space key).
-//------------------------------------------------------------------------------
-a:link { color: blue; text-decoration: none; }
-a:hover { text-decoration: underline; }
-a:visited { color: blue; }
-a:active { color: blue; }
+//----------------------------------------------------------------------------*/
+a:link { color: #197bbd; text-decoration: none; }
+a:hover { color: #15669d; text-decoration: underline; }
+a:visited { color: #197bbd; }
+a:active { }
 
 
-// Buttons ---------------------------------------------------------------------
+/* Buttons ---------------------------------------------------------------------
 //  - Follow the convention that buttons can only be made with these elements:
 //      - <input type="submit">
 //      - <input type="button">
@@ -372,44 +216,49 @@ a:active { color: blue; }
 //  - Use buttons to submit or reset forms, or to execute custom behaviour only.
 //  - Do not use buttons for navigation.  That's what links are for.
 //------------------------------------------------------------------------------
+// TODOs:
+//  - Redo them.
+//----------------------------------------------------------------------------*/
 input[type="submit"] > span,
 input[type="button"] > span,
 button > span {
-  margin: 0 0.2em;
+  xmargin: 0 0.2em;
   xoutline: solid 1px pink;
 }
 
 input[type="submit"],
 input[type="button"],
 button {
+/*
   @include prefix("user-select", "none", moz ms webkit spec); // ???
   @include prefix("appearance", "none", webkit moz spec); // ???
+*/
 
-  display: inline-flex; // Flexbox to center content vertically & horizontally.
-  align-items: center; // This aligns flex items vertically.
-  justify-content: center; // This aligns flex items horizontally.
+  xxxdisplay: inline-flex; /* Flexbox to center content vertically & horizontally. */
+  xxxalign-items: center; /* This aligns flex items on the cross axis (i.e. generally vertically). */
+  xxxjustify-content: center; /* This aligns flex items on the main axis (i.e. generally horizontally). */
 
-  text-decoration: none;
-  text-align: middle;
-  white-space: nowrap;
-  padding: 0.4rem 0.4rem;
-  margin: auto;
-  cursor: pointer;
-  border-radius: 4px;
+  xxxtext-decoration: none;
+  xxxtext-align: middle;
+  xxxwhite-space: nowrap;
+  xpadding: 0.4rem 0.4rem;
+  xmargin: auto; /* Screws up right margin on buttons. */
+  xxxcursor: pointer;
+  xborder-radius: 4px;
 
-  text-transform: none;
+  xxxtext-transform: none;
 
-  font-family: Arial, sans-serif;
-  font-size: 2em; //1.4rem;
-  font-weight: 400;
-
-// DO WE DEFINE BASE COLOR STYLES HERE AND OVERRIDE VIA MODIFIERS?
-//  color: 0;
+/* DO WE DEFINE BASE COLOR STYLES HERE AND OVERRIDE VIA MODIFIERS? */
   color: orange;
-  border:solid 1px yellow;
+  border:solid 1px red; /* yellow; */
   background-color: lightyellow;
 
-  line-height: 2rem; //4rem;
+/* MAKE THESE PROPERTIES OF THE ELEMENTS PLACED INSIDE A BUTTON */
+  xfont-family: Arial, sans-serif;
+  xfont-size: 2em; /* 1.4rem; */
+  xfont-weight: 400;
+  xline-height: 2rem; /* 4rem; /* DO WE NEED THIS? */
+/*-----*/
 }
 
 input[type="submit"]:hover,
@@ -423,32 +272,27 @@ button:focus {
 
 input[type="submit"][disabled],
 button[disabled] {
-  cursor: not-allowed;
+  xxxcursor: not-allowed;
 }
 
 
-// ICONS -----------------------------------------------------------------------
+/* ICONS -----------------------------------------------------------------------
 //  - General styles for icons.
 //  - All icons are implemented as <svg>s.
 //  - The icon is aligned with the baseline of its parent.
 //------------------------------------------------------------------------------
 // TODOs:
 //  -
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------*/
 ._icon {
   display: inline-block;
-  width: 1.1em;//20px;
-  height: 1.1em;//20px;
-  vertical-align: middle;//baseline; // This will align the icon with the baseline.
-  xoutline: solid 1px red; // For debugging purposes.
-
-  .no-svg & {
-    display: none;
-  }
+  width: 1.4rem;
+  height: 1.4rem;
 }
+.no-svg ._icon { display: none; }
 
 
-// Colors ----------------------------------------------------------------------
+/* Colors ----------------------------------------------------------------------
 //                    v  v  v  v  v  v
 //  (black) #000000 - 0123456789abcdef - #ffffff (white)
 //                    ^  ^  ^  ^  ^  ^
@@ -460,7 +304,7 @@ button[disabled] {
 //        e.g. "color-primary", "color-secondary"
 //  - What properties does a "color" modify?  background, color, border, etc.?
 //  - Abstract structure/position from presentation/visual styles of an object.
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------*/
 ._color-white { background-color: #ffffff; }
 ._color-pearl { background-color: #f2edd8; }
 ._color-melon { background-color: #f5926c; }
@@ -478,7 +322,7 @@ button[disabled] {
 ._color-coral { background-color: #d85863; }
 
 
-// Shapes ----------------------------------------------------------------------
+/* Shapes ----------------------------------------------------------------------
 //  - A circle applies a border-radius of 50% to the target element.
 //    http://jessica-eldredge.com/2014/09/07/border-radius-50-or-100-percent/
 //  - A cross is implemented via a CSS linear-gradient on the pseudo-class
@@ -496,19 +340,19 @@ button[disabled] {
 //      - The cross is drawn on the "::before" pseudo-class because in Safari,
 //        ".x::after { position: absolute; }" does not work.
 //        This would seem to be a bug.  https://stackoverflow.com/questions/30526801/absolute-after-pseudo-element-not-displaying-under-relative-parent/
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------*/
 ._shape-circle { border-radius: 50%; }
 
 
-// Tables ----------------------------------------------------------------------
+/* Tables ----------------------------------------------------------------------
 //  -
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------*/
 table,
 thead, tbody, tfoot,
 th, tr, td {
   border-collapse: collapse;
-  border: solid 1px gray;
-  padding: 2px;
+  xborder: dashed 1px pink;
+  xpadding: 2px;
 }
 thead {
   background: darkgray;
@@ -516,12 +360,12 @@ thead {
 }
 
 
-// Menu ------------------------------------------------------------------------
+/* Menu ------------------------------------------------------------------------
 //  - A menu is a nested list of links.
 //------------------------------------------------------------------------------
 // TODO:
 //  - Clean <ul> to remove any default margins or paddings.
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------*/
 ._menu {
   display: block;
   margin: 0;
@@ -538,9 +382,9 @@ thead {
 }
 
 
-// Fieldset --------------------------------------------------------------------
+/* Fieldset --------------------------------------------------------------------
 //  - See normalize.scss for adjusted settings.
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------*/
 fieldset {
 //  padding: 0.25rem 0.25rem;
 //  border: 0;
@@ -550,7 +394,7 @@ fieldset legend {
 }
 
 
-// Options Field ---------------------------------------------------------------
+/* Options Field ---------------------------------------------------------------
 //  - An options field is a visual grouping of options a user can selectd from.
 //  - The field is implemented as a fieldset with a label and containing a
 //    set of {<input>, <label>} pairs representing an option.
@@ -594,7 +438,7 @@ fieldset legend {
 //  - See https://uxplanet.org/button-ux-design-best-practices-types-and-states-647cf4ae0fc6
 //  - Figure out color combinations so that an unavailable selection clearly
 //    identifies an option as such, but doesn't call too much attention.
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------*/
 ._options-field { margin: 0; padding: 0; border: 0; }
 ._field-label { padding: 0; margin: 0; border: 0; font-weight: bold; }
 ._options { display: flex; flex-flow: row wrap; align-items: center; }
@@ -646,7 +490,7 @@ fieldset legend {
 }
 
 
-// Switch Field ----------------------------------------------------------------
+/* Switch Field ----------------------------------------------------------------
 //  - A switch field is a graphical element that allows the user to choose only
 //    one option from a set of mutually exclusive options.
 //  - A user can tab through every option before selecting it.
@@ -690,9 +534,9 @@ fieldset legend {
 //  - Hide radio buttons by moving them offscreen left, instead of sizing to 0.
 //      - Update the design note above, and add this URL as reference:
 //        https://stackoverflow.com/questions/4425282/how-can-i-stop-the-browser-viewport-moving-to-the-top-of-the-page-when-the-user/
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------*/
 fieldset._switch-field {
-  padding: 0;//0.25rem 0.25rem;
+  padding: 0;/* 0.25rem 0.25rem; */
   border: 0;
   xborder: solid 1px purple;
 }
@@ -707,7 +551,7 @@ fieldset._switch-field {
 }
 ._switch {
   border: solid 1px #ccc;
-  margin: 0.5rem; // Distance between switches.
+  margin: 0.5rem; /* Distance between switches. */
   padding: 0;
 }
 ._switch-label {
@@ -732,7 +576,8 @@ fieldset._switch-field {
   box-shadow: 0 0 4px 4px blue;
 }
 
-// Tooltips --------------------------------------------------------------------
+
+/* Tooltips --------------------------------------------------------------------
 //  - Implement it by allowing users to simply add a _tooltip="text" attribute
 //    to any element.  The implementation leverages the ::before and ::after
 //    pseudo-elements to define the tooltip arrow and tooltip text bubble,
@@ -747,7 +592,7 @@ fieldset._switch-field {
 //  - Add tooltip to main menu (see https://productforums.google.com/forum/#!topic/websearch/El-_aS8HRnA).
 //  - Move tooltip position to top of mouse pointer, if any, so the cursor does
 //    not obstruct the text.
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------*/
 
 // Set up ancestor for any defined tooltips to be positioned with.
 [_tooltip] { position: relative; }
@@ -791,16 +636,16 @@ fieldset._switch-field {
 [_tooltip]:hover::after { opacity: 1; z-index: 99; }
 
 
-// FORMS -----------------------------------------------------------------------
+/* FORMS -----------------------------------------------------------------------
 //  - General styles for all forms.
 //------------------------------------------------------------------------------
 // TODOs:
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------*/
 form {
 //  border: solid 1px green;
 }
 
-// IMAGE GALLERY ---------------------------------------------------------------
+/* IMAGE GALLERY ---------------------------------------------------------------
 //  - General styles for an image gallery.
 //  - The image gallery will be implemented as a responsive grid, much like
 //    many mobile apps (Instagram, Google Images, Pixel500, etc).
@@ -835,7 +680,7 @@ form {
 //    larger thumbnails in desktop than mobile.
 //  - Translate the images when you swipe/flick; make a swipeable slider.
 //  - Test momentum scrolling on other mobile devices to support as appropriate.
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------*/
 
 /* VERSION: Horizontal Filmstrip **********************************************/
 ._gallery {
@@ -878,7 +723,8 @@ form {
 }
 /******************************************************************************/
 
-// ACCORDION -------------------------------------------------------------------
+
+/* ACCORDION -------------------------------------------------------------------
 //  - General styles for an accordion.
 //  - The accordion layout expects content in the following structure/format:
 //        <div class="_accordion">
@@ -895,42 +741,24 @@ form {
 //    https://stackoverflow.com/questions/4425282/how-can-i-stop-the-browser-viewport-moving-to-the-top-of-the-page-when-the-user/
 //  - The implementation assumes checkboxes, which allows items to be opened or
 //    closed, independent of each other.
+//      - If it was a radio button, then only one could be active at a time.
+//        This would allow the accordion and checkbox widgets to be based
+//        off the same template.
 //------------------------------------------------------------------------------
 // TODOs:
 //  - At some point figure out how to remove the "max-height" hack.
 //  - Figure out if we need a transition from :checked state back to default.
-//------------------------------------------------------------------------------
-._accordion {
-//  padding: 10px;
-}
-._accordion ._state {
-  position: absolute;
-  left: -999%;
-}
-._accordion ._label {
-  display: flex;
-  justify-content: flex-start;
-  padding: .7em 0em;
-  cursor: pointer;
-  border-top: solid 1px #eee;
-}
-._accordion ._label::before {
-  content: "\23F7";//"+";//"\25BC" = ▼//"\23F7" = ⏷
-  transition: all .25s;
-}
-._accordion ._panel {
-  max-height: 0;
-  overflow: auto;
-  transition: max-height 0.25s;
-}
-._accordion input[type="checkbox"]:checked + ._label + ._panel {
-  max-height: 99rem; /* hack */
-}
-._accordion input[type="checkbox"]:checked + ._label::before {
-  content: "\23F6";//transform: rotate(315deg);//content: "---";//"\25B2" = ▲//"\23F6" = ⏶
-}
+//----------------------------------------------------------------------------*/
+._accordion { /*  padding: 10px; */ }
+._accordion ._state { position: absolute; left: -999%; }
+._accordion ._label { display: flex; justify-content: flex-start; padding: .7em 0em; cursor: pointer; border-top: solid 1px #eee; }
+._accordion ._label::before { content: "\23F7"; transition: all .25s; } /* "+"; /* "\25BC" = ▼ /* "\23F7" = ⏷ */
+._accordion ._panel { max-height: 0; overflow: auto; transition: max-height 0.25s; }
+._accordion input[type="checkbox"]:checked + ._label + ._panel { max-height: 99rem; /* hack */ }
+._accordion input[type="checkbox"]:checked + ._label::before {   content: "\23F6"; } /* transform: rotate(315deg); /* content: "---"; /* "\25B2" = ▲ /* "\23F6" = ⏶ */
 
-// TABS ------------------------------------------------------------------------
+
+/* TABS ------------------------------------------------------------------------
 //  - General styles for tabs.
 //  - The tabs layout expects content in the following structure/format:
 //        <div class="_tabs">
@@ -946,49 +774,220 @@ form {
 //    https://stackoverflow.com/questions/4425282/how-can-i-stop-the-browser-viewport-moving-to-the-top-of-the-page-when-the-user/
 //  - The implementation assumes radio buttons, which only allows a single tab
 //    to be shown at any given time.
+//----------------------------------------------------------------------------*/
+._tabs { display: flex; flex-wrap: wrap; }
+._tabs ._state { position: absolute; left: -999%; }
+._tabs ._label { order: 0; padding: .7em 1em; cursor: pointer; }
+._tabs ._panel { order: 1; width: 100%; display: none; }
+._tabs input[type="radio"]:checked + ._label + ._panel { display: block; }
+._tabs input[type="radio"]:checked + ._label { border-bottom: solid 4px orange; }
+
+
+/* NUMERIC SPINNER -------------------------------------------------------------
+//  - css/_spinner.css
+//----------------------------------------------------------------------------*/
+._spinner { display: flex; flex-flow: row nowrap; align-items: center; }
+._spinner ._label { line-height: 1.25rem; min-width: 2rem; padding-right: 0.5rem; text-align: left; }
+._spinner ._button { height: 2rem; width: 2.5rem; border: solid 1px #ccc; border-radius: 0; background: #fff; color: #000; }
+._spinner ._button:first-of-type { margin-right: -1px; border-radius: 4px 0 0 4px; }
+._spinner ._button:last-of-type { border-radius: 0 4px 4px 0; }
+._spinner ._button:disabled { color: #ccc; }
+
+
+/* THUMBNAIL -------------------------------------------------------------------
+//  - css/_thumbnail.css
 //------------------------------------------------------------------------------
 // TODOs:
-//  -
-//------------------------------------------------------------------------------
-._tabs {
-  display: flex;
-  flex-wrap: wrap;
+//  - Rework the thumbnail in the ProductDetails page and get rid of the "div".
+//----------------------------------------------------------------------------*/
+div._thumbnail { display: flex; align-items: center; justify-content: center; border: 1px rgba(0,0,0,0.1) solid; border-radius: 8px; width: 4.6rem; height: 4.6rem; }
+div._thumbnail ._image { max-width: 100%; max-height: 100%; }
+
+
+/* SHOPPING CART ---------------------------------------------------------------
+//
+//----------------------------------------------------------------------------*/
+
+/* PADDING */
+#_DBG-cart {
+  padding: 0 1rem;
+  max-width: 60rem;
+  margin: 0 auto;
 }
-._tabs ._state {
-  position: absolute;
-  left: -999%;
+
+._cart-buybox { margin: 1rem 0; }
+
+input[type="submit"]._checkout-button { border: solid 1px transparent; border-radius: 5px; background: #197bbd; color: white; padding: 1.5rem 1.5rem; margin: 1rem 0; }
+@media only screen and (max-width: 749px) {
+  ._bp-checkout-button { width: 100%; }
 }
-._tabs ._label {
-  order: 0;
-  padding: .7em 1em;
-  cursor: pointer;
+
+/* Cart Structure & Layout */
+._cart * { xborder: dashed 1px pink; } /* dbg */
+._cart > div { xbackground-color: rgba(233, 171, 88, .5); } /* dbg */
+
+._cart { xmin-width: 27rem; }
+._cart {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto auto auto auto;
+  grid-template-areas: "i d j p q s a";
+  grid-template-rows: auto;
+  grid-auto-rows: auto auto minmax(auto, min-content);
+  align-items: center;
 }
-._tabs ._panel {
-  order: 1;
-  width: 100%;
-  display: none;
+
+/* Header Row (single set) */
+._cart ._h-item { grid-area: i; }
+._cart ._h-description { grid-area: d; }
+._cart ._h-info { grid-area: j; }
+._cart ._h-price { grid-area: p; }
+._cart ._h-quantity { grid-area: q; }
+._cart ._h-subtotal { grid-area: s; }
+
+/* Items (multiple sets) */
+._cart ._line { grid-column: 1 / -1; }
+._cart ._image { grid-row: span 2; min-height: 0; }
+._cart ._description { grid-row: span 2; min-height: 0; }
+._cart ._info { grid-row: span 2; min-height: 0; }
+._cart ._price { grid-column: 4; }
+._cart ._quantity { grid-column: 5; }
+._cart ._subtotal { grid-column: 6; }
+._cart ._actions { grid-column: 7; }
+._cart ._extras { grid-column: 4 / -2; }
+
+/* Footer Rows (single set) */
+._cart ._f-summary { grid-column: 1 / -2; }
+._cart ._f-label { grid-column: 1 / 2; }
+._cart ._f-value { grid-column: 2 / -2; }
+
+/* Cell Styles */
+._cart ._h-item { text-align: center; font-weight: 500; }
+._cart ._h-description { padding-left: 1rem; font-weight: 500; }
+._cart ._h-info { padding-left: 1rem; font-weight: 500; }
+._cart ._h-price { padding-left: 1rem; text-align: center; font-weight: 500; }
+._cart ._h-quantity { padding-left: 1rem; text-align: center; font-weight: 500; }
+._cart ._h-subtotal { padding-left: 1rem; text-align: center; font-weight: 500; }
+
+._cart ._line { padding: 0.75rem 0; margin: 0; background: linear-gradient(to top, transparent 0%, transparent calc(50% - 1px), rgba(0,0,0,0.1), transparent calc(50% + 1px), transparent 100%); }
+._cart ._description { padding-left: 1rem; }
+._cart ._info { padding-left: 1rem; }
+._cart ._price { padding-left: 1rem; }
+._cart ._quantity { padding-left: 1rem; }
+._cart ._subtotal { padding-left: 1rem; text-align: right; }
+._cart ._actions { padding-left: 1rem; text-align: center; }
+._cart ._extras { text-align: right; }
+
+._cart ._f-summary {
+  display: flex; flex-flow: row nowrap; justify-content: space-between; align-items: center;
+  padding: 0.75rem 0 0 0;
 }
-._tabs input[type="radio"]:checked + ._label + ._panel {
-  display: block;
+._cart ._f-summary + ._line { margin-top: 0.5rem; }
+._cart ._f-summary:last-of-type { padding: 0; }
+
+._cart ._line + ._f-label { margin-top: 0.375rem; }
+._cart ._f-value:first-of-type { margin-top: 0.375rem; }
+._cart ._f-label { text-align: left; padding: 0.375rem 0; }
+._cart ._f-value { text-align: right; padding: 0.375rem 0; }
+._cart ._f-value + ._line { margin: 0.5rem 0 0 0; }
+
+._horizontal-bullets ul { list-style: none; margin: 0; padding: 0; white-space: nowrap; }
+._horizontal-bullets li { display: inline-block; }
+._horizontal-bullets li:not(:last-child)::after { content: "\2022"; margin: 0 0.5rem; }
+
+/* Module-Specific Breakpoints */
+@media only screen and (max-width: 27rem) {
+  ._bp-info { display: none !important; }
+  ._bp-price { display: none !important; }
+  ._bp-actions { display: none !important; }
+  ._bp-extras-original-price { display: none !important; }
 }
-._tabs input[type="radio"]:checked + ._label {
-  border-bottom: solid 4px orange;
+@media only screen and (min-width: 30rem) and (max-width: 38rem) {
+  ._bp-info { display: none !important; }
+  ._bp-actions { display: none !important; }
+  ._bp-extras-price { display: none !important; }
+}
+@media only screen and (min-width: 38rem) and (max-width: 43rem) {
+  ._bp-actions { display: none !important; }
+  ._bp-extras-price { display: none !important; }
+  ._bp-extras-original-price { display: none !important; }
+  ._bp-extras-info { display: none !important; }
+}
+@media only screen and (min-width: 43rem) {
+  ._bp-extras { display: none !important; }
 }
 
 
-// PRICES ----------------------------------------------------------------------
-//  -
+/* FOOTER ----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------------*/
+/* Debug */
+footer { xborder: dashed 1px pink; } /* dbg */
+footer * { xborder: dashed 1px pink; } /* dbg */
+
+footer { min-width: 375px; border-top: solid 1px #e6e6e6; margin: 1rem 0; }
+footer { display: grid; grid-template-columns: auto; grid-template-areas: "i" "n" "s" "l"; justify-content: center; align-items: center; }
+footer ._info { grid-area: i; }
+footer ._newsletter { grid-area: n; }
+footer ._social { grid-area: s; }
+footer ._legal { grid-area: l; }
+
+footer ._info { padding: 1rem 1rem 0; white-space: nowrap; text-transform: uppercase; }
+footer ._info ul { margin: 0; padding: 0; white-space: nowrap; list-style: none; }
+footer ._info ul { display: flex; flex-flow: row nowrap; justify-content: center; }
+footer ._info li + li { margin-left: 1rem; }
+
+footer ._legal { padding: 0 1rem; white-space: nowrap; }
+footer ._legal ul { margin: 0; padding: 0; white-space: nowrap; list-style: none; }
+footer ._legal ul { display: flex; flex-flow: row-reverse wrap; justify-content: center; }
+footer ._legal li { padding-top: 1rem; margin-right: 1rem; }
+
+footer ._newsletter { padding: 1rem 1rem 0; white-space: nowrap; }
+footer ._newsletter { display: flex; flex-flow: row nowrap; justify-content: center; align-items: baseline; }
+footer ._newsletter label { margin-right: 0.5rem; }
+footer ._newsletter input[type="email"] { font: inherit; padding: 1px 0.25rem; border: solid 1px gray; }
+footer ._newsletter input[type="submit"] { font: inherit; margin: -1px; border: solid 1px gray; border-radius: 0 5px 5px 0; background: lightgray; color: black; padding: 1px 0.25rem; } /* #197bbd */
+
+footer ._social { padding: 1rem 1rem 0; white-space: nowrap; align-self: center; }
+footer ._social ul { margin: 0; padding: 0; white-space: nowrap; list-style: none; }
+footer ._social ul { display: flex; flex-flow: row nowrap; justify-content: center; align-items: center; }
+footer ._social li + li { margin-left: 1rem; }
+footer ._social li svg { display: block; }
+
+/* Module-Specific Breakpoints */
+@media only screen and (max-width: 30rem) {
+  ._info { display: none !important; }
+}
+@media only screen and (min-width: 30rem) and (max-width: 54rem) {
+  xfooter { grid-template-areas: "i i" "n s" "l l"; }
+  footer { grid-template-areas: "n s" "i i" "l l"; }
+}
+@media only screen and (min-width: 54rem) and (max-width: 78rem) {
+  footer { grid-template-areas: "i n s" "l l l"; }
+}
+@media only screen and (min-width: 78rem) {
+  footer { grid-template-areas: "l i n s"; }
+  footer ._legal ul { flex-wrap: nowrap; }
+}
+
+
+/* Collection Grid -------------------------------------------------------------
+//
+//----------------------------------------------------------------------------*/
+._collection { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); grid-gap: 1rem; max-width: 900px; margin: auto; }
+._collection figure { margin: 0; display: flex; flex-flow: column nowrap; justify-content: flex-start; }
+._collection figure img { display: block; max-width: 100%; }
+._collection figure figcaption { margin-top: 0.5rem; order: 1; }
+._collection figure figcaption ul { list-style: none; margin: 0; padding: 0; display: flex; flex-flow: column nowrap; }
+._collection ._title { font-weight: 500; text-align: center; order: 1; }
+._collection ._price { color: gray; text-align: center; order: 2; }
+
+
+/* Form Validation -------------------------------------------------------------
+//  - https://css-tricks.com/form-validation-ux-html-css/
+//  - https://developer.mozilla.org/en-US/docs/Learn/HTML/Forms/Form_validation/
 //------------------------------------------------------------------------------
 // TODOs:
-//  -
-//------------------------------------------------------------------------------
-.x_product_price {
-  font-size: 2.4rem;
-  line-height: 1.35;
-  letter-spacing: -0.08rem;
-}
-.x_product_compare_at {
-  font-size: 1.4rem;
-  line-height: 1.35;
-  letter-spacing: -0.08rem;
-}
+//  - Elegant UX for :valid and :invalid pseudo-classes.  These are not it:
+//      input[type="email"]:valid { outline: 1px solid green; }
+//      input[type="email"]:invalid { outline: 1px solid red; }
+//----------------------------------------------------------------------------*/

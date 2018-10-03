@@ -1,4 +1,12 @@
 {% comment %}
+ABOUT:
+  - This file is a snapshot of \src\sections\product.liquid taken on 2018-10-03.
+    The design assumes a product has images for all color variants, and it
+    generates galleries for each color based on the color attribute found in a
+    specific location in the image filename.  We forked this design when it was
+    decided that each product would represent a single color variant.
+    The product still has size options present, but it does not need to hide any
+    galleries when the size is selected.
 TODOs:
   - Support ARIA (https://www.w3.org/WAI/tutorials/forms/labels/, https://www.w3.org/TR/wai-aria-practices/#radiobutton).
   - Support Semantic Tags.

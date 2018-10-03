@@ -15,6 +15,7 @@ window.boni = window.boni || {};
 /*================ Sections ================*/
 // =require sections/product.js
 // =require sections/header.js
+// =require sections/cart.js
 // =require sections/_XXX.js
 
 /*================ Templates ================*/
@@ -26,8 +27,9 @@ window.boni = window.boni || {};
 
 $(document).ready(function() {
   var sections = new slate.Sections();
-  sections.register('product', theme.Product);
-  sections.register('section-header', boni.SectionHeader);
+  sections.register("product", theme.Product);
+  sections.register("header", boni.Header);
+  sections.register("cart", boni.Cart);
 
   // Common a11y fixes
   slate.a11y.pageLinkFocus($(window.location.hash));
