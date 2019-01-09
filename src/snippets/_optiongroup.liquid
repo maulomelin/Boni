@@ -1,0 +1,79 @@
+{%- comment -%}-----------------------------------------------------------------
+Design Pattern:
+  [_optiongroup]
+
+Snippet:
+  _optiongroup.Liquid
+
+Usage:
+  {%- for option in product.options_with_values -%}
+    {%- include "_optiongroup", product: product, index: forloop.index0 -%}
+    {%- include "_infochart", product: product, index: forloop.index0 -%}
+  {%- endfor -%}
+
+Parameters:
+  {product object} product [ required ] // The product this option group is for.
+  {integer} index [ required ] // Index of the option group in product.
+
+Output:
+  - An [_optiongroup] module.  See the design doc for more details.
+
+Description:
+  - The ._infochart-button is rendered with ._hide by default, by design.
+    This absolves us from having to check whether there's an associated
+    infochart for this button or not.  The infochart's initialization routine
+    will scan the page for all infochart buttons, and check if they have an
+    associated infochart.  If so, the button will be exposed.  If not, they
+    will remain hidden.
+  - An invalid index on the product object results in no option group.
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- comment -%} Set up local variables. {%- endcomment -%}
+{%- assign _productid = product.id -%}
+{%- assign _option = product.options_with_values[index] -%}
+
+{%- if _option -%}
+  {%- assign _og_name = _option.name -%} {%- comment -%} e.g. "Color" {%- endcomment -%}
+  {%- assign _og_id = _option.name | downcase | prepend: "_" | append: global_idcounter -%} {%- comment -%} e.g. "_color8" {%- endcomment -%}
+  {%- assign _og_suffix = _option.name | downcase | prepend: "-" | append: global_idcounter -%} {%- comment -%} e.g. "-color8" {%- endcomment -%}
+  {%- assign _og_position = _option.position -%}
+  {%- assign _og_selected_value = _option.selected_value -%}
+  {%- assign global_idcounter = global_idcounter | plus: 1 -%} {%- comment -%} Always increment it after using it. {%- endcomment -%}
+
+  {%- comment -%} Render the [_optiongroup]. {%- endcomment %}
+<fieldset class="_optiongroup _js-optiongroup" id="{{- _og_id -}}" data-u-productid="{{- _productid -}}" data-u-name="{{- _og_name -}}">
+  <legend>
+    <div class="_caption">
+      <div>
+        <span class="_name">{{- _og_name -}}</span>
+        <span class="_value _js-optiongroup-value">{{- _og_selected_value -}}</span>
+      </div>
+      <div>
+        <span class="_info">
+          <button class="_infochart-button _js-infochart-button _hide" data-u-productid="{{- _productid -}}" data-u-name="{{- _og_name -}}">Show/Hide {{ _og_name }} Chart</button>
+        </span>
+      </div>
+    </div>
+  </legend>
+  <div class="_options">
+    {%- for _v in option.values -%}
+      {%- assign _v_id = forloop.index | prepend: "_option-" | append: _og_suffix -%}
+      {%- assign _checked = "" -%} {%- if _og_selected_value == _v %} {%- assign _checked = "checked" -%} {%- endif %}
+    <input id="{{- _v_id -}}" type="radio" name="{{- _og_id -}}" class="_option _js-option" value="{{- _v -}}" title="TITLE[{{- _v -}}]" data-index="option {{- _og_position -}}" data-single-option-selector {{ _checked }}/>
+    <label for="{{- _v_id -}}" class="_label" title="TITLE[{{- _v -}}]">{{- _v -}}</label>
+    {%- endfor %}
+  </div>
+</fieldset>
+{%- endif -%}
+
+{%- comment -%} Clean up local variables. {%- endcomment -%}
+{%- assign _productid = nil -%}
+{%- assign _option = nil -%}
+{%- assign _og_name = nil -%}
+{%- assign _og_selected_value = nil -%}
+{%- assign _og_position = nil -%}
+{%- assign _og_id = nil -%}
+{%- assign _og_suffix = nil -%}
+{%- assign _v = nil -%}
+{%- assign _v_id = nil -%}
+{%- assign _checked = nil -%}

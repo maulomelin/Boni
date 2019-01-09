@@ -1,0 +1,105 @@
+{%- comment -%}-----------------------------------------------------------------
+Design Pattern:
+  [_breadcrumb]
+
+Snippet:
+  _breadcrumb.Liquid
+
+Usage:
+  {%- include "_breadcrumb", tree: linklists.main-menu, class: "_text-small" -%}
+
+Parameters:
+  {linklist object} tree [ required on a collection page, ignored on a product page ] // A linklist with links to render.
+  {string} class [ optional ] // An optional string to add to the module's class attribute.
+  {boolean} recursion [ = false ] // Internal flag for rendering open/close tags.
+
+Output:
+  - The outermost wrapper is <div class="_breadcrumb">...</div>
+  - The main content is an unordered list (i.e. <ul>).
+  - The list contents depends on the template the snippet is on:
+      - On a collection page, renders the collection-based breadcrumb.
+      - On a product page, renders the product-based breadcrumb.
+  - The collection-based breadcrumb shows the list of links from the tree
+    that are active.  This is basically a path from the root node to the
+    current page (which is active).  The tree is traversed recursively.
+  - The product-based breadcrumb looks at a product metafield for an ordered
+    list of collection names that make up the ideal breadcrumb for that product.
+    This form ignores the tree and recursion parameters.
+
+Description:
+  - The output list is flat; it is not a nested list of links.
+  - The snippet basically renders the first path of active links in a tree.
+  - A collection-based breadcrumb renders a list of links by recursively
+    calling itself on nested items in the linklist tree parameter.  Rendered
+    items correspond to tree links that are active or have active children.
+  - A product-based breadcrumb renders a list of links by iterating over the
+    set of items in the metafield product.metafields.google.custom_label_3.
+      - Each item should correspond to a collection in the system.
+      - If there is a discrepancy, an empty <li> will be generated.
+      - The system must have collections defined that are in the metafield.
+
+TODOs:
+  - Style the breadcrumb.
+  - Overengineer the snippet to not render anything if there are no items in
+    the breadcrumb, instead of leaving an empty "<ul></ul>".
+    Check if an object is "empty" before accessing any of its attributes.
+    https://help.shopify.com/en/themes/liquid/basics/types#empty-drop
+  - Do we need to make a distinction between link.active and link.child_active?
+  - Look at how it's being used and think about making it more interactive,
+    such as giving each menu a drop-down for other siblings, like FileExplorer.
+  - Figure out how to make the UI wrap when it gets too long (all via CSS).
+  - Finalize naming convention for collections created in the Shopify Admin UI.
+    Remember that these names will appear in the URL.  Collections are not
+    nested; the linklist does that, but all collections are named at the same
+    level in the URL.
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- comment -%} Main routine. {%- endcomment -%}
+{%- if "collection" == template.name -%}
+
+  {%- comment -%} Render a collection-aware breadcrumb. {%- endcomment -%}
+  {%- if tree.links != blank -%}
+    {%- unless _recursion %}
+    <div class="_breadcrumb {{ class }}">
+      <ul>
+    {%- endunless -%}
+    {%- for link in tree.links -%}
+      {%- if link.active %}
+        <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+        {%- break -%}
+      {%- endif -%}
+      {%- if link.child_active %}
+        <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+        {%- include "_breadcrumb", tree: link, _recursion: true -%}
+        {%- break -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {%- unless _recursion %}
+      </ul>
+    </div>
+    {% endunless -%}
+  {%- endif -%}
+
+{%- elsif "product" == template.name -%}
+
+  {%- comment -%} Render a collection-agnostic breadcrumb. {%- endcomment -%}
+  {%- assign cdata = product.metafields.google.custom_label_3 | split: "----------" -%}
+  {%- comment -%}
+    (DEBUG) CDATA:[{{ cdata }}]<br/>
+  {%- endcomment -%}
+  {%- if "taxonomy" == cdata[0] %}
+  <div class="_breadcrumb {{ class }}">
+    <ul>
+    {%- assign cdata = cdata[1] | downcase | split: "--" -%}
+    {%- for c in cdata %}
+      <li><a href="{{ collections[c].url }}">{{ collections[c].title }}</a></li>
+    {%- endfor %}
+    </ul>
+  </div>
+  {% endif -%}
+
+{%- else -%}
+
+  <div class="_breadcrumb" data-u-error="Unknown template.name"></div>
+
+{%- endif -%}

@@ -49,9 +49,9 @@ header ._noticebar { text-align: center; background: #f9f9f9; }
 ._horizontal-menu li + li { margin-left: 0.5rem; }
 
 /* Menu (vertical, multi-level nested) */
-._vertical-menu { position: relative; margin: 0; padding: 0.5rem 0; border: dashed 1px pink; }
+._vertical-menu { position: relative; margin: 0; padding: 0.5rem 0; }
 ._vertical-menu ul { margin: 0; padding: 0 1rem; }
-._vertical-menu li { display: block; line-height: 1.75rem; list-style-type: none; }
+._vertical-menu li { display: block; line-height: 1.25rem; /* 1.75rem; */ list-style-type: none; white-space: nowrap; }
 
 /* Module-Specific Breakpoints */
 @media only screen and (max-width: 30rem) { /* 5rem --> 30rem */
@@ -62,5 +62,5 @@ header ._noticebar { text-align: center; background: #f9f9f9; }
   ._bp-linklist { display: none !important; }
 }
 @media only screen and (min-width: 45rem) { /* 15rem --> 45rem */
-  ._bp-button { display: none !important; }
+  ._bp-button { xdisplay: none !important; }
 }

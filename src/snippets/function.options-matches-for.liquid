@@ -23,12 +23,6 @@ TODOs:
   - Update the function to work when 3 options are used.
 {%- endcomment -%}
 
-{%- comment -%} DEBUG INFO
-  Options: [{{ options }}]
-  Match: [{{ option_name }}]
-  Results:
-{%- endcomment -%}
-
 {%- comment -%} MAIN ROUTINE {%- endcomment -%}
 {%- assign _dc = "," -%}
 {%- assign _ds = " " -%}
@@ -49,6 +43,16 @@ TODOs:
 
 {%- comment -%} ASSIGN OUTPUT VARIABLES {%- endcomment -%}
 {%- assign options_matches_for = _matching_ops -%}
+
+{%- comment -%} PRINT DEBUG INFO {%- endcomment -%}
+{%- if false -%}
+  <br/>
+  Options: [{{ options }}]
+  <br/>
+  Match: [{{ option_name }}]
+  <br/>
+  Results: [{{ options_matches_for }}]
+{%- endif -%}
 
 {%- comment -%} CLEAN UP INTERNAL VARIABLES {%- endcomment -%}
 {%- assign _dc = "" -%}

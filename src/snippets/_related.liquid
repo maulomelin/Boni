@@ -1,0 +1,72 @@
+{%- comment -%}-----------------------------------------------------------------
+Design Pattern:
+  [_related]
+
+Snippet:
+  _related.Liquid
+
+Usage:
+  {%- include "_related", metafield: XXX -%}
+
+Parameters:
+
+Output:
+  - An unordered list of <figures> that include an image and a caption.
+    For an example, see the [_related] design pattern.
+
+Description:
+  - The data comes from a string that is parsed within this routine.
+      - For now, "related" data is imported into a product in a metafield.
+      - There may be any number of metafields supported by the system.
+
+TODOs:
+  - Figure out if we want all "related" data into a single metafield, or to
+    append individual "related" modules' data into separate metafields.
+  - The related module has entries corresponding to aspects associated with the
+    product.  It is assumed that one of those entries is the product itself,
+    because it shares that attribute itself.  Review whether this is how we
+    want the design, or whether the list of related items is exclusive of the
+    product itself.
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- comment -%} Set up local variables. {%- endcomment -%}
+{%- assign _x = data -%}
+{%- assign _x = _x | split: "----------" -%}
+{%- assign _type = _x[0] -%}
+{%- assign _handles = _x[1] | split: "--" -%}
+{% comment %} data=[{{- data | json -}}] _type=[{{- _type | json  -}}] _handles=[{{- _handles | json  -}}] {% endcomment %}
+
+{%- if 1 < _handles.size -%}
+
+  {%- comment -%} Render the related module if there's more than one entry. {%- endcomment -%}
+  <div class="_related">
+    <ul>
+      {%- for _h in _handles -%}
+        {%- assign _img = all_products[_h].featured_image | img_url: "medium" -%}
+        {%- assign _url = all_products[_h].url | within: collection -%}
+        {%- assign _alt = "TODO" -%}
+        {%- assign _caption = all_products[_h].title -%}
+      <li>
+        <figure>
+          <a href="{{- _url -}}">
+            <img src="{{- _img -}}" alt="{{- _alt -}}"/>
+          </a>
+          <figcaption>{{- _caption -}}</figcaption>
+        </figure>
+      </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+
+{%- endif -%}
+
+{%- comment -%} Clean up local variables. {%- endcomment -%}
+{%- assign _metafield = nil -%}
+{%- assign _type = nil -%}
+{%- assign _data = nil -%}
+{%- assign _handles = nil -%}
+{%- assign _h = nil -%}
+{%- assign _img = nil -%}
+{%- assign _url = nil -%}
+{%- assign _alt = nil -%}
+{%- assign _caption = nil -%}

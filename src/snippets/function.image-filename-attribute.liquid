@@ -1,22 +1,39 @@
-{% comment %}
-DESCRIPTION:
-  - Function to retrieve an image's primary color.
+{%- comment -%}-----------------------------------------------------------------
+Feature Pattern:
+  IMAGE FILENAME NAMING
+
+Description:
+  - Function to retrieve attributes encoded in an image's filename.
   - Assumes that the image filename has the following format:
 
-        filename = item1-color1--item2-color2--...--itemN-colorN---picid.jpg
-                 = (item1-color1)(--itemX-colorX)*---picid.jpg
+      filename -> <type>----------<data>.extension
 
-  - With that filename format, the splitting process is as follows:
+      for <type> = "outfit", <data> = (<item>--<color>)(---<item>--<color>)*----<index>
+      for <type> = "size", <data> = TODO TODO TODO
 
-        image.src     =>  [path/filename]
-        split: "/"    =>  [path] [filename]
-        split: "."    =>  [path] [(item1-color1)(--itemX-colorX)*---picid] [jpg]
-        split: "---"  =>  [path] [(item1-color1)(--itemX-colorX)*] [picid] [jpg]
-        split: "--"   =>  [path] [item1-color1] ... [itemN-colorN] [picid] [jpg]
-        split: "-"    =>  [path] [item1] [color1] ... [itemN] [colorN] [picid] [jpg]
+      <item> = single dash-delimited item name (e.g. "aliso" -> "aliso").
+      <color> = single dash-delimited color name (e.g. "indigo-blue" -> "indigo blue").
+
+      * single dash-delimited names allow us to expand it in the future to things
+        like "aliso-leather-skirt" -> "aliso leather skirt".
+
+  - With that format, the splitting process is as follows:
+      - To get <type>:
+          image.src           =>  [path/filename]
+          split: "/"          =>  [path] [filename]
+          split: "."          =>  [path] [<type>----------<data>] [extension]
+          split: "----------" =>  [path] [<type>] [<data>] [extension]
+
+      - Subsequent splitting of <data> is based on the <type>.
+      - To get {item, color} pairs for type:outfit:
+
+          <data>        =>  [(<item>--<color>)(---<item>--<color>)*----<index>]
+          split: "----" =>  [(item1--color1)(---itemX--colorX)*] [index]
+          split: "---"  =>  [item1--color1] ... [itemN--colorN] [index]
+          split: "--"   =>  [item1] [color1] ... [itemN] [colorN] [index]
 
 PARAMETERS:
-  {image object} image[ required ] // The current image.
+  {image object} image[ required ] // The image to process.
   {string} attribute[ required ] // The attribute to query for.
 
 OUTPUT:
@@ -35,8 +52,27 @@ TODOs:
       - Add a second parameter for attribute to fetch.
       - Add a case statement for all supported attribute queries.
   - Check that last assignment to "nil" (can't do it), and clean things up.
-{% endcomment %}
-{%- if "primary-color" == attribute -%}
+DONE:
+  -
+--------------------------------------------------------------{%- endcomment -%}
+
+
+{%- if "type" == attribute -%}
+
+  {%- assign x = image.src | split: "/" -%}
+  {%- assign x = x[1] | split: "----------" -%}
+  {%- assign x = x[0] -%}
+  {%- assign image_filename_attribute = x -%}
+
+{%- elsif "option-name" == attribute -%}
+
+  {%- assign x = image.src | split: "/" -%}
+  {%- assign x = x[1] | split: "----------" -%}
+  {%- assign x = x[1] | split: "-----" -%}
+  {%- assign x = x[0] -%}
+  {%- assign image_filename_attribute = x -%}
+
+{%- elsif "primary-color" == attribute -%}
 
   {%- assign x = image.src | downcase -%}
   {%- assign x = x | split: "/" -%}
@@ -44,8 +80,9 @@ TODOs:
   {%- assign x = x[0] | split: "--" -%}
   {%- assign x = x[0] | split: "-" -%}
   {%- assign x = x[0] | split: "_" -%}
+  {%- assign x = x[1] -%}
 
-  {%- assign image_filename_attribute = x[1] -%}
+  {%- assign image_filename_attribute = x -%}
 
 {%- elsif "foobar" == attribute -%}
 
@@ -63,3 +100,6 @@ TODOs:
   {%- assign image_filename_attribute = nil -%}
 
 {%- endif -%}
+
+{%- comment -%} Clean up local variables. {%- endcomment -%}
+{%- assign x = "" -%}

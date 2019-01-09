@@ -16,7 +16,7 @@ DESCRIPTION:
   - x.
 
 TODOs:
-  - x.
+  - Rename this to something more relevant to what it does, like "product-options-availability-matrix".
 {%- endcomment -%}
 
 {%- comment -%} MAIN ROUTINE {%- endcomment -%}
@@ -28,15 +28,6 @@ TODOs:
 {%- assign _ops1 = product.options_with_values[0].values -%}
 {%- assign _ops2 = product.options_with_values[1].values -%}
 {%- assign _ops3 = product.options_with_values[2].values -%}
-
-<br/>
-_ops1: {{ _ops1 | json }}
-<br/>
-_ops2: {{ _ops2 | json }}
-<br/>
-_ops3: {{ _ops3 | json }}
-<br/>
-
 {%- if nil != _ops1 and nil != _ops2 and nil != _ops3 -%}
   {%- for _op1 in _ops1 -%}{%- for _op2 in _ops2 -%}{%- for _op3 in _ops3 %}
     {%- capture _combo -%}[{{ _op1 | json }}{{ _d1 }}{{ _op2 | json }}{{ _d1 }}{{ _op3 | json }}]{%- endcapture -%}
@@ -53,20 +44,42 @@ _ops3: {{ _ops3 | json }}
     {%- capture _p_ops -%}{{ _p_ops }}{{ _d2 }}{{ _combo }}{%- endcapture -%}
   {%- endfor -%}
 {%- else -%}
-  ERROR: Unknown condition for _p_ops in function.product-unavailable-options.liquid
+  ERROR: Unknown condition for _p_ops in function.product-options-availability-matrix.liquid
 {%- endif -%}
 {%- assign _p_ops = _p_ops | remove_first: _d2 -%}
 
-  {%- comment -%} Get a list of all existing variant option combos. {%- endcomment -%}
+  {%- comment -%}
+    Generate a list of all variant option combos, to compare later against master list to find unavailables.
+    Look at each variant and determine if the combo is instock, outofstock, or soldout.
+  {%- endcomment -%}
+{%- assign _instock_ops = "" -%}
+{%- assign _outofstock_ops = "" -%}
+{%- assign _soldout_ops = "" -%}
 {%- assign _v_ops = "" -%}
 {% for _v in product.variants %}
+
+  {%- comment -%} Add this variant option combo to the list of variant option combos. {%- endcomment -%}
   {%- assign _combo = _v.options | json -%}
   {%- capture _v_ops -%}{{ _v_ops }}{{ _d2 }}{{ _combo }}{%- endcapture -%}
+
+  {%- comment -%} Check if this is an outofstock combo. {%- endcomment -%}
+  {%- if 0 == _v.inventory_quantity and "deny" == _v.inventory_policy -%}
+    {%- assign _combo = _v.options | json -%}
+    {%- capture _outofstock_ops -%}{{ _outofstock_ops }}{{ _d2 }}{{ _combo }}{%- endcapture -%}
+  {%- endif -%}
+
+  {%- comment -%}  {%- endcomment -%}
+  {%- if 0 == _v.inventory_quantity and "deny" == _v.inventory_policy -%}
+    {%- assign _combo = _v.options | json -%}
+    {%- capture _soldout_ops -%}{{ _soldout_ops }}{{ _d2 }}{{ _combo }}{%- endcapture -%}
+  {%- endif -%}
+
 {%- endfor -%}
 {%- assign _v_ops = _v_ops | remove_first: _d2 -%}
 
-  {%- comment -%} Compare master vs. variants; differences are unavailables. {%- endcomment -%}
+  {%- comment -%} Compare master vs. variants, to identify unavailables. {%- endcomment -%}
 {%- assign _unavailable_ops = "" -%}
+
 {%- assign _p_ops_array = _p_ops | split: _d2 -%}
 {%- for _p_op in _p_ops_array -%}
   {%- unless _v_ops contains _p_op -%}

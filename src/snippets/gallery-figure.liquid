@@ -34,9 +34,17 @@ TODOs:
   - Generate styles for all images that cover flex-basis and flex-grow, so that we can create media queries for them and have larger images at different breakpoints.
   - Change layout of images to be more like IMDB's iPhone app's image layout.  Perhaps we need an implementation of the Viterbi algorithm for best alignment.
 {% endcomment %}
+
+{%- if true == bsize -%}
+  {%- assign class_size = "_2x" -%}
+{%- endif -%}
+
 {%- if true == blast %}
+
   <figure class="_thumbnail" style="flex: 9999;"></figure>
+
 {% else %}
+
   {% assign x = image.src | downcase -%}
   {%- assign x = x | split: "/" -%}
   {%- assign x = x[1] | split: "." -%}
@@ -51,7 +59,7 @@ TODOs:
   {%- assign pic_height = image.height -%}
   {%- assign pic_width = image.width -%}
 
-  <figure class="_thumbnail" style="flex-basis: {{- flex_basis -}}px; flex-grow: {{- flex_grow -}};" data-item-title="{{ title }}" data-item-color="{{ color }}" data-item-pic-url="{{ pic_url }}" data-item-pic-height="{{ pic_height}}" data-item-pic-width="{{ pic_width }}">
+  <figure class="_thumbnail {{ class_size }}" style="flex-basis: {{- flex_basis -}}px; flex-grow: {{- flex_grow -}};" data-item-title="{{ title }}" data-item-color="{{ color }}" data-item-pic-url="{{ pic_url }}" data-item-pic-height="{{ pic_height}}" data-item-pic-width="{{ pic_width }}">
     <a href="{{ image | img_url: "master" }}"><img src="{{ image | img_url: "medium" }}" alt="" data-gallery-id="{{ gid }}" data-picture-id="{{ pid }}" /></a>
     <figcaption class="visually-hidden">{{ product.title }}</figcaption>
   </figure>

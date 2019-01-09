@@ -1,6 +1,8 @@
 {% comment %}
   - https://help.shopify.com/en/themes/development/templates/collection-liquid
   - Limit of 50 products per page.
+      - Unless we use {% layout none %}?  See https://ecommerce.shopify.com/c/ecommerce-design/t/filter-collection-without-tags-502924
+      - A test shows we can show more than 50 products per page!
       - If the design of the page is 2/3/4 images wide, in order to have all
         images on interim pages to frame the page completely, we want pages to
         paginate at counts of 12n: 12/24/36/48/60/72/84/96/...
@@ -19,6 +21,8 @@ TODOs:
   - Remove the if/else clause allow for the navigation menu to render on a wider screen.
   - Implement responsive images once we figure out the layout and identify all UX breakpoints.
   - Add placeholder image in case {% productd.featured_image == blank %}.
+  - Show collection children at the top of the page.  See Aritzia.com.
+  - RENAME "._xxx-grid" to "._grid-xxx" and all nested grid areas as "._ga-yyy".
 {% endcomment %}
 
 {% comment %}
@@ -30,36 +34,53 @@ TODOs:
 </div> <!-- .grid -->
 {% endcomment %}
 
-<h1>{{ collection.title }}</h1>
+<div class="_navcontent-grid">
 
-{% if collection.description != blank %}
-<div class="rte">{{ collection.description }}</div>
-{% endif %}
+  <div class="_navcontent-grid-nav small--hide">
 
-{% paginate collection.products by 48 %}
+    {%- include "_menu", class: "_text-small", list: linklists.header-drawer -%}
+<!--
+    <nav class="_vertical-menu _text-small">
+      {%- include "link-list", list: linklists.header-drawer -%}
+    </nav>
+-->
+  </div>
+  <div class="_navcontent-grid-content">
 
-<div class="_collection">
-  {% for product in collection.products %}
-  <figure>
-    <figcaption>
-      <ul>
-        <li class="_title">{{ product.title }}</li>
-        <li class="_price">{{ product.price | money }}</li>
-      </ul>
-    </figcaption>
-    <a href="{{ product.url | within: collection }}">
-      {% if product.featured_image != blank %}
-      {{ product.featured_image.src | img_url: '480x480' | img_tag: product.featured_image.alt }}
-      {% else %}
-      <img src="" alt="[NO IMAGE]" />
+    {%- include "_breadcrumb", class: "_text-small", tree: linklists.header-drawer -%}
+
+    <h1>{{ collection.title }}</h1>
+
+    {% if collection.description != blank %}
+    <div class="rte">{{ collection.description }}</div>
+    {% endif %}
+
+    {% paginate collection.products by 200 %}
+    <div class="_collection">
+      {% for product in collection.products %}
+      <figure>
+        <figcaption>
+          <ul>
+            <li class="_title">{{ product.title }}</li>
+            <li class="_price">{{ product.price | money }}</li>
+          </ul>
+        </figcaption>
+        <a href="{{ product.url | within: collection }}">
+          {% if product.featured_image != blank %}
+          {{ product.featured_image.src | img_url: '480x480' | img_tag: product.featured_image.alt }}
+          {% else %}
+          <img src="" alt="[NO IMAGE]" />
+          {% endif %}
+        </a>
+      </figure>
+      {% endfor %}
+    </div>
+
+      {% if paginate.pages > 1 %}
+      {% include "pagination" %}
       {% endif %}
-    </a>
-  </figure>
-  {% endfor %}
+
+    {% endpaginate %}
+  </div>
+
 </div>
-
-  {% if paginate.pages > 1 %}
-  {% include "pagination" %}
-  {% endif %}
-
-{% endpaginate %}

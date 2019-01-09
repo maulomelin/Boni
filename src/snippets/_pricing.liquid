@@ -1,0 +1,94 @@
+{%- comment -%}-----------------------------------------------------------------
+Design Pattern:
+  [_pricing]
+
+Snippet:
+  _pricing.Liquid
+
+Usage:
+  {%- include "_pricing", product: product, type: "variant", XXX -%}
+
+Parameters:
+  {string} type [ = "variant" ]   // [ "variant" || "product" ]
+
+Output:
+  - The pricing module for either a product or for a variant, depending on the
+    type requested.
+
+Description:
+  - The module is spec'd out in the [_pricing] design pattern document.
+  - The initial rendering of the module should follow the same logic used
+    in the javascript associated with the module.  This ensures the initial
+    condition will match the first iteration of the script when it executes,
+    and no updates should take place from the user's point of view.
+      - By contrast, consider various examples in the [_pricing] design
+        pattern document, where the default value given in the HTML is
+        modified by the script as it executes.  We want to avoid this.
+      - See the javascript and design pattern doc to ensure they're in sync.
+  - This module renders the pricing information in isolation.
+
+TODOs:
+  - Move availability to its own snippet, like we did in _optiongroup.js with
+    "function variantAvailability(variant) { ... }":
+        function.variantAvailability.liquid
+  - Figure out how to define global constants for availability.
+    They need to be used inside function.variantAvailability.liquid, and by
+    modules that call that snippet.
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- comment -%} Set up local variables. {%- endcomment -%}
+{%- assign _type = type | default: "variant"  -%}
+{%- assign _productid = product.id  -%}
+{%- assign _variant = product.selected_or_first_available_variant -%}
+
+{%- assign _availability = nil -%}
+{%- if 0 < _variant.inventory_quantity -%}
+  {%- assign _availability = "instock" -%}
+{%- else -%}
+  {%- if "continue" == _variant.inventory_policy -%}
+    {%- assign _availability = "outofstock" -%}
+  {%- elsif "deny" == _variant.inventory_policy -%}
+    {%- assign _availability = "soldout" -%}
+  {%- else -%}
+    {%- assign _availability = "unknown" -%}
+  {%- endif -%}
+{%- endif -%}
+
+{%- assign _price = nil -%}
+{%- assign _compare_at_price = nil -%}
+{%- assign _class_quiet = nil -%}
+{%- if "instock" == _availability -%}
+  {%- assign _price = _variant.price | money -%}
+  {%- if _variant.price < _variant.compare_at_price -%}
+    {%- assign _compare_at_price = _variant.compare_at_price | money -%}
+  {%- endif -%}
+{%- elsif "soldout" == _availability or "outofstock" == _availability -%}
+  {%- assign _price = _variant.price | money -%}
+  {%- assign _class_quiet = "_quiet" -%}
+{%- endif -%}
+
+{%- if "variant" == _type -%}
+
+<div class="_pricing _js-pricing" data-u-productid="{{- _productid -}}">
+  <div class="_compare _js-compare">{{- _compare_price -}}</div>
+  <div class="_price _js-price {{ _class_quiet }}">{{- _price -}}</div>
+</div>
+
+{%- elsif "product" == _type -%}
+
+  ERROR: Product pricing not implemented yet.
+
+{%- else -%}
+
+  ERROR: Unknown pricing type.
+
+{%- endif -%}
+
+{%- comment -%} Clean up local variables. {%- endcomment -%}
+{%- assign _type = nil -%}
+{%- assign _productid = nil -%}
+{%- assign _variant = nil -%}
+{%- assign _availability = nil -%}
+{%- assign _price = nil -%}
+{%- assign _compare_at_price = nil -%}
+{%- assign _class_quiet = nil -%}

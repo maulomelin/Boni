@@ -1,0 +1,67 @@
+{%- comment -%}-----------------------------------------------------------------
+Design Pattern:
+  [_menu]
+
+Snippet:
+  _menu.Liquid
+
+Usage:
+  {%- include "_menu", list: linklists.main-menu, class: "_text-small" -%}
+
+Parameters:
+  {linklist object} list [ required ] // A linklist containing items.
+  {string} class [ optional ] // An optional string to add to the module's class attribute.
+  {string} first [ optional ] // A string to become the first entry in the list.
+  {string} last [ optional ] // A string to become the last entry in the list.
+  {boolean} recursion [ = false ] // Internal flag for rendering open/close tags.
+
+Output:
+  - An unordered (i.e. <ul>) list of nested links constructed from the contents
+    of the linklist object.
+
+Description:
+  - The output is a recursively nested list of line items.  The routine
+    calls itself recursively on any nested menu items it finds in the list.
+
+TODOs:
+  - Add expand/collapse on nested menus via <label> and <input> elements.
+    See [_menu] design pattern doc.
+  - Limit the number of nesting levels shown:
+      - Option 1: Implement a "limit" integer parameter on the snippet that
+        limits the number of nesting levels shown
+      - Option 2: Support a configurable number of levels via the Shopify Admin
+        limits the number of nesting levels shown.
+  - Style the snippet to highlight the currently-active link.
+  - Do we need to support any class-names?  For example:
+      {string} class[ = empty string] // A string for class name.
+  - Replace all "navigation-menu.liquid" instances with this snippet (and remove "auxiliary-menu.liquid").
+  - Do we need this to generate an ordered list, ever (i.e. <ol>)?
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- comment -%} Main routine. {%- endcomment -%}
+{%- if list.links != blank -%}
+  {%- unless _recursion %}
+  <nav class="_menu {{ class }}">
+  {%- endunless %}
+    <ul>
+    {%- if first %}
+      <li>{{ first }}</li>
+    {%- endif -%}
+    {%- for _link in list.links %}
+      <li>
+        {%- if _link.active %}
+        {{ _link.title }}
+        {%- else %}
+        <a href="{{ _link.url }}">{{ _link.title }}</a>
+        {%- endif -%}
+        {%- include "_menu", list: _link, _recursion: true %}
+      </li>
+    {%- endfor -%}
+    {%- if last %}
+      <li>{{ last }}</li>
+    {%- endif %}
+    </ul>
+  {%- unless _recursion %}
+  </nav>
+  {%- endunless -%}
+{%- endif -%}

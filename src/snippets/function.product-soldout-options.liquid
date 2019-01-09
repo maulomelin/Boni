@@ -1,17 +1,17 @@
 {%- comment -%}
 SNIPPET:
-  function.product-outofstock-options.liquid
+  function.product-soldout-options.liquid
 
 USAGE:
-  {%- include "function.product-outofstock-options", product: product -%}
-  {{ product_outofstock_options }}
+  {%- include "function.product-soldout-options", product: product -%}
+  {{ product_soldout_options }}
 
 PARAMETERS:
   {product object} product[ required ] // The product object to analyze.
 
 OUTPUT:
   - A string containing the product's variant's option combinations where
-      variant.inventory_quantity == 0 AND variant.inventory_policy == "continue"
+      variant.inventory_quantity == 0 AND variant.inventory_policy == "deny"
   - The options and combinations are delimited.
   - A sample output string:
       ["White","s0"]##["Pearl","s2"]##["Pearl","s3"]##["Cinnamon","s1"]##["Chedron","s1"]##["Chedron","s3"]##["Black","s2"]##["Gray","s0"]##["Indigo","s0"]##["Indigo","s1"]##["Indigo","s2"]
@@ -19,16 +19,16 @@ OUTPUT:
 DESCRIPTION:
   - This function finds all variants that are out of stock and generates a
     string containing all option combinations for those variants.
-  - We walk through all product variants looking for ones with no inventory
-    and where the inventory policy is set to "continue".
+  - We walk through all product variants looking for ones with no inventory.
+    and where the inventory policy is set to "deny".
       - If a variant has no inventory, concatenate that variant's options and
-        add them an aggregated "out of stock" list.
+        add them an aggregated "sold out" list.
       - If a variant has inventory, skip it.
-  - The items in the "out of stock" list are those whose option combinations
+  - The items in the "sold out" list are those whose option combinations
     are out of stock.
 
   - Note that this function is designed for only up to two options.  For more
-    options, the "out of stock" list needs to contain combination of options
+    options, the "sold out" list needs to contain combination of options
     such as "white:s0" and not just "s0".
 
 TODOs:
@@ -40,7 +40,7 @@ TODOs:
 {%- assign _d2 = "##" -%}
 {%- assign _p_outofstock_ops = "" -%}
 {%- for _v in product.variants -%}
-  {%- if 0 == _v.inventory_quantity and "continue" == _v.inventory_policy -%}
+  {%- if 0 == _v.inventory_quantity and "deny" == _v.inventory_policy -%}
     {%- assign _combo = _v.options | json -%}
     {%- capture _p_outofstock_ops -%}{{ _p_outofstock_ops }}{{ _d2 }}{{ _combo }}{%- endcapture -%}
   {%- endif -%}

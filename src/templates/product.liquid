@@ -7,20 +7,25 @@ TODOs:
   - Remove the if/else clause allow for the navigation menu to render on a wider screen.
 {% endcomment %}
 
-{% if false %}
+{% if true %}
+
   {% section "product" %}
+
 {% else %}
 
-<div class="grid">
-  <!-- sidebar navigation menu -->
-  <div class="grid__item medium-up--one-quarter small--hide">
-    {% include "navigation-menu" %}
+  <div class="grid">
+    <!-- sidebar navigation menu -->
+    <div class="grid__item medium-up--one-quarter small--hide">
+      <nav class="_vertical-menu _text-small">
+        {%- include "link-list", list: linklists.header-drawer -%}
+      </nav>
+      {% comment %} {% include "navigation-menu" %} {% endcomment %}
+    </div>
+    <!-- page content -->
+    <div class="grid__item medium-up--three-quarters">
+      {% section "product" %}
+    </div>
   </div>
-  <!-- page content -->
-  <div class="grid__item medium-up--three-quarters">
-    {% section "product" %}
-  </div>
-</div>
 
 {% endif %}
 
