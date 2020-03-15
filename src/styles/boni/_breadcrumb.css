@@ -1,0 +1,9 @@
+/* _breadcrumb.css -------------------------------------------------------------
+// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
+//----------------------------------------------------------------------------*/
+._breadcrumb ul { display: inline; list-style: none; margin: 0; padding: 0; white-space: nowrap; }
+._breadcrumb li { display: inline; }
+._breadcrumb li:not(:last-child)::after { content: "\003E"; margin: 0 0.5rem; color: gray; }
+/* (Debug) -------------------------------------------------------------------*/
+.x_breadcrumb { border: dashed 1px pink; }
+/*----------------------------------------------------------------------------*/

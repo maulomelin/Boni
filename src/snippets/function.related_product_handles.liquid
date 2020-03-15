@@ -1,0 +1,59 @@
+{%- comment -%}-----------------------------------------------------------------
+Snippet:
+  function.related_product_handles.Liquid
+
+Usage:
+  {%- include "function.related_product_handles", product: product, type: "outfititems" -%}
+  {%- assign _handles = related_product_handles -%}
+
+Parameters:
+  {product object} product [ required ] // The product to draw data from.
+  {string} identifier [ required ] // The identifier.
+
+Output:
+  - An array of product handles matching the desired type.
+  - If the requested type is unknown, "nil" is returned.
+
+Description:
+  - The data comes from a product metafield.
+      - For now, "related" data is imported into a product metafield.
+      - There are a number of "related" types supported by the system.
+        Each type is stored in a specific metafield.
+  - This routine decides whether to filter the data or not.
+    For example, if the list of related items contains the product itself,
+    it decides whether to return it or not.
+  - The related module is basically a list of products sharing some type of
+    attribute with a given product.  The data import may or may not include
+    the primary product in the list.  The routine decides if it will include
+    the main product, if present, or not.
+
+TODOs:
+  - Consolidate all "related" data into a single metafield.
+  - Do we rename this snippet function.product_handles.liquid ?
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- comment -%} Execute main routine. {%- endcomment -%}
+{%- assign related_product_handles = nil -%}
+
+{%- if "outfititems" == identifier -%}
+  {%- assign _metafield = product.metafields.google["custom_label_1"] -%}
+{%- elsif "itemcolorvarieties" == identifier -%}
+  {%- assign _metafield = product.metafields.google["custom_label_2"] -%}
+{%- else %}
+<!-- Error: Requested type not recognized: [{{- identifier -}}] -->
+{% endif -%}
+
+{%- assign _metafield = _metafield | split: "----------" -%}
+{%- assign _identifier = _metafield[0] -%}
+{%- assign _handles = _metafield[1] | split: "--" -%}
+
+{%- if _identifier != identifier %}
+<!-- Error: Metafield type mismatch: [{{- _identifier -}}] != [{{- identifier -}}] -->
+{% else -%}
+  {%- assign related_product_handles = _handles -%}
+{%- endif -%}
+
+{%- comment -%} Clean up local variables. {%- endcomment -%}
+{%- assign _metafield = nil -%}
+{%- assign _identifier = nil -%}
+{%- assign _handles = nil -%}

@@ -821,7 +821,6 @@ div._thumbnail ._image { max-width: 100%; max-height: 100%; }
 
 
 /* SHOPPING CART ---------------------------------------------------------------
-//
 //----------------------------------------------------------------------------*/
 
 /* PADDING */
@@ -934,13 +933,7 @@ input[type="submit"]._checkout-button { border: solid 1px transparent; border-ra
 
 
 /* Footer ----------------------------------------------------------------------
-//
-//------------------------------------------------------------------------------
-// Debug
-footer { border: dashed 1px pink; }
-footer * { border: dashed 1px pink; }
 //----------------------------------------------------------------------------*/
-
 footer { min-width: 320px; border-top: solid 1px #e6e6e6; margin: 1rem 0; }
 footer { display: grid; grid-template-columns: auto; grid-template-areas: "i" "n" "s" "l"; justify-content: center; align-items: center; }
 footer ._info { grid-area: i; }
@@ -985,71 +978,14 @@ footer ._social li svg { display: block; }
   footer { grid-template-areas: "i n s l"; }
   footer ._legal ul { flex-wrap: nowrap; }
 }
+/* (Debug) -------------------------------------------------------------------*/
+footer { border: dashed 1px pink; }
+xfooter * { border: dashed 1px pink; }
+/*----------------------------------------------------------------------------*/
 
 
-/* Product Grid ---------------------------------------------------------------
-//
-//------------------------------------------------------------------------------
-// DEBUG
-._product-grid { border: dashed 1px blue; }
-._product-grid ._ga-nav { border: dashed 1px pink; }
-._product-grid ._ga-carousel { border: dashed 1px pink; }
-._product-grid ._ga-details { border: dashed 1px pink; }
-._product-grid ._ga-related { border: dashed 1px pink; }
+/* Collection ------------------------------------------------------------------
 //----------------------------------------------------------------------------*/
-._product-grid {
-  display: grid;
-  grid-template-columns: 13rem 1fr auto;
-  grid-template-rows: auto auto auto;
-  grid-template-areas:
-    "nav head head"
-    "nav carousel details"
-    "nav related related";
-}
-._product-grid ._ga-head { grid-area: head; }
-._product-grid ._ga-nav { grid-area: nav; }
-._product-grid ._ga-carousel { grid-area: carousel; }
-._product-grid ._ga-details { grid-area: details; }
-._product-grid ._ga-related { grid-area: related; }
-
-/* Module-Specific Breakpoints */
-@media only screen and (max-width: 450px) {
-  ._product-grid {
-    grid-template-columns: 100%;
-    grid-template-areas: "head" "carousel" "details" "related";
-  }
-  ._ga-nav { display: none !important; }
-}
-@media only screen and (min-width: 451px) and (max-width: 667px) {
-  ._product-grid {
-    grid-template-columns: minmax(auto, 100%) auto;
-    grid-template-areas: "head head" "carousel details" "related related";
-  }
-  ._ga-nav { display: none !important; }
-}
-@media only screen and (min-width: 667px) and (max-width: 699px) {
-  ._bp-xxx { display: none !important; }
-}
-@media only screen and (min-width: 700px) {
-  ._bp-xxx { display: none !important; }
-}
-
-/* (DELETE) NavContent Grid ----------------------------------------------------
-//
-//------------------------------------------------------------------------------
-// TODOs:
-//  - What do we make the smallest allowable width for a collection image?
-//    It affects how many columns in wider resolutions, and whether the
-//    label and price also fit on the screen.
-//----------------------------------------------------------------------------*/
-// DEBUG */
-._navcontent-grid ._navcontent-grid-nav { border: dashed 1px red; }
-._navcontent-grid ._navcontent-grid-content { border: dashed 1px green; }
-//----------------------------------------------------------------------------*/
-._navcontent-grid { display: flex; flex-flow: row nowrap; justify-content: flex-start; }
-._navcontent-grid ._navcontent-grid-nav { width: 13rem; }
-._navcontent-grid ._navcontent-grid-content { width: 100%; }
-
 ._collection { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); grid-gap: 1rem; max-width: 900px; }
 ._collection figure { margin: 0; display: flex; flex-flow: column nowrap; justify-content: flex-start; }
 ._collection figure img { display: block; max-width: 100%; }
@@ -1057,77 +993,6 @@ footer ._social li svg { display: block; }
 ._collection figure figcaption ul { list-style: none; margin: 0; padding: 0; display: flex; flex-flow: column nowrap; }
 ._collection ._title { font-weight: 500; text-align: center; order: 1; padding: 0 0.5rem; }
 ._collection ._price { color: gray; text-align: center; order: 2; }
-
-/* Module-Specific Breakpoints */
-@media only screen and (max-width: 667px) {
-/* TODO: Change this to a ._bp-xxx class. */
-  ._navcontent-grid ._navcontent-grid-nav { display: none !important; }
-}
-@media only screen and (min-width: 30rem) and (max-width: 38rem) {
-}
-@media only screen and (min-width: 38rem) and (max-width: 43rem) {
-}
-@media only screen and (min-width: 43rem) {
-}
-
-
-/* Carousel --------------------------------------------------------------------
-//  - Styles for Dots, Prev Links, and Next Links must be generated at runtime.
-//      ._state:nth-of-type(n):checked ~ ._pagination ._dot:nth-of-type(n) { background: black; }
-//      ._state:nth-of-type(n):checked ~ ._pagination ._prev:nth-of-type(n-1) { display: block; }
-//      ._state:nth-of-type(n):checked ~ ._pagination ._next:nth-of-type(n+1) { display: block; }
-//------------------------------------------------------------------------------
-// DEBUG
-._carousel ._viewer { border: solid 1px orange; }
-._carousel ._viewer ._aspectratio ._viewport ._slides ._slide { border: solid 1px yellow; }
-//----------------------------------------------------------------------------*/
-._carousel { display: flex; flex-flow: column nowrap; }
-._carousel ._viewer { }
-._carousel ._viewer ._aspectratio { max-width: 60vmin; max-height: 90vmin; margin: 0 auto; }
-._carousel ._viewer ._aspectratio ._viewport { width: 100%; padding-bottom: calc(100% * 3/2); position: relative; overflow: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; }
-._carousel ._viewer ._aspectratio ._viewport { -webkit-overflow-scrolling: touch; -ms-overflow-style: none; overflow: -moz-scrollbars-none; }
-._carousel ._viewer ._aspectratio ._viewport::-webkit-scrollbar { display: none; }
-._carousel ._viewer ._aspectratio ._viewport ._slides { position: absolute; width: 100%; height: 100%; display: flex; flex-flow: row nowrap; }
-._carousel ._viewer ._aspectratio ._viewport ._slides ._slide { display: flex; align-items: center; justify-content: center; min-width: 100%; scroll-snap-align: center; }
-._carousel ._viewer ._aspectratio ._viewport ._slides ._slide ._image { object-fit: contain; width: 100%; height: 100%; }
-._carousel ._controls { position: relative; }
-._carousel ._controls ._state { position: absolute; left: -999%; }
-._carousel ._controls ._pagination { display: flex; flex-flow: row nowrap; align-items: center; justify-content: center; }
-._carousel ._controls ._pagination ._prevs { order: 1; }
-._carousel ._controls ._pagination ._nexts { order: 3; }
-._carousel ._controls ._pagination ._dots { order: 2; }
-._carousel ._controls ._pagination ._dots ._dot { cursor: pointer; color: lightgray; margin: 0.5rem; }
-._carousel ._controls ._pagination ._dots ._dot::before { content: "\2022"; }
-._carousel ._controls ._pagination ._prevs ._prev { cursor: pointer; margin-right: 0.5rem; display: none; }
-._carousel ._controls ._pagination ._prevs ._prev::before { content: "<"; }
-._carousel ._controls ._pagination ._nexts ._next { cursor: pointer; margin-left: 0.5rem; display: none; }
-._carousel ._controls ._pagination ._nexts ._next::before { content: ">"; }
-
-
-/* Size Chart ------------------------------------------------------------------
-//
-//------------------------------------------------------------------------------
-// DEBUG
-._sizechart { border: dashed 1px red; }
-._sizechart ._table { border: dashed 1px pink; }
-._sizechart ._diagram { border: dashed 1px orange; }
-//----------------------------------------------------------------------------*/
-._sizechart { display: flex; flex-flow: column; min-width: max-content; max-width: 500px; }
-._sizechart ._table { order: 1; }
-._sizechart ._diagram { order: 2; }
-
-._sizechart ._table { display: grid; grid-auto-columns: minmax(max-content, auto); }
-._sizechart ._table { border: solid 1px lightgray; grid-gap: 1px; background-color: lightgray; }
-._sizechart ._table > * { background-color: white; }
-._sizechart ._table ._th { grid-row: 1; }
-._sizechart ._table ._td { text-align: center; }
-._sizechart ._table ._td._t-highlight { background: lightyellow; }
-
-._sizechart ._diagram { text-align: center; }
-._sizechart ._diagram img { max-width: 200px; max-height: 200px; }
-
-._sizechart-button { background: none; border: none; text-decoration: underline; cursor: pointer; }
-._sizechart-button:focus { outline: 0; }
 
 
 /* Related Items ---------------------------------------------------------------
@@ -1147,7 +1012,6 @@ footer ._social li svg { display: block; }
 
 
 /* Horizontal Gallery ----------------------------------------------------------
-//
 //------------------------------------------------------------------------------
 // DEBUG */
 ._hgallery { border: solid 1px red; }
@@ -1160,181 +1024,55 @@ footer ._social li svg { display: block; }
 ._hgallery ._image { display: block; width: 100%; height: 100%; object-fit: contain; }
 
 
-/* Form Validation -------------------------------------------------------------
-//  - https://css-tricks.com/form-validation-ux-html-css/
-//  - https://developer.mozilla.org/en-US/docs/Learn/HTML/Forms/Form_validation/
+/* Product/NavContent Grid -------------------------------------------------------------
 //------------------------------------------------------------------------------
 // TODOs:
-//  - Elegant UX for :valid and :invalid pseudo-classes.  These are not it:
-//      input[type="email"]:valid { outline: 1px solid green; }
-//      input[type="email"]:invalid { outline: 1px solid red; }
+//  - DELETE WHEN WE'VE REMOVED ALL REFERENCES
+//  - What do we make the smallest allowable width for a collection image?
+//    It affects how many columns in wider resolutions, and whether the
+//    label and price also fit on the screen.
 //----------------------------------------------------------------------------*/
+._product-grid {
+  display: grid;
+  grid-template-columns: 13rem 1fr 375px;
+  grid-template-rows: auto auto auto;
+  grid-template-areas:
+    "nav head head"
+    "nav carousel details"
+    "nav related related";
+}
+._product-grid ._ga-head { grid-area: head; }
+._product-grid ._ga-nav { grid-area: nav; }
+._product-grid ._ga-carousel { grid-area: carousel; }
+._product-grid ._ga-details { grid-area: details; }
+._product-grid ._ga-related { grid-area: related; }
 
+._product-grid ._ga-details { padding: 0 1rem; }
+._product-grid ._ga-related { padding: 0 1rem; }
 
-/* _addtocart.css --------------------------------------------------------------
-// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
-//----------------------------------------------------------------------------*/
-._addtocart ._info { display: flex; padding: 1rem 0; }
-._addtocart ._info ._compare { display: flex; align-items: center; font-size: 1.5rem; color: lightgray; text-decoration: line-through; padding-right: 0.5rem; }
-._addtocart ._info ._price { display: flex; align-items: center; font-size: 1.5rem; padding-right: 1rem; }
-._addtocart ._info ._price._quiet { color: lightgray; }
-._addtocart ._info ._message { display: flex; align-items: center; }
-/* Make sure empty price fields do not collapse vertical space. */
-._addtocart ._info ._compare:empty { padding: 0; }
-._addtocart ._info ._compare:empty:after { content: "\200b"; }
-._addtocart ._info ._price:empty { padding: 0; }
-._addtocart ._info ._price:empty:after { content: "\200b"; }
-/* Lay out add-to-cart button and in-stock alert in the same area. */
-._addtocart ._request { display: flex; }
-._addtocart ._request ._product { display: flex; width: 100%; }
-._addtocart ._request ._product button { font: inherit; padding: 1rem; width: 100%; white-space: nowrap; border: solid 1px orange; background: lightyellow; border-radius: 4px; }
-._addtocart ._request ._instockalert { display: flex; width: 100%; }
-._addtocart ._request ._instockalert input { font: inherit; padding: 1rem; width: 100%; border: solid 1px orange; border-radius: 4px 0 0 4px; }
-._addtocart ._request ._instockalert button { font: inherit; padding: 1rem; width: auto; white-space: nowrap; border: solid 1px orange; background: lightyellow; border-radius: 0 4px 4px 0; margin-left: -1px; }
-/* Render the in-stock alert response dialogs (success and failure). */
-._addtocart ._response { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
-._addtocart ._response > * { margin: 1rem; padding: 1rem; border: solid 1px transparent; border-radius: 0.5rem; text-align: center; width: 250px; }
-._addtocart ._response button { padding: 0.5rem 1rem; border-radius: 0.25rem; color: white; }
-._addtocart ._response ._success { background: #dff0d8; border-color: #d0e9c6; color: #3c763d; }
-._addtocart ._response ._error { background: #f2dede; border-color: #ebcccc; color: #a94442; }
-._addtocart ._response ._error ul { text-align: left; margin: 0.5rem; padding: 0.5rem; }
-._addtocart ._response ._success button { border: solid 1px green; background: green; }
-._addtocart ._response ._error button { border: solid 1px red; background: red; }
-/* (Debug) -------------------------------------------------------------------*/
-.x_addtocart { border: dashed 1px pink; }
-.x_addtocart fieldset { border: dashed 1px blue; }
-.x_addtocart legend { color: blue; }
-._addtocart fieldset { display: none; }
-.x_addtocart ._info { border: dashed 1px yellow; }
-.x_addtocart ._info > * { border: dashed 1px orange; }
-/*----------------------------------------------------------------------------*/
-
-
-/* _breadcrumb.css -------------------------------------------------------------
-// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
-//----------------------------------------------------------------------------*/
-._breadcrumb ul { display: inline; list-style: none; margin: 0; padding: 0; white-space: nowrap; }
-._breadcrumb li { display: inline; }
-._breadcrumb li:not(:last-child)::after { content: "\003E"; margin: 0 0.5rem; color: gray; }
-/* (Debug) -------------------------------------------------------------------*/
-.x_breadcrumb { border: dashed 1px pink; }
-/*----------------------------------------------------------------------------*/
-
-
-/* _infochart.css --------------------------------------------------------------
-// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
-//----------------------------------------------------------------------------*/
-/* These style the table and diagram portions of the infochart. */
-._infochart { display: flex; flex-flow: column; min-width: max-content; max-width: 500px; }
-._infochart ._table { order: 1; }
-._infochart ._diagram { order: 2; }
-/* These style the <ul>s into a CSS Grid. */
-._infochart ._table { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(max-content, auto); }
-._infochart ._table ul { display: contents; list-style: none; }
-._infochart ._table ul:first-of-type li { grid-column: 1; }
-/* These style the grid borders. */
-._infochart ._table ul li { border-top: solid 1px lightgray; border-left: solid 1px lightgray; }
-._infochart ._table ul:last-of-type li { border-right: solid 1px lightgray; }
-._infochart ._table ul li:last-of-type { border-bottom: solid 1px lightgray; }
-/* These style the table cells. */
-._infochart ._table ul { list-style: none; }
-._infochart ._table ul li { padding: 0 0.5rem; }
-._infochart ._table ul:first-of-type li:first-of-type { visibility: hidden; } /* "visibility: hidden;" hides the element but retains the space occupied by it. */
-._infochart ._table ul:not(:first-of-type) li { text-align: center; }
-._infochart ._table ul._t-highlight li { background: black; color: white; }
-/* These style the diagram. */
-._infochart ._diagram { border: solid 1px lightgray; border-top: none; text-align: center; padding: 1rem; }
-._infochart ._diagram img { max-width: 200px; max-height: 200px; }
-/* These style infochart buttons. */
-._infochart-button { background: none; border: none; text-decoration: underline; cursor: pointer; }
-/* (Debug) -------------------------------------------------------------------*/
-.x_infochart { border: dashed 1px red; }
-.x_infochart ._table { border: dashed 1px pink; }
-.x_infochart ._diagram { border: dashed 1px orange; }
-/*----------------------------------------------------------------------------*/
-
-
-/* _menu.css -------------------------------------------------------------------
-// Copyright 2018 maulomelin@gmail.com.  Released under the MIT license.
-//----------------------------------------------------------------------------*/
-._menu { padding: 0.5rem 0; }
-._menu ul { margin: 0; padding: 0 1rem; white-space: nowrap; }
-._menu li { display: block; line-height: 1.5rem; }
-/* (Debug) -------------------------------------------------------------------*/
-.x_menu { border: dashed 1px pink; }
-/*----------------------------------------------------------------------------*/
-
-
-/* _optiongroup.css ------------------------------------------------------------
-// Copyright 2018 maulomelin@gmail.com.  Released under the MIT license.
-//----------------------------------------------------------------------------*/
-._optiongroup { margin: 0; padding: 0; border: none; }
-/* These style the option group's caption (the name, value, and info areas). */
-._optiongroup legend { margin: 0; padding: 0; width: 100%; }
-._optiongroup legend ._caption { display: flex; flex-flow: row wrap; justify-content: flex-start; white-space: nowrap; }
-._optiongroup legend ._caption ._name::after { content: ":"; }
-._optiongroup legend ._caption ._value { padding: 0 1rem 0 0.125rem; }
-._optiongroup legend ._caption ._info { }
-/* These style the default labels, checked state, and if they're colored. */
-._optiongroup ._options { position: relative; display: flex; flex-flow: row wrap; align-items: center; }
-._optiongroup ._options ._option { position: absolute; left: -999%; }
-._optiongroup ._options ._label { position: relative; display: flex; align-items: center; justify-content: center; }
-._optiongroup ._options ._label { border: solid 1px lightgray; padding: 0.5rem 1rem; margin: 0.5rem 1rem 0 0; cursor: pointer; }
-._optiongroup ._options ._option:checked + ._label:not(._color) { background: black; color: white; border: solid 1px lightgray; }
-._optiongroup ._options ._option:checked + ._label._color { box-shadow: 0 0 0.25rem 0.25rem black; }
-._optiongroup ._options ._option:only-of-type + ._label:only-of-type { display: none; }
-/* These style the cross-out on default labels. */
-._optiongroup ._options ._label._x::before { content: ""; position: absolute; border: solid 1px lightgray; width: 100%; height: 100%; background: linear-gradient(to top left, transparent 0%, transparent calc(50% - 1px), white calc(50% - 1px), lightgray calc(50% + 1px), transparent calc(50% + 1px), transparent 100%); }
-._optiongroup ._options ._label._xx::before { content: ""; position: absolute; border: solid 1px lightgray; width: 100%; height: 100%; background: linear-gradient(to top left, transparent 0%, transparent calc(50% - 1px), white calc(50% - 1px), lightgray calc(50% + 1px), transparent calc(50% + 1px), transparent 100%), linear-gradient(to top right, transparent 0%, transparent calc(50% - 1px), white calc(50% - 1px), lightgray calc(50% + 1px), transparent calc(50% + 1px), transparent 100%); }
-._optiongroup ._options ._label._xxx::before { content: ""; position: absolute; border: solid 1px lightgray; width: 100%; height: 100%; background: linear-gradient(to top left, transparent 0%, transparent calc(50% - 1px), white calc(50% - 1px), lightgray calc(50% + 1px), transparent calc(50% + 1px), transparent 100%), linear-gradient(to top right, transparent 0%, transparent calc(50% - 1px), white calc(50% - 1px), lightgray calc(50% + 1px), transparent calc(50% + 1px), transparent 100%), linear-gradient(to right, transparent 0%, transparent calc(50% - 1px), white calc(50% - 1px), lightgray calc(50% + 1px), transparent calc(50% + 1px), transparent 100%), linear-gradient(to top, transparent 0%, transparent calc(50% - 1px), white calc(50% - 1px), lightgray calc(50% + 1px), transparent calc(50% + 1px), transparent 100%); }
-/* These style the cross-out on circle-shaped labels. */
-._optiongroup ._options ._label._shape-circle,
-._optiongroup ._options ._label._shape-circle._x::before,
-._optiongroup ._options ._label._shape-circle._xx::before,
-._optiongroup ._options ._label._shape-circle._xxx::before { border-radius: 50%; }
-/* (Debug) -------------------------------------------------------------------*/
-.x_optiongroup { border: dashed 1px pink; }
-.x_optiongroup legend { border: dashed 1px yellow; }
-.x_optiongroup legend ._caption div { border: dashed 1px blue; }
-/*----------------------------------------------------------------------------*/
-
-
-/* _pricing.css ----------------------------------------------------------------
-// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
-//----------------------------------------------------------------------------*/
-._pricing { display: flex; padding: 1rem 0; }
-._pricing ._price { order: 2; font-size: 1.5rem; }
-._pricing ._compare { order: 1; font-size: 1.5rem; padding-right: 0.5rem; text-decoration: line-through; color: gray; }
-._pricing ._price._quiet { color: gray; }
-._pricing ._compare:empty { padding: 0; }
-._pricing ._compare:empty:after { content: "\200b"; }
-._pricing ._price:empty:after { content: "\200b"; }
-/* (Debug) -------------------------------------------------------------------*/
-.x_pricing { border: dashed 1px pink; }
-.x_pricing ._price { border: dashed 1px blue; }
-.x_pricing ._compare { border: dashed 1px green; }
-/*----------------------------------------------------------------------------*/
-
-
-/* _related.css ----------------------------------------------------------------
-// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
-//----------------------------------------------------------------------------*/
-/* Set up the overall container. */
-._related { display: flex; overflow-x: auto; }
-/* Remove the scrollbar. */
-._related { -webkit-overflow-scrolling: touch; -ms-overflow-style: none; overflow: -moz-scrollbars-none; }
-._related::-webkit-scrollbar { display: none; }
-/* Set up the CSS Grid. */
-._related ul { margin: 0; padding: 0; list-style: none; }
-._related ul { display: grid; grid-auto-flow: column; grid-auto-columns: 100px; grid-template-rows: auto min-content; }
-/* Remove some containers from the flow. */
-._related ul li { display: contents; }
-._related ul li figure { display: contents; }
-/* Style the image and text elements. */
-._related ul li figure a img { display: block; width: 100%; height: 100%; object-fit: contain; align-self: center; }
-._related ul li figure figcaption { text-align: center; }
-/* (Debug) -------------------------------------------------------------------*/
-.x_related { border: dashed 1px pink; xpadding: 1rem; }
-.x_related ul { border: dashed 1px lightgreen; padding: 1rem; background: lightyellow; }
-.x_related ul li figure > * { border: dashed 1px lightblue; }
+/* Module-Specific Breakpoints */
+@media only screen and (max-width: 450px) {
+  ._product-grid {
+    grid-template-columns: 100%;
+    grid-template-areas: "head" "carousel" "details" "related";
+  }
+  ._ga-nav { display: none !important; }
+}
+@media only screen and (min-width: 451px) and (max-width: 667px) {
+  ._product-grid {
+    grid-template-columns: 1fr 350px;
+    grid-template-areas: "head head" "carousel details" "related related";
+  }
+  ._ga-nav { display: none !important; }
+}
+@media only screen and (min-width: 667px) and (max-width: 699px) { }
+@media only screen and (min-width: 700px) { }
+/* (Debug) -------------------------------------------------------------------*
+._product-grid { border: dashed 1px blue; }
+._product-grid ._ga-nav { border: dashed 1px pink; }
+._product-grid ._ga-carousel { border: dashed 1px pink; }
+._product-grid ._ga-details { border: dashed 1px pink; }
+._product-grid ._ga-related { border: dashed 1px pink; }
+._navcontent-grid ._navcontent-grid-nav { border: dashed 1px red; }
+._navcontent-grid ._navcontent-grid-content { border: dashed 1px green; }
 /*----------------------------------------------------------------------------*/

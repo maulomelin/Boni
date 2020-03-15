@@ -55,6 +55,13 @@ TODOs:
     <div class="rte">{{ collection.description }}</div>
     {% endif %}
 
+sort_by: [{{ collection.sort_by }}]
+<br/><br/>
+url: [{{ collection.url | sort_by: "best-selling" }}]
+<br/><br/>
+default_sort_by: [{{ collection.default_sort_by }}]
+<br/><br/>
+
     {% paginate collection.products by 200 %}
     <div class="_collection">
       {% for product in collection.products %}

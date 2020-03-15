@@ -1,0 +1,97 @@
+{%- comment -%}-----------------------------------------------------------------
+Design Pattern:
+  [_productinfo]
+
+Snippet:
+  _productinfo.Liquid
+
+Usage:
+  {% include "_productinfo", product: product %}
+
+Parameters:
+  {product object} product [ required ] // The product this info is from.
+
+Output:
+
+Description:
+  - The module is spec'd out in the [_productinfo] design pattern document.
+  - Parses the product description data from Shopify and generates the
+    HTML code for this module.
+  - Assumes that the description fields are delineated by <h3> headings.
+    As such, the splitting process is as follows:
+
+      product.description       =>  [<h3>label</h3>content]*
+      split: "<h3>"             =>  [label1</h3>content1] ... [labelN</h3>contentN]
+      foreach {split: "</h3>"}  =>  { [label1] [content1] } ... { [labelN] [contentN] }
+
+  - Handles the case when delimiters are missing or invalid.
+    When data is found (i.e. a panel) that cannot be split into a corresponding
+    {label, content} pair, it is rendered as {"Description", data}.
+  - See the design pattern document for details on target HTML schema and
+    on specific visual design elements (e.g. expand/collapse indicators built
+    via CSS, no border around tabs, etc.).
+
+TODOs:
+  - What tags do we use in the description data to use as panel delimiters?
+  - Should the ":hover" rules be the same as the ":focus" ones (kbd vs. mouse)?
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- comment -%} beginMarker {%- endcomment %}
+<!-- [_productinfo] -->
+{%- comment -%} /beginMarker {%- endcomment -%}
+
+{%- comment -%} Set up local variables. {%- endcomment -%}
+{%- assign _panels = product.description | strip | split: "<h3>" -%}
+{%- assign _productinfo_id = "_productinfo" | append: global_idcounter -%} {%- comment -%} e.g. "_productinfo8" {%- endcomment -%}
+{%- assign _productinfo_id_suffix = "-productinfo" | append: global_idcounter -%} {%- comment -%} e.g. "-productinfo8" {%- endcomment -%}
+{%- assign _checkbox_name = "_c" | append: global_idcounter -%} {%- comment -%} e.g. "_c8" {%- endcomment -%}
+{%- assign _radio_name = "_r" | append: global_idcounter -%} {%- comment -%} e.g. "_r8" {%- endcomment -%}
+{%- assign global_idcounter = global_idcounter | plus: 1 -%} {%- comment -%} Always increment it after using it. {%- endcomment -%}
+{%- assign _checked = "checked" -%}
+
+{%- if _panels %}
+<div class="_productinfo" id="{{- _productinfo_id -}}">
+  {%- for _panel in _panels -%}
+    {%- unless blank == _panel -%}
+      {%- assign _x = _panel | strip | split: "</h3>" -%}
+      {%- comment -%} Handle missing delimiter tags. {%- endcomment -%}
+      {%- if blank == _x[1] -%}
+        {%- assign _label = "Description" -%}
+        {%- assign _content = _x[0] %}
+      {%- else -%}
+        {%- assign _label = _x[0] -%}
+        {%- assign _content = _x[1] %}
+      {%- endif -%}
+      {%- comment -%} Set input IDs. {%- endcomment -%}
+      {%- assign _panel_checkbox_id = forloop.index | prepend: "_panel-c" | append: _productinfo_id_suffix -%}
+      {%- assign _panel_radio_id = forloop.index | prepend: "_panel-r" | append: _productinfo_id_suffix %}
+  <div class="_panel">
+    <input id="{{- _panel_checkbox_id -}}" type="checkbox" name="{{- _checkbox_name -}}" />
+    <label for="{{- _panel_checkbox_id -}}">{{- _label -}}</label>
+    <input id="{{- _panel_radio_id -}}" type="radio" name="{{- _radio_name -}}" {{ _checked }} />
+    <label for="{{- _panel_radio_id -}}">{{- _label -}}</label>
+    <div>{{- _content -}}</div>
+  </div>
+    {%- if _checked -%} {%- assign _checked = nil -%} {%- endif -%}
+    {%- endunless -%}
+  {%- endfor %}
+</div>
+{%- endif -%}
+
+{%- comment -%} Clean up local variables. {%- endcomment -%}
+{%- assign _panels = nil -%}
+{%- assign _panel = nil -%}
+{%- assign _productinfo_id = nil -%}
+{%- assign _productinfo_id_suffix = nil -%}
+{%- assign _checkbox_name = nil -%}
+{%- assign _radio_name = nil -%}
+{%- assign _x = nil -%}
+{%- assign _label = nil -%}
+{%- assign _content = nil -%}
+{%- assign _checked = nil -%}
+{%- assign _panel_checkbox_id = nil -%}
+{%- assign _panel_radio_id = nil -%}
+
+{%- comment -%} endMarker {%- endcomment %}
+<!-- /[_productinfo] -->
+{% comment -%} /endMarker {%- endcomment -%}

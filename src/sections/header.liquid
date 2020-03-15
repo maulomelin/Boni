@@ -1,101 +1,14 @@
-{% comment %}
+{%- comment -%}-----------------------------------------------------------------
 NOTES:
   - we follow Slate's convention of wrapping the content of a Section file in
     an element with a "data-section-type" attribute.  The type is taken from
     this attribute's value.
-  -
-
-TODOs:
-  - Update img tags to use other attributes (i.e. srcset, alt, itemprop, etc).
-    See https://css-tricks.com/responsive-images-youre-just-changing-resolutions-use-srcset/
-  - Consider using <itemscope & itemtype="http://schema.org/Organization">
-    after reviewing Google dev docs.
-  - HOW DO YOU ADD/REMOVE GUTTERS?!
-  - Consider animating menu icon from "=" to "x" on state transitions.
-  - Update "role" attribute for each section
-    See https://stackoverflow.com/questions/4170356/what-values-can-the-html5-xhtml-role-attribute-have
-  - Create nested menus.
-    See https://help.shopify.com/themes/development/building-nested-navigation
-  - Fade header, simple code: https://codepen.io/riogrande/pen/gbXxdx
-  - Add ARIA tags and elements.
-  - Add tags and classes for responsiveness at various breakpoints.
-    e.g.  <!-- .small--hide & aria:.icon-fallback-text -->
-          <!-- class="medium-up--hide" -->
-  - Consider changing "l-"-named classes to "s-".
-  - Rename "_row-container" and "_*-slot"
-  - Review proper use of <nav> tags on all appropriate elements.
-  - Do we apply <nav> to the entire header, or just the part that has
-    the menu links?  What do we use for everything else?
-  - The link to the cart was hardcoded with href="/cart".  Check if this is the correct way of doing so.
-  - Revise the coding principles to figure out how to render a link as a button for navigation (the Bag link).
-  - HOW CAN ".small--hide" BE WORKING WITHOUT A ".grid" CLASS ABOVE IT?!?!
-  - Do we augment the link-list to use in both drawer and navbar where link lists are needed?
-    In other words, replace "navigation-menu.liquid" with "link-list.liquid".
-{% endcomment %}
+--------------------------------------------------------------{%- endcomment -%}
 
 <!-- header section (\src\sections\header.liquid) -->
 <div data-section-id="{{ section.id }}" data-section-type="header">
 
-  <header>
-    <div class="_navbar">
-      <div class="_navitem _l">
-        <div class="_navitem">
-          <button class="_button _js-menu-button _bp-button">
-            {% include "icons", icon: "menu", class: "_img" %}
-            <div class="_label _bp-button-label">Menu</div>
-          </button>
-          <button class="_button _js-search-button _bp-button">
-            {% include "icons", icon: "search", class: "_img" %}
-            <div class="_label _bp-button-label">Search</div>
-          </button>
-          <div class="_horizontal-menu _bp-linklist">
-            {%- include "link-list", list: linklists.header-navbar -%}
-          </div>
-        </div>
-      </div>
-      <div class="_navitem _m _text-xxxlarge">
-        <div class="_logo">MLCloset</div>
-      </div>
-      <div class="_navitem _r">
-        <div class="_navitem">
-          <button class="_button _js-login-button _bp-button">
-            {% include "icons", icon: "account", class: "_img" %}
-            <div class="_label _bp-button-label">Login</div>
-          </button>
-          <button class="_button _js-cart-button _bp-button">
-            {% include "icons", icon: "bag", class: "_img" %}
-            <div class="_label">
-              <span class="_bp-button-label">{{ "layout.cart.title" | t }}</span>
-              ({{ cart.item_count }})
-            </div>
-          </button>
-          <div class="_horizontal-menu _bp-linklist">
-            <ul>
-              <li>{{ "Login" | customer_login_link }}</li>
-              <li><a href="/cart">{{ "layout.cart.title" | t }} ({{ cart.item_count }})</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="_drawers">
-      <div class="_overlay-drawer _js-overlay-drawer"></div>
-      <div class="_menu-drawer _js-menu-drawer">
-        <nav class="_vertical-menu">
-          {%- include "link-list", list: linklists.header-drawer -%}
-          <hr/>
-          {%- include "link-list", list: linklists.footer -%}
-        </nav>
-      </div>
-      <div class="_cart-drawer _js-cart-drawer"></div>
-      <div class="_search-drawer _js-search-drawer"></div>
-    </div>
-<!--
-    <div class="_noticebar">
-      Free shipping and returns.
-    </div>
--->
-  </header>
+  {% include "_header" %}
 
 </div>
 

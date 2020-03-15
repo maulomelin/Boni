@@ -22,8 +22,14 @@ window.boni = window.boni || {};
 // =require templates/customers-addresses.js
 // =require templates/customers-login.js
 
-/*================ Global ================*/
+/*================ Boni ================*/
 // =require boni.js
+// =require boni/_addtocart.js
+// =require boni/_infochart.js
+// =require boni/_infochart-button.js
+// =require boni/_optiongroup.js
+// =require boni/_header.js
+// =require boni/_carousel.js
 
 $(document).ready(function() {
   var sections = new slate.Sections();

@@ -1,7 +1,12 @@
 {% comment %}
   Custom template for testing styles applied to RTE content.
   Remove before deploying to production/publishing your theme.
+  Open as http://localhost:3000/pages/sitemap?view=styles
+    - "sitemap" can be any page already defined in the Shopify Admin
+      UI at [Shopify > Online Store > Pages].
 {% endcomment %}
+
+{{ page.content }}
 
 <style>
 /* Styleguide styles */
@@ -13,9 +18,118 @@
 </style>
 
 <div class="page-width">
-  <h1 style="background: black; text-color: white; padding-top: 30px;">{{ page.title }}</h1>
 
-  <p>This page is here to show off styles for standard page elements such as typography, form elements, and icons. These are hard coded in an alternate page template file, named <code>page.styles.liquid</code>.</p>
+  <h1 style="background: lightgreen; padding: 0.5rem;">{{ page.title }}</h1>
+
+
+  <ul>
+    <li>
+      Global objects (or global variables) can be used and accessed from any file in our theme.
+      <ul>
+        <li><a href="https://help.shopify.com/en/themes/liquid/objects#global-objects/">https://help.shopify.com/en/themes/liquid/objects#global-objects/</a></li>
+      </ul>
+    </li>
+    <li>
+      From all global objects, the <code>settings</code> object is the one with settings that can be modified in the Admin UI.
+      This one seems the most appropriate to hold metadata that we have need of, such as mapping tables for codes to friendly names, maps/dictionaries (associative arrays) for things like "other colors" or "paired with" sections in each product, etc.
+      <ul>
+        <li>We can store this information in metafields for each product, but without a default UI to modify this in every product, managing metafields via CSV imports needs us to redo a product, which is highly inconvenient.</li>
+        <li>We could pay for a Shopify app to access those metafields, but that's an additional expense.</li>
+        <li>We can build a Shopify app for this, but that will have to be at a later date.</li>
+      </ul>
+    </li>
+    <li>
+      The global settings object contains all settings of a store's published theme.
+      <ul>
+        <li>These theme settings are configured in the file <code>settings_schema.json</code>.</li>
+        <li>This file can be accessed using the Admin UI's theme editor in [ Shopify > Online Store > Themes > Customize > Themes settings ].</li>
+      </ul>
+    </li>
+    <li>
+      To use the settings in the theme settings file, we must add the <code>id</code> attribute of the correct settings input to each occurrence of the settings Liquid object.
+      <ul>
+        <li><a href="https://help.shopify.com/en/themes/development/theme-editor/other-theme-files#using-theme-settings/">https://help.shopify.com/en/themes/development/theme-editor/other-theme-files#using-theme-settings/</a></li>
+      </ul>
+    </li>
+    <li>
+      We need to explore whether we can store and access structured data in the theme settings file.
+      This section explores that.
+    </li>
+    <li>
+      Issues:
+      <ul>
+        <li>
+          The schema file appears to simply be that, the schema of the settings.
+          The actual settings values are either defaults in the <code>settings_schema.json</code> file, or other selections that the user makes that are stored in the <code>settings_data.json</code> file.
+          If that's the case, then we need to figure out:
+          <ul>
+            <li>How to create a loopable structure in the schema file that contains all of the items we want to loop through.</li>
+            <li>How to define a loopable structure in the schema file that we can populate with data in the data file so we can loop through it.</li>
+          </ul>
+        </li>
+        <li>
+          We found the <code>block</code> object, but this is only supported in a <code>section</code> object.
+          <a href="https://stackoverflow.com/questions/49870923/add-blocks-in-settings-schema-json-in-shopify-theme/">https://stackoverflow.com/questions/49870923/add-blocks-in-settings-schema-json-in-shopify-theme/</a>
+        </li>
+        <li>
+          This leaves us with some workaround options (see <a href="https://stackoverflow.com/questions/49870923/add-blocks-in-settings-schema-json-in-shopify-theme/">https://stackoverflow.com/questions/49870923/add-blocks-in-settings-schema-json-in-shopify-theme/</a>):
+          <ol>
+            <li>
+              <span class="_text-red">[REJECTED]</span>
+              Use linklists.
+              <ul>
+                <li>This is overloading functionality of a setting type called "link" to hold strutured data.</li>
+              </ul>
+            </li>
+            <li>
+              <span class="_text-red">[REJECTED]</span>
+              Use a separate section.
+              <ul>
+                <li>
+                  From <a href="https://help.shopify.com/en/themes/development/sections#settings">https://help.shopify.com/en/themes/development/sections#settings</a>:
+                  <ul>
+                    <li><i>The global <code>settings</code> object (which contains the values of settings defined in <code>settings_schema.json</code>) is available within sections, but you cannot access setting values of sections (for example, <code>section.settings</code>) outside of those sections.</i></li>
+                  </ul>
+                </li>
+                <li>For this reason, we cannot leverage a section to hold data that we want to access globally from anywhere.</li>
+              </ul>
+            </li>
+            <li>
+              <span class="_text-green">[SELECTED]</span>
+              Use textarea.
+              <ul>
+                <li>This type of global object setting meets the needs if we store structured data we read and parse in real-time.</li>
+                <li><a href="https://stackoverflow.com/questions/49870923/add-blocks-in-settings-schema-json-in-shopify-theme/">https://stackoverflow.com/questions/49870923/add-blocks-in-settings-schema-json-in-shopify-theme/</a></li>
+              </ul>
+            </li>
+          </ol>
+        </li>
+      </ul>
+    </li>
+  </ul>
+
+  <br/>
+  settings.metadata1 = [{{ settings.metadata1 }}]
+  <br/>
+  settings.products_per_page = [{{ settings.products_per_page }}]
+  <br/>
+  settings.type_base_size = [{{ settings.type_base_size }}]
+  <br/>
+  settings.type_base_size.options = [{{ settings.type_base_size.options }}]
+  <br/>
+  settings.theme_info.theme_name = [{{ settings.theme_info.theme_name }}]
+  <br/>
+  {% for option in settings.type_base_size %}
+    <br/>
+    option.label/option.value = [{{ option.label }}]/[{{ option.value }}]
+  {% endfor %}
+
+  <hr/>
+
+  <div>
+    The following section shows off styles for standard page elements such as typography, form elements, and icons.
+    These are hard coded in an alternate page template file, named <code>page.styles.liquid</code>.
+  </div>
 
   <hr/>
 

@@ -1,0 +1,9 @@
+/* _menu.css -------------------------------------------------------------------
+// Copyright 2018 maulomelin@gmail.com.  Released under the MIT license.
+//----------------------------------------------------------------------------*/
+._menu { padding: 0.5rem 0; }
+._menu ul { margin: 0; padding: 0 1rem; white-space: nowrap; }
+._menu li { display: block; line-height: 1.5rem; }
+/* (Debug) -------------------------------------------------------------------*/
+.x_menu { border: dashed 1px pink; }
+/*----------------------------------------------------------------------------*/

@@ -1,0 +1,44 @@
+{%- comment -%}-----------------------------------------------------------------
+Snippet:
+  function.breadcrumb_collection_handles.Liquid
+
+Usage:
+  {%- include "function.breadcrumb_collection_handles", product: product -%}
+  {%- assign _handles = breadcrumb_collection_handles -%}
+
+Parameters:
+  {product object} product [ required ] // The product to draw data from.
+
+Output:
+  - An array of collection handles representing the given product's breadcrumb.
+
+Description:
+  - The data comes from a product metafield.
+      - For now, "breadcrumb" data is imported into a product metafield.
+  - This routine only returns valid collections.
+  - The [_breadcrumb] module is basically a list of links to collections
+    in the hierarchy tree in the ideal taxonomy path where this product lives.
+
+TODOs:
+  - Do we rename this snippet function.collection_handles.liquid ?
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- comment -%} Execute main routine. {%- endcomment -%}
+{%- assign breadcrumb_collection_handles = nil -%}
+
+{%- assign _metafield = product.metafields.google["custom_label_3"] -%}
+
+{%- assign _metafield = _metafield | split: "----------" -%}
+{%- assign _identifier = _metafield[0] -%}
+{%- assign _handles = _metafield[1] | split: "--" -%}
+
+{%- if "breadcrumb" != _identifier %}
+<!-- Error: Metafield type mismatch: [breadcrumb] != [{{- _identifier -}}] -->
+{%- else -%}
+  {%- assign breadcrumb_collection_handles = _handles -%}
+{%- endif -%}
+
+{%- comment -%} Clean up local variables. {%- endcomment -%}
+{%- assign _metafield = nil -%}
+{%- assign _identifier = nil -%}
+{%- assign _handles = nil -%}

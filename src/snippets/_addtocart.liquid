@@ -33,7 +33,13 @@ TODOs:
   - Figure out how to define global constants for availability.
     They need to be used inside function.variantAvailability.liquid, and by
     modules that call that snippet.
+  - Make sure the value for {% _message %} is in sync with what's in JS.
+    In fact, make it a localization string that's pulled both here and there.
 --------------------------------------------------------------{%- endcomment -%}
+
+{%- comment -%} beginMarker {%- endcomment %}
+<!-- [_addtocartl] -->
+{%- comment -%} /beginMarker {%- endcomment -%}
 
 {%- comment -%} Set up local variables. {%- endcomment -%}
 {%- assign _productid = product.id  -%}
@@ -55,14 +61,17 @@ TODOs:
 {%- assign _price = nil -%}
 {%- assign _compare_at_price = nil -%}
 {%- assign _class_quiet = nil -%}
+{%- assign _message = nil -%}
 {%- if "instock" == _availability -%}
   {%- assign _price = _variant.price | money -%}
   {%- if _variant.price < _variant.compare_at_price -%}
     {%- assign _compare_at_price = _variant.compare_at_price | money -%}
   {%- endif -%}
+  {%- assign _message = "&check; In Stock" -%}
 {%- elsif "soldout" == _availability or "outofstock" == _availability -%}
   {%- assign _price = _variant.price | money -%}
   {%- assign _class_quiet = "_quiet" -%}
+  {%- assign _message = "&cross; Not available" -%}
 {%- endif -%}
 
 {%- assign _f_instockalert_id = "_f-instockalert" | append: global_idcounter -%} {%- comment -%} e.g. "_f-instockalert8" {%- endcomment -%}
@@ -70,12 +79,13 @@ TODOs:
 {%- assign _f_product_id = "_f-product" | append: global_idcounter -%} {%- comment -%} e.g. "_f-product7" {%- endcomment -%}
 {%- assign global_idcounter = global_idcounter | plus: 1 -%} {%- comment -%} Always increment it after using it. {%- endcomment -%}
 
+{%- comment -%}{%- endcomment %}
 <div class="_addtocart _js-addtocart" data-u-productid="{{- _productid -}}">
 
   <div class="_info">
     <div class="_compare _js-addtocart-info-compare">{{- _compare_price -}}</div>
     <div class="_price _js-addtocart-info-price {{ _class_quiet }}">{{- _price -}}</div>
-    <div class="_message _js-addtocart-info-message">&check; In Stock</div>
+    <div class="_message _js-addtocart-info-message">{{- _message -}}</div>
   </div>
 
   <div class="_request">
@@ -94,7 +104,7 @@ TODOs:
     <input type="hidden" form="{{- _f_instockalert_id -}}" name="contact[availability]" value="{{- _availability -}}" class="_js-addtocart-form-instockalert-availability" />
     {%- for _option in product.options_with_values %}
     <input type="hidden" form="{{- _f_instockalert_id -}}" name="contact[{{- _option.name -}}]" value="{{- _option.selected_value -}}" class="_js-addtocart-form-instockalert-option" data-u-name="{{- _option.name -}}" />
-    {%- endfor %}
+    {%- endfor -%}
 
     {%- if form.posted_successfully? %}
     <div class="_response _js-addtocart-response">
@@ -116,7 +126,7 @@ TODOs:
         <button type="button">Dismiss</button>
       </div>
     </div>
-    {%- endif %}
+    {% endif %}
   {% endform %}
 
   {% form "product", product, id: _f_product_id %}
@@ -129,10 +139,8 @@ TODOs:
         {%- endfor %}
       </select>
     </fieldset>
-  {%- endform -%}
-
+  {% endform %}
 </div>
-
 
 {%- comment -%} Clean up local variables. {%- endcomment -%}
 {%- assign _type = nil -%}
@@ -142,3 +150,8 @@ TODOs:
 {%- assign _price = nil -%}
 {%- assign _compare_at_price = nil -%}
 {%- assign _class_quiet = nil -%}
+{%- assign _message = nil -%}
+
+{%- comment -%} endMarker {%- endcomment %}
+<!-- /[_addtocart] -->
+{% comment -%} /endMarker {%- endcomment -%}

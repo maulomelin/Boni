@@ -26,6 +26,18 @@ Description:
     associated infochart.  If so, the button will be exposed.  If not, they
     will remain hidden.
   - An invalid index on the product object results in no option group.
+  - To guarantee that the option and product data come from the same product
+    object, we pass as inputs {product object} and {position integer}.
+    We pull the option name from product.options_with_values[position].name
+    and compare that with the name from each infochart data set from
+    product.metafields.google.custom_label_0.
+      - Shopify won't let two options in the same product share the same name,
+        which guarantess the option name will be unique.
+      - If option.name == metafield's infochart name, then they're a match.
+      - An earlier implemmentation passed as inputs:
+            {product object} and {option object}
+        But there was no guarantee the option wasn't from the product object,
+        so the snippet was modified.
 --------------------------------------------------------------{%- endcomment -%}
 
 {%- comment -%} Set up local variables. {%- endcomment -%}

@@ -1,0 +1,119 @@
+/* _header.css -----------------------------------------------------------------
+// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
+//----------------------------------------------------------------------------*/
+header { width: 100%; }
+/* Navbar */
+header ._navbar { height: 4rem; } /* The height of the navbar. */
+header ._navbar { position: relative; display: flex; flex-flow: row nowrap; align-items: center; justify-content: space-between; }
+header ._navbar { background: white; } /* To block off any part of the mini-navbar when it shows up. */
+header ._navbar ._logo { font-size: 2rem; } /* This needs to be updated for an SVG logo. */
+header ._navbar ._links { height: 100%; }
+header ._navbar ._links ul { height: 100%; display: flex; align-items: center; }
+header ._navbar ._links ul { list-style: none; margin: 0; padding: 0; }
+header ._navbar ._links ul li { height: 100%; display: flex; align-items: center; }
+header ._navbar ._links ul li a { height: 100%; display: flex; align-items: center; padding: 0 1rem; }
+header ._navbar ._links ul li a { text-decoration: none; color: gray; }
+header ._navbar ._links ul li a:hover { text-decoration: underline; color: black; }
+header ._navbar ._links ul li a:focus { outline: auto blue; }
+header ._navbar ._links ul li button { all: unset; }
+header ._navbar ._links ul li button { height: 100%; display: flex; align-items: center; padding: 0 1rem; }
+header ._navbar ._links ul li button { cursor: pointer; color: gray; -webkit-text-fill-color: gray; }
+header ._navbar ._links ul li button:hover { text-decoration: underline; color: black; -webkit-text-fill-color: black; }
+header ._navbar ._links ul li button:focus { outline: auto blue; }
+/* Navbar Overrides for MiniNavbar */
+header ._navbar._mini { height: 3rem; }
+header ._navbar._mini { position: fixed; top: 0; visibility: hidden; } /* Hidden (vs. "display: none;"), so we can read its lower coordinate in javascript and decide when to show it. */
+header ._navbar._mini { background: transparent; }
+header ._navbar._mini ._logo { font-size: 0.75rem; align-self: flex-start; }
+header ._navbar._mini ._logo { padding: 0 0.5rem 0.25rem; xborder: solid 1px lightgray; border-top: 0; border-radius: 0 0 0.5rem 0.5rem; background: white; box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.1); }
+header ._navbar._mini ._logo { display: none; }
+header ._navbar._mini ._links a { xborder: solid 1px lightgray; border-top: 0; background: white; box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.1); }
+header ._navbar._mini ._links button { xborder: solid 1px lightgray; border-top: 0; background: white; box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.1); }
+header ._navbar._mini ._links:first-of-type a { border-bottom-right-radius: 1rem; border-left: 0; }
+header ._navbar._mini ._links:last-of-type a { border-bottom-left-radius: 1rem; border-right: 0; }
+header ._navbar._mini ._links:first-of-type button { border-bottom-right-radius: 1rem; border-left: 0; }
+header ._navbar._mini ._links:last-of-type button { border-bottom-left-radius: 1rem; border-right: 0; }
+/* Message Bar */
+header ._messagebar { display: flex; align-items: center; justify-content: center; text-align: center; }
+header ._messagebar { padding: 0.25rem; }
+header ._messagebar { border: solid 1px gray; background: lightgray; color: black; }
+header ._messagebar._info { border: solid 1px green; background: honeydew; color: green; }
+header ._messagebar._warning { border: solid 1px orange; background: lightyellow; color: orange; }
+header ._messagebar._danger { border: solid 1px red; background: pink; color: red; }
+/* Overlay Drawer */
+header ._overlaydrawer { position: absolute; } /* Allows us to move drawers off-screen. */
+header ._overlaydrawer { position: fixed; top: 0; left: 0; width: 0; height: 0; transition: all 0.25s linear; }
+header ._overlaydrawer { background: lightgray; xopacity: 0.5; }
+header ._overlaydrawer._t-slide { width: 90%; height: 100%; transition: all 0.25s linear; }
+/* Menu Drawer */
+header ._menudrawer { position: absolute; } /* Allows us to move the drawer off-screen. */
+header ._menudrawer { max-height: calc(100vh - 4rem); } /* Height offset must match max-height(navbar, mini-navbar). */
+header ._menudrawer { overflow: auto; -webkit-overflow-scrolling: touch; } /* Add momentum scrolling to the menu drawer. */
+header ._menudrawer { width: 15rem; left: -15rem; transition: all 0.5s; } /* Width and shift must match. */
+header ._menudrawer { background: white; }
+header ._menudrawer._t-slide { left: 0; transition: all 0.5s; }
+/* Sticky-Header Overrides */
+header._t-sticky ._menudrawer { position: fixed; top: 3rem; } /* Top must match height of mini-navbar. */
+header._t-sticky ._navbar._mini { width: 100%; }
+header._t-sticky ._navbar._mini { position: fixed; top: 0; visibility: visible; }
+/* Stack Levels */
+header { position: relative; } /* Create a new stacking context for every header element. */
+header ._navbar { z-index: 40; } /* Already has "position: relative;" above. */
+header ._navbar._mini { z-index: 30; } /* Already has "position: fixed;" above. */
+header ._menudrawer { z-index: 20; } /* Already has "position: absolute;" above. */
+header ._overlaydrawer { z-index: 10; } /* Already has "position: absolute;" above. */
+/* Pointer and Touch Events */
+header ._navbar._mini { pointer-events: none; }
+header ._navbar._mini ._links a { pointer-events: auto !important; }
+header ._navbar._mini ._links button { pointer-events: auto !important; }
+header ._overlaydrawer { touch-action: manipulation; }
+/* Breakpoints */
+@media only screen and (max-width: 500px) {
+  /* Navbar Links */
+  ._bp-navbarlink-women { display: none !important; }
+  ._bp-navbarlink-men { display: none !important; }
+  ._bp-navbarlink-search { display: none !important; }
+  ._bp-navbarlink-signin { display: none !important; }
+  /* Menu Links */
+  ._bp-menulink-women { }
+  ._bp-menulink-men { }
+  ._bp-menulink-search { }
+  ._bp-menulink-signin { }
+}
+@media only screen and (min-width: 501px) and (max-width: 600px) {
+  /* Navbar Links */
+  ._bp-navbarlink-women { }
+  ._bp-navbarlink-men { }
+  ._bp-navbarlink-search { display: none !important; }
+  ._bp-navbarlink-signin { display: none !important; }
+  /* Menu Links */
+  ._bp-menulink-women { display: none !important; }
+  ._bp-menulink-men { display: none !important; }
+  ._bp-menulink-search { }
+  ._bp-menulink-signin { }
+}
+@media only screen and (min-width: 601px) {
+  /* Navbar Links */
+  ._bp-navbarlink-women { }
+  ._bp-navbarlink-men { }
+  ._bp-navbarlink-search { }
+  ._bp-navbarlink-signin { }
+  /* Menu Links */
+  ._bp-menulink-women { display: none !important; }
+  ._bp-menulink-men { display: none !important; }
+  ._bp-menulink-search { display: none !important; }
+  ._bp-menulink-signin { display: none !important; }
+}
+/* (Debug) -------------------------------------------------------------------*/
+/* Exclusive to exercise ref#10: (1rem+8px+1px) = padding+margin on one side. */
+xheader { border: dashed 1px pink; }
+xheader ._navbar { border: dashed 1px black; }
+xheader ._overlaydrawer { background: lightblue; border: solid 1px blue; }
+xheader ._menudrawer { background: pink; border: solid 1px orange; }
+xheader ._menudrawer { transition: none; }
+xheader ._menudrawer._t-slide { transition: none; }
+xheader._t-sticky ._navbar._mini { border: dashed 1px black; }
+xheader._t-sticky ._navbar._mini { width: calc(100% - 2 * calc(1rem + 8px + 1px)); }
+xheader._t-sticky ._menudrawer { left: calc(-15rem + 1rem + 8px + 1px); transition: none; }
+xheader._t-sticky ._menudrawer._t-slide { left: calc(1rem + 8px + 1px); transition: none; }
+/*----------------------------------------------------------------------------*/

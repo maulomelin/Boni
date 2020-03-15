@@ -1,0 +1,103 @@
+{%- comment -%}-----------------------------------------------------------------
+Design Pattern:
+  [_header]
+
+Snippet:
+  _header.Liquid
+
+Usage:
+  {%- include "_header" -%}
+
+Parameters:
+  none
+
+Output:
+  - The [_header] structure. See the [_header] design patterns doc for details.
+
+Description:
+  - The function is pretty much filling in a pre-defined template.
+    See the [_header] design patterns document for details.
+
+TODOs:
+- Add ARIA tags and elements.
+- Consider using <itemscope> and <itemtype> - see Google dev docs.
+- Update "role" attribute for each section
+  See https://stackoverflow.com/questions/4170356/what-values-can-the-html5-xhtml-role-attribute-have
+- Create nested menus.
+  See https://help.shopify.com/themes/development/building-nested-navigation
+- Review proper use of <nav> tags on all appropriate elements.
+    - Do we apply <nav> to the entire header, or just to the menu links?
+    - What do we use for everything else?
+- The link to the cart was hardcoded with href="/cart".  Check if this is the correct way of doing so.
+- Clean up HTML code rendering of white-spaces.
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- comment -%} Main routine. {%- endcomment -%}
+<header class="_js-header">
+  <div class="_navbar _js-navbar">
+    <div class="_links">
+      <ul>
+        <li>
+          <button class="_js-button-menu"> Menu </button>
+        </li>
+        <li class="_bp-navbarlink-women">
+          <a href="#">Women</a>
+        </li>
+        <li class="_bp-navbarlink-men">
+          <a href="#">Men</a>
+        </li>
+        <li class="_bp-navbarlink-search">
+          <button class="_js-button-search"> Search </button>
+        </li>
+      </ul>
+    </div>
+    <div class="_logo"> ML#Closet </div>
+    <div class="_links">
+      <ul>
+        <li class="_bp-navbarlink-signin">{{ "Login" | customer_login_link }}</li>
+        <li><a href="/cart">{{ "layout.cart.title" | t }} ({{ cart.item_count }})</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="_navbar _mini _js-mininavbar">
+    <div class="_links">
+      <ul>
+        <li>
+          <button class="_js-button-menu"> Menu </button>
+        </li>
+      </ul>
+    </div>
+    <div class="_logo">
+      ML#Closet
+    </div>
+    <div class="_links">
+      <ul>
+        <li><a href="/cart">{{ "layout.cart.title" | t }} ({{ cart.item_count }})</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="_menudrawer _js-drawer-menu">
+    [menuDrawer]
+    <hr/>
+    {%- include "_menu", list: linklists.header-navbar -%}
+    <hr/>
+    {%- include "link-list", list: linklists.header-drawer -%}
+    <hr/>
+    {%- include "link-list", list: linklists.footer -%}
+    <hr/>
+    <ul>
+      <li> class="_bp-menulink-women" Women </li>
+      <li> class="_bp-menulink-men" Men </li>
+      <li> class="_bp-menulink-search" Search </li>
+      <li> class="_bp-menulink-signin" Sign-in </li>
+    </ul>
+    <hr/>
+    [/menuDrawer]
+  </div>
+  <div class="_overlaydrawer _js-drawer-overlay"></div>
+  <div class="_cart-drawer _js-cart-drawer"></div>
+  <div class="_search-drawer _js-search-drawer"></div>
+  <!-- TODO --
+  <div class="_messagebar"></div>
+  <!---->
+</header>

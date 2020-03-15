@@ -1,0 +1,144 @@
+{%- comment -%}-----------------------------------------------------------------
+Design Pattern:
+  [_carousel]
+
+Snippet:
+  _carousel.Liquid
+
+Usage:
+  {%- include "_carousel", product: product -%}
+
+Parameters:
+  {product object} product [ required ]
+  // The product whose "outfit" images will be shown.
+
+Output:
+  - The [_header] structure. See the [_header] design patterns doc for details.
+
+Description:
+  - By design, the object "product.images" contains a number of different image
+    types.  This procedure only renders any "outfit" images.
+  - To render the CSS rules for all pagination elements, we need to know the
+    number of images in the carousel.
+      1) We can iterate over all images and count the number of outfit images.
+        This allows us to render the <style> tag before the viewer is rendered.
+      2) We can keep a count of outfit images while we are rendering the viewer.
+        This forces us to render the <style> tag after the viewer is rendered.
+      - We chose #1 because it keeps things straight forward.
+  - Image sizes are, by default, "grande" (600px x 600px).
+      - See https://webdesign.tutsplus.com/tutorials/how-to-work-with-images-in-shopify--cms-26149
+
+TODOs:
+- Add ARIA tags and elements.
+- Clean up HTML code rendering of white-spaces.
+- Add a "No Images" placeholder image, in case there are no images.
+- Blindly iterate of all product.images.  We will not overload images.
+    - REJECTED: Don't just blindly iterate over all product.images.
+      Only use outfit images.
+- Images and Dots should be UL>LI's...
+- Update "function.image-filename-attribute" to "function.image_attribute".
+- Image's ALT attribute.
+- Make image responsive.
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- comment -%} beginMarker {%- endcomment %}
+<!-- [_carousel] -->
+{%- comment -%} /beginMarker {%- endcomment -%}
+
+{%- comment -%} Get the number of outfit images. {%- endcomment -%}
+{%- assign _ni = 0 -%}
+{%- for _image in product.images -%}
+  {%- include "function.image-filename-attribute", image: _image, attribute: "type" -%}
+  {%- if "outfit" == image_filename_attribute -%}
+    {%- assign _ni = _ni | plus: 1 -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- comment -%} Run-time styles. {%- endcomment %}
+<style>
+/* Prevs */
+{%- for _i in (1.._ni) -%}
+  {%- if true == forloop.first %}
+._carousel ._state:nth-of-type({{- _i -}}):checked ~ ._prevs ._prev:nth-of-type({{- _ni -}}) { display: block; }
+  {%- else %}
+._carousel ._state:nth-of-type({{- _i -}}):checked ~ ._prevs ._prev:nth-of-type({{- _i | minus: 1 -}}) { display: block; }
+  {%- endif -%}
+{%- endfor %}
+
+/* Nexts */
+{%- for _i in (1.._ni) -%}
+  {%- if true == forloop.last %}
+._carousel ._state:nth-of-type({{- _i -}}):checked ~ ._nexts ._next:nth-of-type(1) { display: block; }
+  {%- else %}
+._carousel ._state:nth-of-type({{- _i -}}):checked ~ ._nexts ._next:nth-of-type({{- _i | plus: 1 -}}) { display: block; }
+  {%- endif -%}
+{%- endfor %}
+
+/* Dots */
+{%- for _i in (1.._ni) %}
+._carousel ._state:nth-of-type({{- _i -}}):checked ~ ._dots ._dot:nth-of-type(n+{{- _i | minus: 3 | abs -}}):nth-of-type(-n+{{- _i | plus: 3 -}}) { width: 0.55rem; height: 0.55rem; margin: 0.1rem; background: lightgray; }
+._carousel ._state:nth-of-type({{- _i -}}):checked ~ ._dots ._dot:nth-of-type(n+{{- _i | minus: 2 | abs -}}):nth-of-type(-n+{{- _i | plus: 2 -}}) { width: 0.7rem; height: 0.7rem; margin: 0.15rem; background: lightgray; }
+._carousel ._state:nth-of-type({{- _i -}}):checked ~ ._dots ._dot:nth-of-type(n+{{- _i | minus: 1 | abs -}}):nth-of-type(-n+{{- _i | plus: 1 -}}) { width: 0.85rem; height: 0.85rem; margin: 0.2rem; background: lightgray; }
+._carousel ._state:nth-of-type({{- _i -}}):checked ~ ._dots ._dot:nth-of-type(n+{{- _i | minus: 0 | abs -}}):nth-of-type(-n+{{- _i | plus: 0 -}}) { width: 1rem; height: 1rem; margin: 0.25rem; background: black; border-color: black; }
+{%- endfor %}
+</style>
+<div class="_carousel _js-carousel">
+  {%- for _i in (1.._ni) -%}
+    {%- assign _id = "_state-" | append: _i -%}
+    {%- assign _targetid = "#_slide-" | append: _i -%}
+    {%- assign _checked = "" -%} {%- if true == forloop.first -%} {%- assign _checked = "checked" -%} {%- endif %}
+  <input id="{{- _id -}}" type="radio" name="_carousel" class="_state _js-state" data-u-target-id="{{- _targetid -}}" {{ _checked }}></label>
+  {%- endfor %}
+  <div class="_viewer">
+    <div class="_aspectratio">
+      <div class="_viewport _js-viewport">
+        <div class="_slides _js-slides">
+          {%- assign _i = 0 -%}
+          {%- for _image in product.images -%}
+            {%- include "function.image-filename-attribute", image: _image, attribute: "type" -%}
+{%- comment -%} DEBUG: "true" has been added to the if statement below to make it show all images. {%- endcomment -%}
+            {%- if true or "outfit" == image_filename_attribute -%}
+              {%- assign _i = _i | plus: 1 -%}
+              {%- assign _id = "_slide-" | append: _i -%}
+              {%- assign _targetid = "#_state-" | append: _i %}
+          <div class="_slide _js-slide" id="{{- _id -}}" data-u-target-id="{{- _targetid -}}">
+            <img class="_image" src="{{ _image | img_url: "master" }}" alt="TODO" />
+          </div>
+            {%- endif -%}
+          {%- endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="_dots">
+    {%- for _i in (1.._ni) -%}
+      {%- assign _for = "_state-" | append: _i %}
+    <label for="{{- _for -}}" class="_dot"></label>
+    {%- endfor %}
+  </div>
+  <div class="_prevs">
+    {%- for _i in (1.._ni) -%}
+      {%- assign _for = "_state-" | append: _i %}
+    <label for="{{- _for -}}" class="_prev"></label>
+    {%- endfor %}
+  </div>
+  <div class="_nexts">
+    {%- for _i in (1.._ni) -%}
+      {%- assign _for = "_state-" | append: _i %}
+    <label for="{{- _for -}}" class="_next"></label>
+    {%- endfor %}
+  </div>
+</div>
+
+{%- comment -%} Clean up local variables. {%- endcomment -%}
+{%- assign _i = nil -%}
+{%- assign _ni = nil -%}
+{%- assign _image = nil -%}
+{%- assign _id = nil -%}
+{%- assign _for = nil -%}
+{%- assign _targetid = nil -%}
+{%- assign _checked = nil -%}
+
+{%- comment -%} endMarker {%- endcomment %}
+<!-- /[_carousel] -->
+{% comment -%} /endMarker {%- endcomment -%}

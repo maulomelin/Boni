@@ -1,1 +1,49 @@
+{% comment %}
+  - This is the template for the homepage. It usually just has the single line:
+
+      {{ content_for_index }}
+
+  - This piece of magic is what enables the homepage to display sections that
+    are dynamically configured in the Shopify Admin UI.  For more info:
+
+      https://shopify.dev/tutorials/develop-theme-use-sections
+
+  - {{ content_for_index }} is a node in \boni\src\config\settings_data.json
+    that references sections to include.  For example:
+
+      {
+        "current": "Default",
+        "presets": {
+          "Default": {
+            "sections": { ... },
+            "content_for_index": [
+              "collection-list",
+              "featured-collection",
+              "featured-product"
+            ]
+          }
+        }
+      }
+
+  - Those sections are names of liquid files in \boni\src\sections\*.liquid
+    For example:
+
+      \boni\src\sections\collection-list.liquid
+      \boni\src\sections\featured-collection.liquid
+      \boni\src\sections\featured-product.liquid
+
+  - Each of those section files contains a {% schema %} section at the bottom
+    of the file that includes any setting a user can configure via the
+    Shopify Admin UI.  The snippet code makes reference to these settings to
+    determine what to do.  For example:
+
+      {% if section.settings.show_share_buttons %}
+        <div data-action="do" data-what="something" />
+      {% endif %}
+
+  - To render static content, simply add it to this page.  Above, below, or
+    replacing the {{ content_for_index }} entry.
+
+{% endcomment %}
+
 {{ content_for_index }}

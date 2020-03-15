@@ -1,0 +1,58 @@
+{%- comment -%}-----------------------------------------------------------------
+Snippet:
+  function.product_attribute.Liquid
+
+Usage:
+  {%- include "function.product_attribute", product: product, type: "outfititems" -%}
+  {%- assign _caption = product_attribute %}
+
+Parameters:
+  {product object} product [ required ] // The product to draw data from.
+  {string} attribute [ required ] // The attribute to search for.
+
+Output:
+  - A string with the requested attribute.
+  - If the requested type is unknown, "nil" is returned.
+
+Description:
+  - The data comes from a product metafield.
+      - For now, "attribute" data is imported into a product metafield.
+
+TODOs:
+  - Remove the use of handleized names in the "attributes" metafield.
+  - Remove the use of handleized names from metafields except where required.
+  - Do we rename this snippet function.attribute_value.liquid ?
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- comment -%} Execute main routine. {%- endcomment -%}
+{%- assign product_attribute = nil -%}
+{%- assign _metafield = product.metafields.google["custom_label_4"] -%}
+{%- assign _metafield = _metafield | split: "----------" -%}
+{%- assign _identifier = _metafield[0] -%}
+{%- assign _attributes = _metafield[1] | split: "---" -%}
+
+{%- if "attributes" != _identifier %}
+<!-- Error: Type mismatch: [attributes] != [{{- _identifier -}}] -->
+{%- else -%}
+  {%- for _a in _attributes -%}
+    {%- assign _attribute = _a | split: "--" -%}
+    {%- assign _name = _attribute[0] -%}
+    {%- assign _value = _attribute[1] -%}
+    {%- if "itemcolorvarieties" == attribute and "color" == _name -%}
+      {%- assign product_attribute = _value -%}
+      {%- break -%}
+    {%- elsif "outfititems" == attribute and "type" == _name -%}
+      {%- assign product_attribute = _value -%}
+      {%- break -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+
+{%- comment -%} Clean up local variables. {%- endcomment -%}
+{%- assign _metafield = nil -%}
+{%- assign _identifier = nil -%}
+{%- assign _attributes = nil -%}
+{%- assign _a = nil -%}
+{%- assign _attribute = nil -%}
+{%- assign _name = nil -%}
+{%- assign _value = nil -%}

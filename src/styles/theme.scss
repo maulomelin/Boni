@@ -27,5 +27,14 @@
 @import url('modules/header.scss');
 @import url('modules/gift-card-template.scss');
 
-/*================ CUSTOM ================*/
-@import url('global/boni.scss');
+/*================ Boni ================*/
+@import url('global/boni.scss');    /* Clean this up! */
+@import url('boni/_productinfo.css');
+@import url('boni/_related.css');
+@import url('boni/_optiongroup.css');
+@import url('boni/_menu.css');
+@import url('boni/_infochart.css');
+@import url('boni/_breadcrumb.css');
+@import url('boni/_addtocart.css');
+@import url('boni/_carousel.css');
+@import url('boni/_header.css');

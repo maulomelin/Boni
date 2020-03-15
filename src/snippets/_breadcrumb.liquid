@@ -32,18 +32,24 @@ Description:
   - A collection-based breadcrumb renders a list of links by recursively
     calling itself on nested items in the linklist tree parameter.  Rendered
     items correspond to tree links that are active or have active children.
-  - A product-based breadcrumb renders a list of links by iterating over the
-    set of items in the metafield product.metafields.google.custom_label_3.
-      - Each item should correspond to a collection in the system.
-      - If there is a discrepancy, an empty <li> will be generated.
-      - The system must have collections defined that are in the metafield.
+  - A product-based breadcrumb renders a list of links by iterating over an
+    array of collection handles.
+      - See the snippet below for more details on the collection handles array.
+      - Each collection handle should correspond to a collection in the system,
+        else the item is not rendered.  This avoids having blank elements.
+          - Check for valid collections by comparing it to "empty"
+            https://help.shopify.com/en/themes/liquid/basics/types#empty-drop
+          - Invalid collections generate an info debug message.
+  - To render the product-based breadcrumb:
+      - Iterate over all collection handles to see if there are any valid ones.
+          - If there is at least one valid one, iterate over all handles
+            again, build the breadcrumb as we go along.
+          - If no matching handles are found, do not render the breadcrumb.
+      - This procedure requires two iterations over all collection handles.
+        It is not optimal, but the code is clearer and easier to maintain.
+        With the small number of handles per product, this is acceptable.
 
 TODOs:
-  - Style the breadcrumb.
-  - Overengineer the snippet to not render anything if there are no items in
-    the breadcrumb, instead of leaving an empty "<ul></ul>".
-    Check if an object is "empty" before accessing any of its attributes.
-    https://help.shopify.com/en/themes/liquid/basics/types#empty-drop
   - Do we need to make a distinction between link.active and link.child_active?
   - Look at how it's being used and think about making it more interactive,
     such as giving each menu a drop-down for other siblings, like FileExplorer.
@@ -54,52 +60,75 @@ TODOs:
     level in the URL.
 --------------------------------------------------------------{%- endcomment -%}
 
-{%- comment -%} Main routine. {%- endcomment -%}
+{%- comment -%} StartMarker {%- endcomment %}
+<!-- [_breadcrumb] -->
+{%- comment -%} /StartMarker {%- endcomment -%}
+
 {%- if "collection" == template.name -%}
 
-  {%- comment -%} Render a collection-aware breadcrumb. {%- endcomment -%}
+  {%- comment -%} Render the collection-aware breadcrumb. {%- endcomment -%}
   {%- if tree.links != blank -%}
     {%- unless _recursion %}
-    <div class="_breadcrumb {{ class }}">
-      <ul>
+<div class="_breadcrumb {{ class }}">
+  <ul>
     {%- endunless -%}
     {%- for link in tree.links -%}
       {%- if link.active %}
-        <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+    <li><a href="{{ link.url }}">{{ link.title }}</a></li>
         {%- break -%}
       {%- endif -%}
       {%- if link.child_active %}
-        <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+    <li><a href="{{ link.url }}">{{ link.title }}</a></li>
         {%- include "_breadcrumb", tree: link, _recursion: true -%}
         {%- break -%}
       {%- endif -%}
     {%- endfor -%}
     {%- unless _recursion %}
-      </ul>
-    </div>
+  </ul>
+</div>
     {% endunless -%}
   {%- endif -%}
 
 {%- elsif "product" == template.name -%}
 
-  {%- comment -%} Render a collection-agnostic breadcrumb. {%- endcomment -%}
-  {%- assign cdata = product.metafields.google.custom_label_3 | split: "----------" -%}
-  {%- comment -%}
-    (DEBUG) CDATA:[{{ cdata }}]<br/>
-  {%- endcomment -%}
-  {%- if "taxonomy" == cdata[0] %}
-  <div class="_breadcrumb {{ class }}">
-    <ul>
-    {%- assign cdata = cdata[1] | downcase | split: "--" -%}
-    {%- for c in cdata %}
-      <li><a href="{{ collections[c].url }}">{{ collections[c].title }}</a></li>
+  {%- comment -%} Render the product-based breadcrumb. {%- endcomment -%}
+  {%- include "function.breadcrumb_collection_handles", product: product -%}
+  {%- assign _handles = breadcrumb_collection_handles %}
+<!-- Info: [{{- _handles.size -}}] breadcrumb collection handles. -->
+
+  {%- comment -%} Check if there are any valid collections. {%- endcomment -%}
+  {%- assign _bflag = false -%}
+  {%- assign _n = 0 -%}
+  {%- for _h in _handles -%}
+    {%- if empty != collections[_h] -%}
+      {%- assign _bflag = true -%}
+      {%- assign _n = _n | plus: 1 %}
+  <!-- Info: valid collection[{{- _h -}}] -->
+    {%- else %}
+  <!-- Info: /valid collection[{{- _h -}}] -->
+    {%- endif -%}
+  {%- endfor %}
+<!-- Info: [{{- _n -}}] valid collection handles. -->
+<!-- Info: [{{- _handles.size | minus: _n -}}] /valid collection handles. -->
+  {%- comment -%} Render the breadcrumb if there are any valid collections. {%- endcomment -%}
+  {%- if true == _bflag %}
+<div class="_breadcrumb {{ class }}">
+  <ul>
+    {%- for _h in _handles -%}
+      {%- if empty != collections[_h] -%}
+        {%- assign _href = collections[_h].url -%}
+        {%- assign _title = collections[_h].title %}
+    <li><a href="{{- _href -}}">{{- _title -}}</a></li>
+      {%- endif -%}
     {%- endfor %}
-    </ul>
-  </div>
-  {% endif -%}
+  </ul>
+</div>
+  {%- endif -%}
 
-{%- else -%}
-
-  <div class="_breadcrumb" data-u-error="Unknown template.name"></div>
-
+{%- else %}
+<!-- Error: Unknown template [{{- template.name -}}] -->
 {%- endif -%}
+
+{%- comment -%} EndMarker {%- endcomment %}
+<!-- /[_breadcrumb] -->
+{% comment -%} /EndMarker {%- endcomment -%}

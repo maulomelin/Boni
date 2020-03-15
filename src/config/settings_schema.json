@@ -2,10 +2,51 @@
   {
     "name": "theme_info",
     "theme_name": "Boni",
-    "theme_version": "1.0.0",
+    "theme_version": "1.0.1",
     "theme_author": "maulomelin",
     "theme_documentation_url": "https://localhost",
     "theme_support_url": "https://localhost"
+  },
+  {
+    "name": "Metadata",
+    "settings": [
+      {
+        "type": "textarea",
+        "id": "metadata_taxonomy",
+        "label": "(Product) Taxonomy",
+        "info": "Liquid object: {{settings.metadata_taxonomy}}"
+      },
+      {
+        "type": "textarea",
+        "id": "metadata_colorvariants",
+        "label": "(Product) Color Variants",
+        "info": "Liquid object: {{settings.metadata_colorvariants}}"
+      },
+      {
+        "type": "textarea",
+        "id": "metadata_outfititems",
+        "label": "(Product) Outfit Items",
+        "info": "Liquid object: {{settings.metadata_outfititems}}"
+      },
+      {
+        "type": "textarea",
+        "id": "metadata_measurements",
+        "label": "(Product) Measurements",
+        "info": "Liquid object: {{settings.metadata_measurements}}"
+      },
+      {
+        "type": "textarea",
+        "id": "metadata_attributes",
+        "label": "(Product) Attributes",
+        "info": "Liquid object: {{settings.metadata_attributes}}"
+      },
+      {
+        "type": "textarea",
+        "id": "metadata_dictionary",
+        "label": "(Global) Dictionary",
+        "info": "Liquid object: {{settings.metadata_dictionary}}"
+      }
+    ]
   },
   {
     "name": "Typography",

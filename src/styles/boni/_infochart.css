@@ -1,0 +1,31 @@
+/* _infochart.css --------------------------------------------------------------
+// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
+//----------------------------------------------------------------------------*/
+/* These style the table and diagram portions of the infochart. */
+._infochart { display: flex; flex-flow: column; min-width: max-content; max-width: 375px; margin: 1rem 0; }
+._infochart ._table { order: 1; }
+._infochart ._diagram { order: 2; }
+/* These style the <ul>s into a CSS Grid. */
+._infochart ._table { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(max-content, auto); }
+._infochart ._table ul { display: contents; list-style: none; }
+._infochart ._table ul:first-of-type li { grid-column: 1; }
+/* These style the grid borders. */
+._infochart ._table ul li { border-top: solid 1px lightgray; border-left: solid 1px lightgray; }
+._infochart ._table ul:last-of-type li { border-right: solid 1px lightgray; }
+._infochart ._table ul li:last-of-type { border-bottom: solid 1px lightgray; }
+/* These style the table cells. */
+._infochart ._table ul { list-style: none; }
+._infochart ._table ul li { padding: 0 0.5rem; }
+.x_infochart ._table ul:first-of-type li:first-of-type { visibility: hidden; } /* "visibility: hidden;" hides the element but retains the space occupied by it. */
+._infochart ._table ul:not(:first-of-type) li { text-align: center; }
+._infochart ._table ul._t-highlight li { background: black; color: white; }
+/* These style the diagram. */
+._infochart ._diagram { border: solid 1px lightgray; border-top: none; text-align: center; padding: 1rem; }
+._infochart ._diagram img { max-width: 200px; max-height: 200px; }
+/* These style infochart buttons. */
+._infochart-button { background: none; border: none; text-decoration: underline; cursor: pointer; }
+/* (Debug) -------------------------------------------------------------------*/
+.x_infochart { border: dashed 1px red; }
+.x_infochart ._table { border: dashed 1px pink; }
+.x_infochart ._diagram { border: dashed 1px orange; }
+/*----------------------------------------------------------------------------*/

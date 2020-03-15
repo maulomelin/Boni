@@ -1,0 +1,46 @@
+/* _productinfo.css ------------------------------------------------------------
+// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
+//----------------------------------------------------------------------------*/
+/* Accordion */
+._productinfo { display: flex; flex-flow: column; }
+._productinfo ._panel { position: relative; color: gray; }
+._productinfo ._panel input { position: absolute; left: -999%; }
+._productinfo ._panel input[type="radio"] + label { display: none; }
+._productinfo ._panel label { display: flex; padding: 0.5rem 0; border-bottom: solid 2px transparent; white-space: nowrap; }
+._productinfo ._panel label::after { content: ""; margin: 0 0.5rem; align-self: center; border-color: gray transparent gray transparent; border-style: solid; border-width: 0.4rem 0.3rem 0 0.3rem; }
+._productinfo ._panel label:hover { cursor: pointer; color: black; }
+._productinfo ._panel label:hover::after { border-color: black transparent black transparent; }
+._productinfo ._panel > div { display: none; padding: 0.5rem 1rem; }
+._productinfo ._panel input[type="checkbox"]:checked ~ div { display: block; }
+._productinfo ._panel input[type="checkbox"]:checked + label::after { border-width: 0 0.3rem 0.4rem 0.3rem; }
+._productinfo ._panel div ul { margin-left: 0rem; padding-left: 2rem; }
+._productinfo ._panel div ol { margin-left: 0rem; padding-left: 2rem; }
+._productinfo ._panel div ul { list-style-type: none; }
+._productinfo ._panel div ul > li::before { content: "\2022"; position: absolute; margin-left: -1rem; }
+._productinfo ._panel div ul ul > li::before { content: "\25E6"; position: absolute; margin-left: -1rem; }
+._productinfo ._panel div ul ul ul > li::before { content: "\25AA"; position: absolute; margin-left: -1rem; }
+._productinfo ._panel div ul ul ul ul > li::before { content: "\25AB"; position: absolute; margin-left: -1rem; }
+._productinfo ._panel div ul ul ul ul ul > li::before { content: "\2022"; position: absolute; margin-left: -1rem; }
+/* Tabs */
+@media only screen and (min-width: 800px) {
+  ._productinfo { display: flex; flex-flow: row wrap; }
+  ._productinfo ._panel { display: contents; }
+  ._productinfo ._panel input[type="checkbox"] + label { display: none; }
+  ._productinfo ._panel input[type="checkbox"]:checked ~ div { display: none; }
+  ._productinfo ._panel input[type="radio"] + label { display: block; }
+  ._productinfo ._panel label:hover { cursor: unset; color: unset; }
+  ._productinfo ._panel label::after { content: none; }
+  ._productinfo ._panel label { order: 0; margin-right: 1rem; }
+  ._productinfo ._panel > div { order: 1; width: 100%; }
+  ._productinfo ._panel input[type="radio"]:checked + label { border-bottom: solid 2px gray; }
+  ._productinfo ._panel input[type="radio"]:checked ~ div { display: block; }
+  ._productinfo ._panel input[type="radio"]:not(:checked) + label:hover { cursor: pointer; color: black; border-bottom: solid 2px black; }
+  ._productinfo ._panel:only-of-type input[type="radio"]:checked + label { border-bottom: solid 2px transparent; }
+}
+/* (Debug) -------------------------------------------------------------------*/
+.x_productinfo { border: dashed 1px pink; }
+.x_productinfo ._panel label { border: dashed 1px orange; }
+.x_productinfo ._panel div ul { border: dashed 1px pink; }
+.x_productinfo ._panel div ol { border: dashed 1px pink; }
+.x_productinfo ._panel div li { border: dashed 1px yellow; }
+/*----------------------------------------------------------------------------*/

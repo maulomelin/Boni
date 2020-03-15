@@ -8,118 +8,128 @@ Snippet:
 Usage:
   {%- for option in product.options_with_values -%}
     {%- include "_optiongroup", product: product, index: forloop.index0 -%}
-    {%- include "_infochart", product: product, index: forloop.index0 -%}
+    {%- include "_infochart", product: product, name: product.options_with_values[forloop.index0].name -%}
   {%- endfor -%}
 
+  {%- include "_infochart", product: product, name: "Size" -%}
+
 Parameters:
-  {product object} product [ required ] // The product this info chart is for.
-  {integer} index [ required ]
-    // The index of the option group in the product object to seek a matching
-    // infochart for (i.e. product.option_with_values[index].name).
+  {product object} product [ required ] // The product with the metafield data.
+  {string} name [ required ] // The name of the metafield data to render.
 
 Output:
   - An [_infochart] module.  See the design doc for more details.
 
 Description:
-  - Infochart data is contained in product.metafields.google.custom_label_0.
-  - The metafield COULD contain infochart data for multiple infocharts.
-    The current implementation, however, only expects one entry.  See TODOs.
-  - We render an infochart only when option.name matches against an infochart
-    entry in the metafield, since infocharts are designed to provide additional
-    information on an option.
-  - To guarantee that the option and infochart data come from the same product
-    object, we pass as inputs {product object} and {position integer}.
-    We pull the option name from product.options_with_values[position].name
-    and compare that with the name from each infochart data set from
-    product.metafields.google.custom_label_0.
-      - Shopify won't let two options in the same product share the same name,
-        which guarantess the option name will be unique.
-      - If option.name == metafield's infochart name, then they're a match.
-      - An earlier implemmentation passed as inputs:
+  - Measurements data is contained in product.metafields.google.custom_label_0.
+  - The metafield COULD be changed to capture data for different infocharts.
+    The current implementation, however, only expects sizes.  See TODOs.
+  - The infochart finds the data requested in the { name string } parameter
+    in the { product object } requested.
+  - To render the ._diagram section:
+      - Iterate over all images to see if there are any diagrams that
+        match the infochart's name.
+          - If at least one matching image is found, iterate over all images
+            again, build the ._diagram section as we go along.
+          - If no matching image is found, do not render the ._diagram section.
+      - This procedure requires two iterations over all images.
+        It is not optimal, but the code is clearer and easier to maintain.
+        With the small number of images per product, this is acceptable.
+
+Notes:
+  - We used to pass as arguments { { product object }, { integer index } }
+    and would render an [_infochart] only when a metafield entry matched
+    product.options_with_values[index].name.  The idea was that the match
+    needed to happen since the infocharts were designed to provide additional
+    information on an option.  However, since we can render an [_infochart]
+    separate from an [_optiongroup], we want this module to render the
+    infochart we request by name, and see if the given product object has it.
+    Here are the corresponding notes on that old/earlier approach:
+      - To guarantee that the option and infochart data come from the same
+      product object, we pass as inputs {product object} and {position integer}.
+      We pull the option name from product.options_with_values[position].name
+      and compare that with the name from each infochart data set from
+      product.metafields.google.custom_label_0.
+        - Shopify won't let two options in the same product share the same name,
+          which guarantess the option name will be unique.
+        - If option.name == metafield's infochart name, then they're a match.
+        - An earlier implemmentation passed as inputs:
             {product object} and {option object}
-        But there was no guarantee the option wasn't from the product object,
-        so the snippet was modified.
-  - To render the ._diagram section, we first iterate over all images to see
-    if there are any diagrams that match the infochart's name.  If so, we then
-    iterate over all images, building the ._diagram.  It's less performant than
-    doing it all in one pass, but code is clearer and easier to maintain.
+          But there was no guarantee the option wasn't from the product object,
+          so the snippet was modified to pass an index value instead.
 
 TODOs:
-  - Support multiple infochart entries in the metafield, and update description.
-    Current implementation assumes only one infochart entry in the metafield.
-  - Hook it up to actual metafield when latest import is done.
-  - Remove all debug code.
-  - Update "Clean up local variables" section.
+  - Support multiple infochart entries in the metafield.
+      - Create subroutines for each named infochart to render the data.
+      - Make this routine simply render the wrapper.
   - Update image check with latest image filename schema.
+  - We removed [data-mls="TRUE"] from "._infochart", in case things break.
 --------------------------------------------------------------{%- endcomment -%}
+
+{%- comment -%} beginMarker {%- endcomment %}
+<!-- [_infochart] -->
+{%- comment -%} /beginMarker {%- endcomment -%}
 
 {%- comment -%} Set up local variables. {%- endcomment -%}
 {%- assign _productid = product.id -%}
-{%- assign _option = product.options_with_values[index] -%}
+{%- assign _name = name -%}
+{%- assign _metafield = product.metafields.google.custom_label_0 -%}
+{%- assign _metafield = _metafield | split: "----------" -%}
+{%- assign _identifier = _metafield[0] -%}
+{%- assign _data = _metafield[1] | split: "-----" -%}
+{%- assign _measures = _data[0] | split: "---" -%}
+{%- assign _sizes = _data[1] | split: "----" -%}
+{%- assign _label = _measures[0] -%}
+{%- assign _features = _measures[1] | split: "--" -%}
 
-{%- comment -%} Evaluate the infochart if the option is valid. {%- endcomment %}
-{%- if _option -%}
+{%- if "Size" == _name and "measurements" == _identifier -%}
+{%- comment -%} Render the infochart if the labels match. {%- endcomment %}
+<div class="_infochart _js-infochart _hide" data-u-productid="{{- _productid -}}" data-u-name="{{- _name -}}">
 
-{%- assign _og_name = product.options_with_values[index].name -%} {%- comment -%} e.g. "Color" {%- endcomment -%}
-
-{%- comment -%} TODO: MODIFY THIS SECTION TO READ FROM THE ACTUAL METAFIELD AND UPDATE TODOs ABOVE. {%- endcomment -%}
-{%- assign _metadata_frommetafield = product.metafields.google.custom_label_0 -%}
-{%- assign _metadata_byrow = "sizing----------Holly----Size--S--M--L--XL---Neck-Opening--9-3-4--10--10-1-4--10-3-4---Back-Neck-Drop--2--2--2--2---Front-Neck-Drop--5-1-4--5-1-2--5-3-4--6---Arm-Hole-Depth--9-1-2--10-1-4--11--12---Front-Length--26-1-4--28--29-3-4--33-1-4---Center-Back-Length--26-1-4--28--28-3-4--33-1-4---Bust--20-1-4--22--24--30---Bottom-Width--31-1-4--33--35--39---Sleeve-Length--18-1-2--19--19-1-2--20---Sleeve-Opening--5--6--7--8" -%}
-{%- assign _metadata_bycolumn = "sizing----------Holly----Size--Neck-Opening--Back-Neck-Drop--Front-Neck-Drop--Arm-Hole-Depth--Front-Length--Center-Back-Length--Bust--Bottom-Width--Sleeve-Length--Sleeve-Opening---S--9-3-4--2--5-1-4--9-1-2--26-1-4--26-1-4--20-1-4--31-1-4--18-1-2--5---M--10--2--5-1-2--10-1-4--28--28--22--33--19--6---L--10-1-4--2--5-3-4--11--29-3-4--28-3-4--24--35--19-1-2--7---XL--10-3-4--2--6--12--33-1-4--33-1-4--30--39--20--8" -%}
-{%- assign _x = _metadata_bycolumn -%}
-{%- assign _x = _x | split: "----------" -%}
-{%- assign _x = _x[1] | split: "----" -%}
-{%- assign _x = _x[1] | split: "---" -%}
-{%- assign _cols = _x -%}
-{%- assign _x = _x[0] | split: "--" -%}
-{%- assign _x = _x[0] -%}
-{%- assign _ic_name = _x -%}
-{%- comment -%} {%- endcomment %}
-<div class="_debug">_og_name=[{{_og_name | json }}]</div>
-<div class="_debug">_ic_name=[{{_ic_name | json }}]</div>
-<div class="_debug">cols=[{{ _cols | json }}]</div>
-{%- comment -%} /TODO {%- endcomment %}
-
-{%- comment -%} Render the infochart if an entry in the metafield matched the option. {%- endcomment %}
-{%- if _ic_name == _og_name %}
-<div class="_infochart _js-infochart _hide" data-u-productid="{{- _productid -}}" data-u-name="{{- _og_name -}}">
-
-{%- comment -%} Render the ._table {%- endcomment %}
+  {%- comment -%} Render the ._table section. {%- endcomment %}
   <div class="_table">
-    {%- for _col in _cols -%}
-      {%- assign _b_firstcol = false -%} {%- if forloop.first -%} {%- assign _b_firstcol = true -%} {%- endif -%}
-      {%- assign _rows = _col | split: "--" %}
-      {%- assign _col_header = _rows[0] %}
-    <ul class="_js-infochart-table-column" data-u-value="{{- _col_header -}}">
-      {%- for _row in _rows -%}
-        {%- assign _b_firstrow = false -%} {%- if forloop.first -%} {%- assign _b_firstrow = true -%} {%- endif %}
-      <li>
-        {%- if true == _b_firstrow or true == _b_firstcol -%}
-          {{- _row | replace: "-", " " | strip -}}
-        {%- else -%}
-          {%- assign n = _row | split: "-" -%}
-          {%- assign s = n | size -%}
-          {%- if 1 == s -%} {{- n[0] -}} {%- elsif 2 == s -%} &frac{{- n[0] -}}{{- n[1] -}}; {%- elsif 3 == s -%} {{- n[0] -}}&frac{{- n[1] -}}{{- n[2] -}}; {%- else -%} ERROR! {%- endif -%}
-        {%- endif -%}
-      </li>
+
+    {%- comment -%} Render the features column. {%- endcomment %}
+    <ul>
+      <li>{{- _label -}}</li>
+      {%- for _f in _features %}
+      <li>{{- _f -}}</li>
+      {%- endfor %}
+    </ul>
+
+    {%- comment -%} Render all size columns. {%- endcomment %}
+    {%- for _s in _sizes -%}
+      {%- assign _size = _s | split: "---" -%}
+      {%- assign _label = _size[0] -%}
+      {%- assign _lengths = _size[1] | split: "--" %}
+    <ul class="_js-infochart-table-column" data-u-value="{{- _label -}}">
+      <li>{{- _label -}}</li>
+      {%- for _l in _lengths -%}
+        {%- assign _n = _l | split: "-" -%}
+        {%- if 1 == _n.size -%}     {%- capture _length -%} {{- _n[0] -}} {%- endcapture -%}
+        {%- elsif 2 == _n.size -%}  {%- capture _length -%} &frac{{- _n[0] -}}{{- _n[1] -}}; {%- endcapture -%}
+        {%- elsif 3 == _n.size -%}  {%- capture _length -%} {{- _n[0] -}}&frac{{- _n[1] -}}{{- _n[2] -}}; {%- endcapture -%}
+        {%- else -%}                {%- capture _length -%} n/a {%- endcapture -%}
+        {%- endif %}
+      <li>{{- _length -}}</li>
       {%- endfor %}
     </ul>
     {%- endfor %}
   </div>
 
-  {%- comment -%} Check if there are any diagram images for this option. {%- endcomment %}
-  {%- assign _b_diagram = false -%}
+  {%- comment -%} Check if there are any diagram images for this option. {%- endcomment -%}
+  {%- assign _bdiagram = false -%}
   {%- for _i in product.images -%}
     {%- include "function.image-filename-attribute", image: _i, attribute: "type" -%}
     {%- if "diagram" == image_filename_attribute -%}
       {%- include "function.image-filename-attribute", image: _i, attribute: "option-name" -%}
-      {%- if _ic_name == image_filename_attribute -%}
-        {%- assign _b_diagram = true -%}
+      {%- if _name == image_filename_attribute -%}
+        {%- assign _bdiagram = true -%}
       {%- endif -%}
     {%- endif -%}
   {%- endfor -%}
-  {%- comment -%} Render the ._diagram only if there was at least one diagram image for this option. {%- endcomment %}
-  {%- if true == _b_diagram %}
+  {%- comment -%} Render the ._diagram section if there are any diagram images. {%- endcomment -%}
+  {%- if true == _bdiagram %}
   <div class="_diagram">
     {%- for _i in product.images -%}
       {%- include "function.image-filename-attribute", image: _i, attribute: "type" -%}
@@ -132,20 +142,24 @@ TODOs:
 </div>
 {%- endif -%}
 
-{%- endif -%}
-
 {%- comment -%} Clean up local variables. {%- endcomment -%}
 {%- assign _productid = nil -%}
-{%- assign _option = nil -%}
-{%- assign _og_name = nil -%}
-{%- assign _ic_name = nil -%}
-{%- assign _x = nil -%}
-{%- assign _metadata = nil -%}
-{%- assign _b_infochart = nil -%}
-{%- assign _b_diagram = nil -%}
-{%- assign _cols = nil -%}
-{%- assign _col = nil -%}
-{%- assign _col_header = nil -%}
-{%- assign _rows = nil -%}
-{%- assign _row = nil -%}
+{%- assign _name = nil -%}
+{%- assign _metafield = nil -%}
+{%- assign _identifier = nil -%}
+{%- assign _data = nil -%}
+{%- assign _measures = nil -%}
+{%- assign _sizes = nil -%}
+{%- assign _label = nil -%}
+{%- assign _features = nil -%}
+{%- assign _f = nil -%}
+{%- assign _s = nil -%}
+{%- assign _lengths = nil -%}
+{%- assign _l = nil -%}
+{%- assign _length = nil -%}
+{%- assign _bdiagram = nil -%}
 {%- assign _i = nil -%}
+
+{%- comment -%} endMarker {%- endcomment %}
+<!-- /[_infochart] -->
+{% comment -%} /endMarker {%- endcomment -%}
