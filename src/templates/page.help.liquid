@@ -1,0 +1,129 @@
+{%- comment -%}-----------------------------------------------------------------
+Notes:
+  - https://shopify.dev/docs/themes/liquid/reference/objects/policy
+  - https://community.shopify.com/c/Shopify-Design/Get-policies-from-admin-into-custom-page-template/td-p/393600
+  - The "shop.policies" object returns an array of policies.
+  - Retrieve a specific policy by handle like this:
+
+        shop.["refund_policy"]
+
+  - We reference each individual policy directly on the "shop" object:
+
+        shop.privacy_policy
+        shop.refund_policy
+        shop.shipping_policy
+        shop.terms_of_service
+
+TODOs:
+  - Make the override title string "Return Policy" a user variable.
+--------------------------------------------------------------{%- endcomment -%}
+
+{% assign _h = page.title | downcase | replace: " ", "_" %}
+
+{% if _h == "terms_of_service" or _h == "privacy_policy" or _h == "refund_policy" %}
+  {% assign _content = shop.[_h].body %}
+  {% assign _title = shop.[_h].title %}
+  {% assign _url = shop.[_h].url %}
+{% else %}
+  {% assign _content = page.content %}
+  {% assign _title = page.title %}
+  {% assign _url = page.url %}
+{% endif %}
+
+{%- comment -%} Apply some overrides. {%- endcomment -%}
+{% if _h == "refund_policy" %}
+  {% assign _title = "Return Policy" %}
+{% endif %}
+
+{%- comment -%} Render the title. {%- endcomment -%}
+{{ _title }}
+
+{%- comment -%} Render the content. {%- endcomment -%}
+{{ _content }}
+
+<!-- [_g-supportpage] -->
+<div class="_g-supportpage _js-supportpage">
+  <div class="_g-supportpage-menu">
+    <div class="_menu">
+      <div class="_tree _bp-tree">
+        <ul>
+          <li>
+            <a href="#/pages/faq">Support</a>
+            <ul>
+              <li><a href="#/pages/faq">FAQs</a></li>
+              <li><a href="#/pages/contact-us">Contact Us</a></li>
+              <li><a href="#/pages/accessibility">Accessibility</a></li>
+              <li><a href="#/pages/shipping">Shipping</a></li>
+              <li><a href="#/pages/returns">Returns</a></li>
+              <li><a href="#/pages/size-guide">Size Guide</a></li>
+              <li><a href="#/pages/product-care">Product Care</a></li>
+              <li><a href="#/pages/wishlist">Wishlist</a></li>
+              <li><a href="#/pages/gift-cards">Gift Cards</a></li>
+              <li><a href="#/pages/order-history">Order History/Status</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#/pages/about-us">Company</a>
+            <ul>
+              <li><a href="#/pages/about-us">About Us</a></li>
+              <li><a href="#/pages/our-values">Our Values</a></li>
+              <li><a href="#/pages/social-responsibility">Social Responsibility</a></li>
+              <li><a href="#/pages/affiliate-program">Affiliate Program</a></li>
+              <li><a href="#/pages/wholesale">Wholesale</a></li>
+              <li><a href="#/pages/careers">Careers</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#/pages/sitemap">Sitemap</a>
+          </li>
+          <li>
+            <a href="#/pages/terms-of-service">Policies</a>
+            <ul>
+              <li><a href="#/pages/terms-of-service">Terms of Service</a></li>
+              <li><a href="#/pages/privacy-policy">Privacy Policy</a></li>
+              <li><a href="#/pages/return-policy">Return Policy</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="_dropdown _bp-dropdown">
+        <select id="_id-supportpage" class="_js-supportpage-select">
+          <option disabled selected>Go to...</option>
+          <optgroup label="Support">
+            <option value="#/pages/faq">FAQs</option>
+            <option value="#/pages/contact-us">Contact Us</option>
+            <option value="#/pages/accessibility">Accessibility</option>
+            <option value="#/pages/shipping">Shipping</option>
+            <option value="#/pages/returns">Returns</option>
+            <option value="#/pages/size-guide">Size Guide</option>
+            <option value="#/pages/product-care">Product Care</option>
+            <option value="#/pages/wishlist">Wishlist</option>
+            <option value="#/pages/gift-cards">Gift Cards</option>
+            <option value="#/pages/order-history">Order History/Status</option>
+          </optgroup>
+          <optgroup label="Company">
+            <option value="#/pages/about-us">About Us</option>
+            <option value="#/pages/our-values">Our Values</option>
+            <option value="#/pages/social-responsibility">Social Responsibility</option>
+            <option value="#/pages/affiliate-program">Affiliate Program</option>
+            <option value="#/pages/wholesale">Wholesale</option>
+            <option value="#/pages/careers">Careers</option>
+          </optgroup>
+          <option value="#/pages/sitemap">Sitemap</option>
+          <optgroup label="Policies">
+            <option value="#/pages/terms-of-service">Terms of Service</option>
+            <option value="#/pages/privacy-policy">Privacy Policy</option>
+            <option value="#/pages/return-policy">Return Policy</option>
+          </optgroup>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="_g-supportpage-page">
+    <i>[gridarea: page]</i>
+  </div>
+  <div class="_g-supportpage-info">
+    <i>[gridarea: info]</i>
+  </div>
+</div>
+<!-- /[_g-supportpage] -->
