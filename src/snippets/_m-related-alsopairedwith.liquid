@@ -1,0 +1,61 @@
+{%- comment -%}-----------------------------------------------------------------
+Design Pattern:
+  [_m-related-alsopairedwith]
+
+Snippet:
+  _m-related-alsopairedwith.Liquid
+
+Usage:
+  {%- render "_m-related-alsopairedwith", handle: product.handle, heading: "Also Styled With" -%}
+
+Parameters:
+  {handle} handle [ required ] // The product handle to draw data from.
+  {string} heading [ optional ] // The header string to use for the module.
+
+Output:
+  - An unordered list of <figures> that include an image and a caption.
+    For an example, see the [_m-related] design pattern.
+  - The specific images and caption are drawn from metadata.
+  - If the heading is omitted in the request, it is omitted in the output.
+
+Description:
+  - If no related data is found in the metadata, the module is not rendered.
+  - The related data is pulled from the global metafield settings object.
+    A utility function is used to find and render the data in the format
+    this module needs it.
+  - The module renders whatever items are in the metafield.
+    Unlike the "ColorVariants" or the "PairedWith", it will only have other
+    items it has been styled with.  No entry will be itself.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- assign handles = shop.metafields.global.alsopairedwith[handle] -%}
+{%- if 0 < handles.size -%}
+<div class="_m-related">
+  <div class="_heading">
+  {%- if heading -%}
+    {{- heading -}}
+  {%- else -%}
+    {{- "product.related.alsopairedwith.defaultheading" | t -}}
+  {%- endif -%}
+  </div>
+  <div class="_items">
+    <ul>
+    {%- for h in handles -%}
+      {%- assign href = all_products[h].url | within: collection -%}
+      {%- assign src = all_products[h].featured_image | img_url: "medium" -%}
+      {%- assign alt = all_products[h].featured_image.alt -%}
+      {%- assign figcaption = all_products[h].title -%}
+      <li>
+        <figure>
+          <a href="{{- href -}}">
+            <img src="{{- src -}}" alt="{{- alt -}}" />
+          </a>
+          <figcaption>{{- figcaption -}}</figcaption>
+        </figure>
+      </li>
+    {%- endfor %}
+    </ul>
+  </div>
+</div>
+{%- endif -%}

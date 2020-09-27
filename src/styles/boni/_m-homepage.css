@@ -1,0 +1,32 @@
+/* _m-homepage.css -------------------------------------------------------------
+// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
+//----------------------------------------------------------------------------*/
+/* Make the body a colun flexbox to stretch & center the <main> element. */
+body.template-index { display: flex; flex-direction: column; height: 100vh; width: 100vw; }
+body.template-index > * { flex-shrink: 0; }
+body.template-index main { flex-grow: 1; }
+/* Stretch & center the homepage module within <main>. */
+body.template-index main { display: flex; }
+body.template-index main .shopify-section { display: contents; }
+body.template-index main ._m-homepage { flex-grow: 1; }
+/* Stetch & center the hero element inside the homepage module. */
+body.template-index main ._m-homepage { display: flex; flex-direction: column; justify-content: center; }
+body.template-index main ._m-homepage ._hero { flex-grow: 1; min-height: 100px; xmax-height: 80vh; /* 300px; */ }
+/* Stretch & center the elements inside the hero element. */
+body.template-index main ._m-homepage ._hero { display: flex; flex-direction: column; justify-content: center; }
+body.template-index main ._m-homepage ._hero ._shop { display: flex; flex-flow: row wrap; justify-content: space-evenly; }
+body.template-index main ._m-homepage ._hero ._shop ul { display: contents; }
+body.template-index main ._m-homepage ._hero ._shop ul li { display: contents; }
+body.template-index main ._m-homepage ._hero ._talk { display: flex; flex-flow: row wrap; justify-content: space-evenly; }
+body.template-index main ._m-homepage ._hero ._talk ._message { max-width: 600px; margin: 2rem 3rem; padding: 1rem; text-align: center; border-radius: 8px; background: rgba(255,255,255,0.8); box-shadow: 0 0 0.5rem 0.5rem rgba(255,255,255,0.8); font-size: calc(1rem * 16/14); }
+/* Shopping Buttons */
+body.template-index main ._m-homepage ._hero ._shop a { display: block; width: 200px; padding: 1rem 3rem; margin: 1rem; font-size: calc(1em * 18/14); text-decoration: none; text-transform: uppercase; text-align: center; white-space: nowrap; border: solid 1px gray; border-radius: 2px; background: black; color: white; }
+body.template-index main ._m-homepage ._hero ._shop a { box-shadow: 0 0 1rem 0.5rem white; }
+/* Hero Background */
+body.template-index main ._m-homepage ._hero { background: linear-gradient( #f4f5f0 0% 10%, #f2edd8 10% 20%, #f5926c 20% 30%, #bea968 30% 40%, #a67247 40% 50%, #8f413d 50% 60%, #254e62 60% 70%, #0082b5 70% 80%, #595e62 80% 90%, #2d3036 90% 100% ); }
+/* (Debug) -------------------------------------------------------------------*/
+._m-homepage._DEBUG { outline: dashed 1px pink; background: lightyellow; padding: 0.5rem; }
+._m-homepage._DEBUG ._hero { outline: dashed 1px black; padding: 0.5rem; }
+._m-homepage._DEBUG ._hero ._shop { outline: dashed 1px orange; }
+._m-homepage._DEBUG ._hero ._talk { outline: dashed 1px blue; }
+/*----------------------------------------------------------------------------*/

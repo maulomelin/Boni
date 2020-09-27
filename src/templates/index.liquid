@@ -1,7 +1,17 @@
-{% comment %}
-  - This is the template for the homepage. It usually just has the single line:
+{%- comment -%}-----------------------------------------------------------------
+
+  - This is the template for the homepage.
+    https://shopify.dev/docs/themes/files/index-liquid
+
+  - The use of sections allows us configure them in the Shopify Theme Editor.
+
+  - Sections can be found in \src\sections.
+
+  - It usually just has the single line:
 
       {{ content_for_index }}
+
+    which is used to support dynamic sections.
 
   - This piece of magic is what enables the homepage to display sections that
     are dynamically configured in the Shopify Admin UI.  For more info:
@@ -32,18 +42,20 @@
       \boni\src\sections\featured-collection.liquid
       \boni\src\sections\featured-product.liquid
 
-  - Each of those section files contains a {% schema %} section at the bottom
+  - Each of those section files contains a {-% schema %-} section at the bottom
     of the file that includes any setting a user can configure via the
-    Shopify Admin UI.  The snippet code makes reference to these settings to
-    determine what to do.  For example:
+    Shopify Theme Editor.  The part of a section that is rendered in the
+    homepage corresponds to the "presets" in the {-% schema %-}.  Only these
+    are pulled into the homepage.  These are called "dynamic sections".
 
-      {% if section.settings.show_share_buttons %}
-        <div data-action="do" data-what="something" />
-      {% endif %}
+  - A "static section" is one that is defined in a section, not in the presets,
+    and only shows in the page where that section is rendered via:
 
-  - To render static content, simply add it to this page.  Above, below, or
-    replacing the {{ content_for_index }} entry.
+      {% section "foobar" %}
 
-{% endcomment %}
+  - Other snippets/sections/content can be added to the homepage by adding
+    them to this page: above, below, or replacing the {{ content_for_index }}.
 
-{{ content_for_index }}
+--------------------------------------------------------------{%- endcomment -%}
+
+{% section "homepage" %}

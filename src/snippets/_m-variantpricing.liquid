@@ -1,0 +1,107 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_m-variantpricing]
+
+Snippet:
+  \src\snippets\_m-variantpricing.Liquid
+
+Usage:
+  {% include "_m-variantpricing" %}
+
+Parameters:
+  none
+
+Output:
+  - The price of the selected variant with any comparison pricing, or a
+    message associated with the avilability state of that variant.
+
+Description:
+  - The price and compare-at price used in the module come from a variant.
+    The selection of variant follows these rules in order of precedece:
+      1) Use the currently-selected variant if there is a valid "?variant="
+         parameter in the URL.
+      2) Use the first variant in the "product.variants" array.
+      - The two rules above are coded in Liquid as follows:
+
+            assign _selected_variant = product.variants | first
+            assign _selected_variant = product.selected_variant | default: _Selected_variant
+
+      - Any module that is rendered server-side follows this convention to make
+        sure all info shown on the page when first rendered is consistent.
+        We do not rely on client-side scripts to do this due to concerns
+        about showing data that mutates once scripts finish loading & firing.
+      - Wait!  Why don't we use "product.selected_or_first_available_variant"
+        to select the default variant?
+          - Testing shows that a product whose variants are all unavailable
+            returns empty/nil for "product.first_available_variant".
+            We can't use "product.selected_or_first_available_variant" because
+            the scenario where all variants are unavailable and there's no
+            "?variant=" in the URL still needs a fallback.
+              - This would be partially resolved if we removed any unavailable
+                items from the store.  However, this is unlikely to happen.
+                We want to capture interest in past inventory, and we plan to
+                keep all inventory around to help with SEO and cross-linking.
+  - How we show the prices shown in the module when the page is rendered on
+    the server is based on the selected variant's availability data and its
+    pricing data.  When an optiongroup is updated on the client, this module's
+    associated client-side javascript is responsible for changing those values.
+    The logic in those two locations (here and there) must be the same in order
+    to deliver a consistent experience for the user.
+
+        - server-side script:  \src\snippets\_m-variantpricing.liquid
+        - client-side script:  \src\scripts\boni\_m-variantpricing.js
+
+  - The [data-u-productid] field is used by the client-side javascript.
+    In case there are multiple modules for multiple products on a page,
+    this value ensures the script updates the correct one.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- liquid
+  assign _variant = product.variants | first
+  assign _variant = product.selected_variant | default: _variant
+
+  capture _availability
+    render "_util-variant-availability", variant: _variant
+  endcapture
+  assign _p = _variant.price
+  assign _c = _variant.compare_at_price
+  assign _price = ""
+  assign _compare = ""
+  assign _message = ""
+
+  case _availability
+    when "instock"
+      assign _price = _p | money_without_trailing_zeros
+      if _p < _c
+        assign _compare = _c | money_without_trailing_zeros
+      endif
+    when "outofstock"
+      assign _message = 'product.variantpricing.outofstock' | t
+    when "soldout"
+      assign _message = 'product.variantpricing.soldout' | t
+    when "unavailable"
+      assign _message = 'product.variantpricing.unavailable' | t
+    else
+      assign _message = 'product.variantpricing.error' | t
+  endcase
+-%}
+
+<div class="_m-variantpricing _js-variantpricing" data-u-productid="{{- product.id -}}">
+  <div class="_compare _js-variantpricing-compare">
+    {{- _compare -}}
+  </div>
+  <div class="_price _js-variantpricing-price">
+    {{- _price -}}
+  </div>
+  <div class="_availability _js-variantpricing-availability"
+    data-u-label-instock="{{ 'product.variantpricing.instock' | t }}"
+    data-u-label-outofstock="{{ 'product.variantpricing.outofstock' | t }}"
+    data-u-label-soldout="{{ 'product.variantpricing.soldout' | t }}"
+    data-u-label-unavailable="{{ 'product.variantpricing.unavailable' | t }}"
+    data-u-label-error="{{ 'product.variantpricing.error' | t }}"
+  >
+    {{- _message -}}
+  </div>
+</div>

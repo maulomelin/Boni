@@ -1,0 +1,133 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Notes:
+  - When Shopify renders a section theme tag (i.e. a {-% section %-} tag),
+    it wraps each section in a "<div>" element with a unique "[id]" attribute.
+    There is no need to write them out explicitly.
+
+  - To configure a section's properties, update its "{ % schema % }" tag.
+      https://shopify.dev/tutorials/develop-theme-use-sections
+      https://shopify.dev/docs/themes/settings
+
+  - Support pages use an alternate template to render the nav menu and sidebar.
+    https://www.shopify.com/partners/blog/shopify-alternate-templates
+    https://shopify.dev/tutorials/customize-theme-create-alternate-templates
+      - The template each page is used is defined with the pagent content,
+        in the Shopify Admin UI on:
+
+            [ Shopify > Online Store > Pages > (Page) > "Template" dropdown ]
+
+  - The Support page template does two things:
+      1) Creates the layout for all support pages, which includes regions
+         for a navigation menu, page title, page content, and a sidebar.
+      2) For policy pages, loads content from the master location.
+          - Content managed in the Shopify Admin UI on:
+
+                [ Shopify > Settings > Legal ]
+
+          - Content loaded from the "shop" object:
+
+                shop[handle].body
+
+      - In order for the Support's policy pages to be valid, they must exist,
+        so dummy pages are created.  But not so dummy, their title is what's
+        used when rendering the pages in the Support layout.
+
+  - If we wanted to pick the "title" and "url" from their actual sources:
+
+        {% if _h == "terms_of_service" or _h == "privacy_policy" or _h == "refund_policy" %}
+          {% assign _content = shop[_h].body %}
+          {% assign _title = shop[_h].title %}
+          {% assign _url = shop[_h].url %}
+        {% else %}
+          {% assign _content = page.content %}
+          {% assign _title = page.title %}
+          {% assign _url = page.url %}
+        {% endif %}
+
+  - We fetch the appropriate policy page by its handle (i.e. shop[h].body).
+    We could have also fetched policy pages via properties of the shop object:
+
+        {{ shop.privacy_policy }}
+        {{ shop.refund_policy }}
+        {{ shop.shipping_policy }}
+        {{ shop.terms_of_service }}
+
+    We chose the handle-based method because it was as readable with less code.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- assign _h = page.title | downcase | replace: " ", "_" -%}
+{%- if _h == "terms_of_service" or _h == "privacy_policy" or _h == "return_policy" -%}
+  {%- assign _legalese = shop[_h].body -%}
+  {%- if _h == "return_policy" -%}
+    {%- assign _legalese = shop["refund_policy"].body -%}
+  {%- endif -%}
+  {%- capture _content -%}
+    <div class="_m-legalese">{{- _legalese -}}</div>
+  {%- endcapture -%}
+{%- elsif _h == "contact_us" -%}
+  {%- capture _content -%}
+    {{ page.content }}
+    {% render "_m-contactus" %}
+  {%- endcapture -%}
+{%- else -%}
+  {%- assign _content = page.content -%}
+{%- endif -%}
+
+<div class="_g-supportpage">
+  <div class="_g-supportpage-menu">
+    {% render "_m-supportmenu" %}
+  </div>
+  <div class="_g-supportpage-title">
+    {% render "_m-pagetitle", title: page.title %}
+  </div>
+  <div class="_g-supportpage-page">
+    <div class="_g-supportpage-page-content">
+      {{ _content }}
+    </div>
+  </div>
+  <div class="_g-supportpage-info">
+    <div class="_g-supportpage-info-content">
+      <hr class="_bp-supportpage-full-hide" />
+      <b>{{ pages["customer-support"].title }}</b>
+      <br/><br/>
+      {{ pages["customer-support"].content }}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Support Pages",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Navigation Menu"
+      },
+      {
+        "id": "support_nav_menu",
+        "type": "link_list",
+        "label": "Support Menu"
+      },
+      {
+        "id": "menu_label",
+        "type": "text",
+        "label": "Menu Label",
+        "default": "Go to page:"
+      },
+      {
+        "id": "menu_default_selection",
+        "type": "text",
+        "label": "Menu Default Selection",
+        "default": "Select page..."
+      },
+      {
+        "id": "menu_indent_character",
+        "type": "text",
+        "label": "Menu Indent Character",
+        "default": "-&nbsp;-&nbsp;"
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,61 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Notes:
+  - When Shopify renders a section theme tag (i.e. a {-% section %-} tag),
+    it wraps each section in a "<div>" element with a unique "[id]" attribute.
+    There is no need to write them out explicitly.
+  - To configure a section's properties, update its "{ % schema % }" tag.
+      https://shopify.dev/tutorials/develop-theme-use-sections
+      https://shopify.dev/docs/themes/settings
+
+--------------------------------------------------------------{%- endcomment -%}
+
+<div class="_g-cartpage _js-cartpage">
+
+  <div class="_g-cartpage-title">
+    {% assign _title = "cart.general.title" | t %}
+    {% include "_m-pagetitle", title: _title %}
+  </div>
+
+  {% unless 0 < cart.item_count %}
+
+  <div class="_g-cartpage-empty">
+    {% include "_m-emptycart" %}
+  </div>
+
+  {% else %}
+
+  <div class="_g-cartpage-cart">
+    {% include "_m-cart" %}
+  </div>
+
+  <div class="_g-cartpage-summary">
+    {% include "_m-cartsummary" %}
+  </div>
+
+  {% endunless %}
+
+</div>
+
+{% schema %}
+  {
+    "name": "Cart Page",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "cart_notes_enable",
+        "label": "Enable cart notes",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Shop Buttons"
+      },
+      {
+        "id": "cartpage_shop_buttons",
+        "type": "link_list",
+        "label": "Empty Cart Shop Buttons"
+      }
+    ]
+  }
+{% endschema %}

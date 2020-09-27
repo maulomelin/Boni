@@ -1,0 +1,45 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_util-json-get-xjson-from-xmember]
+
+Snippet:
+  _util-json-get-xjson-from-xmember.Liquid
+
+Usage:
+  {% capture xjson %}
+    {% render "_util-json-get-xjson-from-xmember", xmember: xmember %}
+  {% endcapture %}
+
+Parameters:
+  {string} xmember
+
+Output:
+  - A string with the JSON of the Member.
+
+Description:
+  - The XJSON is is found in the Member as follows:
+
+        XMember --> <meta> || <data>
+          <meta> --> XJSONObjectMember | <delim>
+          <data> --> XJSONString <delim> XJSON
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- liquid
+  assign arr_xmember = xmember | split: "||"
+
+  assign meta = arr_xmember[0]
+  assign arr_meta = meta | split: "|"
+  assign type = arr_meta[0]
+  assign delim = arr_meta[1]
+
+  assign blob = meta | append: "||"
+  assign data = xmember | remove_first: blob
+
+  assign arr_data = data | split: delim
+  assign xjsonstring = arr_data[0]
+  assign xjson = arr_data[1]
+
+  echo xjson
+-%}

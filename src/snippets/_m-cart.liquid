@@ -1,0 +1,116 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_m-cart]
+
+Snippet:
+  \src\snippets\_m-cart.Liquid
+
+Usage:
+  {%- include "_m-cart" -%}
+
+Parameters:
+  none
+
+Output:
+  - The [_m-cart] structure.
+
+Description:
+  - The function simply fills a pre-defined template.
+    See the design patterns doc for details.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+<div class="_m-cart">
+
+  {% comment %}-----------------------------------------------------------------
+    Header Row
+  --------------------------------------------------------------{% endcomment %}
+  <div class="_th _th-item"> Item </div>
+  <div class="_th _th-description _bp-th-description"> Description </div>
+  <div class="_th _th-price"> Price </div>
+  <div class="_th _th-quantity"> Quantity </div>
+  <div class="_th _th-subtotal"> Total </div>
+  <div class="_th _th-remove _bp-th-remove">  </div>
+
+  {% comment %}-----------------------------------------------------------------
+    Cart Items
+  --------------------------------------------------------------{% endcomment %}
+  {% for _lineitem in cart.items %}
+  <div class="_description">
+    <div class="_product-title">
+      <a href="{{ _lineitem.variant.url }}">{{ _lineitem.product.title }}</a>
+    </div>
+    <div class="_variant-title">{{ _lineitem.variant.title }}</div>
+  </div>
+  <div class="_item">
+    <a href="{{ _lineitem.variant.url }}">
+      <img class="_thumbnail" src="{{ _lineitem.image | img_url }}" alt="{{ _lineitem.image.alt }}" />
+    </a>
+  </div>
+  <div class="_price">{{ _lineitem.final_price | money }}</div>
+  <div class="_quantity">
+    <div class="_spinner">
+      <div class="_label">{{ _lineitem.quantity }}</div>
+
+      {%- comment -%} Render the decrement [-] control. {%- endcomment -%}
+      {%- if 1 == _lineitem.quantity %}
+        <span class="_control _decrement _disabled">&#xFF0D;</span>
+      {%- else %}
+        <a class="_control _decrement" href="/cart/change?line={{ forloop.index }}&quantity={{ _lineitem.quantity | minus: 1 }}">&#xFF0D;</a>
+      {%- endif %}
+
+      {%- comment -%} Render the increment [+] control. {%- endcomment -%}
+      {%- if _lineitem.variant.inventory_quantity <= _lineitem.quantity and "deny" == _lineitem.variant.inventory_policy %}
+        <span class="_control _increment _disabled">&#xFF0B;</span>
+      {%- else %}
+        <a class="_control _increment" href="/cart/change?line={{ forloop.index }}&quantity={{ _lineitem.quantity | plus: 1 }}">&#xFF0B;</a>
+      {%- endif -%}
+
+    </div>
+  </div>
+  <div class="_total">{{ _lineitem.final_line_price | money }}</div>
+  <div class="_remove _bp-remove">
+    <a class="_control _delete" href="/cart/change?line={{ forloop.index }}&quantity=0">&#x2715;</a>
+  </div>
+  <div class="_actions _bp-actions">
+    <ul>
+      <li>
+        <a class="_control _delete" href="/cart/change?line={{ forloop.index }}&quantity=0">Remove</a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="_line"></div>
+  {% endfor %}
+
+  {% comment %}-----------------------------------------------------------------
+    Summary Rows
+  --------------------------------------------------------------{% endcomment %}
+  <div class="_tf _tf-subtotal x_bp-tf">
+    <div class="_key"> Cart Subtotal ({{ cart.item_count }} {{ cart.item_count | pluralize: "item", "items" }}) </div>
+    <div class="_value"> {{ cart.items_subtotal_price | money }} </div>
+  </div>
+  <div class="_tf _tf-shipping _bp-tf">
+    <div class="_key"> Shipping </div>
+    <div class="_value"> Free </div>
+  </div>
+  <div class="_tf _tf-taxes _bp-tf">
+    <div class="_key"> Taxes </div>
+    <div class="_value"> Calculated at Checkout </div>
+  </div>
+
+  <div class="_tf _line _bp-tf"></div>
+
+  <div class="_tf _tf-total _bp-tf">
+    <div class="_key"> Order Total </div>
+    <div class="_value"> {{ cart.total_price | money }} </div>
+  </div>
+
+  {% comment %}-----------------------------------------------------------------
+    Checkout Button
+  --------------------------------------------------------------{% endcomment %}
+  <form id="_id-cart-form" action="/cart" method="post"></form>
+  <button form="_id-cart-form" type="submit" name="checkout" class="_button _bp-tf">Proceed to Checkout</button>
+
+</div>

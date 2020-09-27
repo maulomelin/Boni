@@ -1,0 +1,169 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_m-addtocart]
+
+Snippet:
+  \src\snippets\_m-addtocart.Liquid
+
+Usage:
+  {% render "_m-addtocart", product: product %}
+
+Parameters:
+  {product} product // The product object to render the module for.
+
+Output:
+  - The [_m-addtocart] module for the given product.
+
+Description:
+  - The initial rendering of the module should follow the same logic used
+    in the javascript associated with the module.  This ensures the initial
+    condition will match the first iteration of the script when it executes,
+    and no updates should take place from the user's point of view.
+      - By contrast, consider examples across design pattern documents where
+        the default value in the HTML is modified by the script as it executes.
+        The page changes, things, shift, etc.  We want to avoid this.
+      - See the javascript and design pattern doc to ensure they're in sync.
+
+TODOs:
+
+  - Move availability to its own snippet, like we did in _optiongroup.js with
+    "function variantAvailability(variant) { ... }":
+        function.variantAvailability.liquid
+  - Figure out how to define global constants for availability.
+    They need to be used inside function.variantAvailability.liquid, and by
+    modules that call that snippet.
+  - Make sure the value for {% _message %} is in sync with what's in JS.
+    In fact, make it a localization string that's pulled both here and there.
+  - The selected variant in the Product Variants <select> list follows
+    well-defined rules.
+        - Rules in order of precedece:
+            1) Use the currently-selected variant if there is a valid
+               "?variant=" parameter in the URL.
+            2) Use the first variant in the "product.variants" array.
+        - The two rules above are coded in Liquid as follows:
+              assign _selected_variant = product.variants | first
+              assign _selected_variant = product.selected_variant | default: _selected_variant
+        - Any module that is rendered server-side follows this convention to make
+          sure all info shown on the page when first rendered is consistent.
+          We do not rely on client-side scripts to do this due to concerns
+          about showing data that mutates once scripts finish loading & firing.
+        - Wait!  Why don't we use "product.selected_or_first_available_variant"
+          to select the default variant?
+            - Testing shows that a product whose variants are all unavailable
+              returns empty/nil for "product.first_available_variant".
+              We can't use "product.selected_or_first_available_variant"
+              because the scenario where all variants are unavailable and
+              there's no "?variant=" in the URL still needs a fallback.
+            - This would be partially resolved if we removed any unavailable
+              items from the store.  However, this is unlikely to happen.
+              We want to capture interest in past inventory, and we plan to
+              keep all inventory around to help with SEO and cross-linking.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- if blank != product.id -%}
+{%- assign _selected_variant = product.variants | first -%}
+{%- assign _selected_variant = product.selected_variant | default: _selected_variant -%}
+{%- assign _id_productform = "_id-addtocart-productform-" | append: product.id -%}
+{%- assign _id_alertform = "_id-addtocart-alertform-" | append: product.id -%}
+
+<div class="_m-addtocart _js-addtocart" data-u-productid="{{- product.id -}}">
+
+  <div class="_controls">
+    <div class="_cart">
+      <div class="_button">
+        <button type="submit" form="{{- _id_productform -}}"> Add to Cart </button>
+      </div>
+    </div>
+    <div class="_alert _js-addtocart-alertcontrols">
+      <div class="_input">
+        <input id="_id-addtocart-emailinput" type="email" form="{{- _id_alertform -}}" class="_js-addtocart-alertemail" placeholder="{{ 'product.addtocart.alertform.email_placeholder' | t }}" required />
+        <label for="_id-addtocart-emailinput">{{ "product.addtocart.alertform.email_label" | t }}</label>
+        <div class="_validation"> Please enter a valid e-mail address </div>
+      </div>
+      <div class="_button">
+        <button type="submit" form="{{- _id_alertform -}}" class="_js-addtocart-alertbutton"> Sign Up </button>
+      </div>
+      <div class="_message"> Sign up for an Availability Alert. We'll send an e-mail when the item becomes available. Sign up to be notified when the item is available. </div>
+    </div>
+  </div>
+
+  {% form "product", product, id: _id_productform, class: "_js-addtocart-cartform" %}
+
+    <fieldset class="no-js">
+      <legend> Product Variants </legend>
+      <select form="{{- _id_productform -}}" name="id" class="_js-addtocart-variantselect" XXX-DEPRECATED-XXXdata-product-select>
+        {%- for _variant in product.variants -%}
+          {%- assign _selected = "" -%}
+            {%- if _variant == _selected_variant -%} {%- assign _selected = "selected" -%} {%- endif -%}
+          {%- assign _disabled = "" -%}
+            {%- capture _availability -%} {%- render "_util-variant-availability", variant: _variant -%} {%- endcapture -%}
+            {%- unless "instock" == _availability -%} {%- assign _disabled = "disabled" -%} {%- endunless %}
+        <option value="{{- _variant.id -}}" {{ _selected }} {{ _disabled }}>
+          {{- _variant.title }} - {{ _variant.price | money -}}
+        </option>
+        {%- endfor %}
+      </select>
+    </fieldset>
+    <fieldset class="no-js">
+      <legend> Quantity </legend>
+      <input form="_id-cart-form" name="quantity" type="hidden" value="1" />
+    </fieldset>
+
+    {%- if form.posted_successfully? %}
+    <div class="_response _js-addtocart-response">
+      <div class="_message _success">
+        {{- "product.addtocart.productform.success_message" | t | newline_to_br -}}
+        <button type="button">{{- "product.addtocart.productform.dismiss" | t -}}</button>
+      </div>
+    </div>
+    {%- endif -%}
+
+    {%- if form.errors %}
+    <div class="_response _js-addtocart-response">
+      <div class="_message _failure">
+        {{- "product.addtocart.productform.failure_message" | t | newline_to_br -}}
+        {{ form.errors | default_errors }}
+        <button type="button">{{- "product.addtocart.productform.dismiss" | t -}}</button>
+      </div>
+    </div>
+    {% endif %}
+
+  {% endform %}
+
+  {% form "contact", id: _id_alertform, class: "_js-addtocart-alertform" %}
+
+    <fieldset class="_hide">
+      <legend> Availability Alert </legend>
+      <input type="text" form="{{- _id_alertform -}}" name="contact[body]" value="Availability Alert" />
+      <input type="text" form="{{- _id_alertform -}}" name="contact[title]" value="{{- product.title -}}" />
+      <input type="text" form="{{- _id_alertform -}}" name="contact[option1]" value="{{- product.options_with_values[0].selected_value -}}" class="_js-addtocart-alertoption" data-u-name="{{- product.options_with_values[0].name -}}" />
+      <input type="text" form="{{- _id_alertform -}}" name="contact[option2]" value="{{- product.options_with_values[1].selected_value -}}" class="_js-addtocart-alertoption" data-u-name="{{- product.options_with_values[1].name -}}" />
+      <input type="text" form="{{- _id_alertform -}}" name="contact[option3]" value="{{- product.options_with_values[2].selected_value -}}" class="_js-addtocart-alertoption" data-u-name="{{- product.options_with_values[2].name -}}" />
+      <input type="text" form="{{- _id_alertform -}}" name="contact[availability]" value="instock" class="_js-addtocart-alertavailability" />
+    </fieldset>
+
+    {%- if form.posted_successfully? %}
+    <div class="_response _js-addtocart-response">
+      <div class="_message _success">
+        {{- "product.addtocart.alertform.success_message" | t | newline_to_br -}}
+        <button type="button">{{- "product.addtocart.alertform.dismiss" | t -}}</button>
+      </div>
+    </div>
+    {%- endif -%}
+
+    {%- if form.errors %}
+    <div class="_response _js-addtocart-response">
+      <div class="_message _failure">
+        {{- "product.addtocart.alertform.failure_message" | t | newline_to_br -}}
+        {{ form.errors | default_errors }}
+        <button type="button">{{- "product.addtocart.alertform.dismiss" | t -}}</button>
+      </div>
+    </div>
+    {%- endif -%}
+
+  {% endform %}
+
+</div>
+{%- endif -%}

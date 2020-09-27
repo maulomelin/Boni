@@ -1,0 +1,51 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_util-metadata-pairedwith-lookup]
+
+Snippet:
+  _util-metadata-pairedwith-lookup.Liquid
+
+Usage:
+  {% capture _comma_delimited_handles %}
+    {% render "_util-metadata-pairedwith-lookup", handle: product.handle %}
+  {% endcapture %}
+
+Parameters:
+  {handle} handle
+
+Output:
+  - A string containing a comma-delimited set of product handles.
+  - If no handles are found, an empty string is returned.
+
+Description:
+  - The pairedwith is pulled from the global settings object:
+
+        {{ settings.metadata_pairedwith }}
+
+  - The colorvariants is configurable via the Shopify Theme Editor.
+
+        [ Shopify > Themes > Current theme: Customize > Theme settings > Metadata ]
+
+  - The pairedwith is in JSON format.
+      - The routines invoked to get the data are based on how it is structured.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- assign json = settings.metadata_pairedwith -%}
+{%- assign path = "pairedwith." | append: handle -%}
+{%- capture xjson -%}{%- render "_util-json-convert-json-to-xjson", json: json -%}{%- endcapture -%}
+{%- capture xjsonarray -%}{%- render "_util-json-search-path-in-xjson", xjson: xjson, path: path -%}{%- endcapture -%}
+{%- capture caret_delimited_xelements -%}{%- render "_util-json-get-caret-delimited-xelements-from-xjsonarray", xjsonarray: xjsonarray -%}{%- endcapture -%}
+{%- assign arr_xelements = caret_delimited_xelements | split: "^" -%}
+{%- assign comma_delimited_handles = nil -%}
+{%- for xelement in arr_xelements -%}
+  {%- capture h -%}{%- render "_util-json-get-data-from-xjson", xjson: xelement -%}{%- endcapture -%}
+  {%- if nil == comma_delimited_handles -%}
+    {%- assign comma_delimited_handles = h -%}
+  {%- else -%}
+    {%- assign comma_delimited_handles = comma_delimited_handles | append: "," | append: h -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{{- comma_delimited_handles -}}

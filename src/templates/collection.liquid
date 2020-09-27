@@ -1,93 +1,12 @@
-{% comment %}
-  - https://help.shopify.com/en/themes/development/templates/collection-liquid
-  - Limit of 50 products per page.
-      - Unless we use {% layout none %}?  See https://ecommerce.shopify.com/c/ecommerce-design/t/filter-collection-without-tags-502924
-      - A test shows we can show more than 50 products per page!
-      - If the design of the page is 2/3/4 images wide, in order to have all
-        images on interim pages to frame the page completely, we want pages to
-        paginate at counts of 12n: 12/24/36/48/60/72/84/96/...
-      - Paginate at 48 items.
-  - To add sorting: https://gist.github.com/carolineschnapp/11352987
-  - Show all tags used within a collection, or create a collection for each tag and create a deeply nested hierarchy for the menu.
-  - We show {style,color} items in each collection.  This allows us to:
-      - Create a "Styled/Paired With" set for each {style,color} pair.
-      - Create an "Other Colors" set, if applicable.
-      - Create an "Other of Same Type" set (e.g. Tunics, or Long Sleeve Blouses).
-      - Fill the Browse pages with more content.
-      - Allows us to use different outfits for a style's colors.
+{%- comment -%}-----------------------------------------------------------------
 
-TODOs:
-  - Implementing the contents of /template/collection.liquid as a section lets us configure it in the ThemeAdmin page.
-  - Remove the if/else clause allow for the navigation menu to render on a wider screen.
-  - Implement responsive images once we figure out the layout and identify all UX breakpoints.
-  - Add placeholder image in case {% productd.featured_image == blank %}.
-  - Show collection children at the top of the page.  See Aritzia.com.
-  - RENAME "._xxx-grid" to "._grid-xxx" and all nested grid areas as "._ga-yyy".
-{% endcomment %}
+  - This is the template for the Collection page.
+    https://shopify.dev/docs/themes/files/collection-liquid
 
-{% comment %}
-<div class="grid">
-  <!-- sidebar -->
-  <div class="grid__item medium-up--one-quarter small--hide"> {% include "navigation-menu" %} </div>
-  <!-- main -->
-  <div class="grid__item medium-up--three-quarters"> </div> <!-- .grid__item -->
-</div> <!-- .grid -->
-{% endcomment %}
+  - The use of sections allows us configure them in the Shopify Theme Editor.
 
-<div class="_navcontent-grid">
+  - Sections can be found in \src\sections.
 
-  <div class="_navcontent-grid-nav small--hide">
+--------------------------------------------------------------{%- endcomment -%}
 
-    {%- include "_menu", class: "_text-small", list: linklists.header-drawer -%}
-<!--
-    <nav class="_vertical-menu _text-small">
-      {%- include "link-list", list: linklists.header-drawer -%}
-    </nav>
--->
-  </div>
-  <div class="_navcontent-grid-content">
-
-    {%- include "_breadcrumb", class: "_text-small", tree: linklists.header-drawer -%}
-
-    <h1>{{ collection.title }}</h1>
-
-    {% if collection.description != blank %}
-    <div class="rte">{{ collection.description }}</div>
-    {% endif %}
-
-sort_by: [{{ collection.sort_by }}]
-<br/><br/>
-url: [{{ collection.url | sort_by: "best-selling" }}]
-<br/><br/>
-default_sort_by: [{{ collection.default_sort_by }}]
-<br/><br/>
-
-    {% paginate collection.products by 200 %}
-    <div class="_collection">
-      {% for product in collection.products %}
-      <figure>
-        <figcaption>
-          <ul>
-            <li class="_title">{{ product.title }}</li>
-            <li class="_price">{{ product.price | money }}</li>
-          </ul>
-        </figcaption>
-        <a href="{{ product.url | within: collection }}">
-          {% if product.featured_image != blank %}
-          {{ product.featured_image.src | img_url: '480x480' | img_tag: product.featured_image.alt }}
-          {% else %}
-          <img src="" alt="[NO IMAGE]" />
-          {% endif %}
-        </a>
-      </figure>
-      {% endfor %}
-    </div>
-
-      {% if paginate.pages > 1 %}
-      {% include "pagination" %}
-      {% endif %}
-
-    {% endpaginate %}
-  </div>
-
-</div>
+{% section "collection" %}

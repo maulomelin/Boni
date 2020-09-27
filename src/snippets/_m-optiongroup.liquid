@@ -1,0 +1,112 @@
+{%- comment -%}-----------------------------------------------------------------
+Design Pattern:
+  [_m-optiongroup]
+
+Snippet:
+  \src\snippets\_m-optiongroup.Liquid
+
+Usage:
+  {%- for option in product.options_with_values -%}
+    {%- include "_optiongroup", product: product, index: forloop.index0 -%}
+  {%- endfor -%}
+
+Parameters:
+  {product} product [ required ] // The product this option group is for.
+  {integer} index [ required ] // Index of the option group in product.
+
+Output:
+  - A module that shows users all possible values for a particular product
+    attribute, and lets them single-select one of them.
+  - The module also includes javascript hooks that its associated script uses
+    to update the label to further indicate the currently-selected value.
+
+Description:
+  - An optiongroup is basically the visual representation of a product option.
+    It is the UX for the data an index the product.options_with_values array.
+      - For example, a product with two options ("Size" and "Color") will
+        generate two optiongroup modules.  One for each option:
+
+            Size = { small, medium, large }
+            Color = { white, red, blue, green, orange, black }
+
+  - An invalid index parameter for the product object results in no optiongroup.
+  - To guarantee that a product's optiongroup is generated from product data,
+    the function caller passes as inputs the {product} and {index}.
+      - {product} is where the optiongroup data comes from.
+      - {index} is which option to process.
+      - An earlier implementation passed {product} and {product_option}.
+        However, there was no guarantee that {product_option} came from the
+        same {product}, so we opted for {index} instead.
+  - To generate a relatively safe GID (Global ID) for various attributes in
+    the module (e.g. [id], [name]), we use a cambination of "product.options",
+    "product.id" and "forloop.index0".
+      - Using "product.options" alone will not suffice.
+          - Although Shopify won't let two product options share the same name
+            (guaranteeing that "option.name" is unique within a product), it
+            does not guarantee it across products.
+          - Rendering multiple products on a page with the same options
+            (e.g. "Color", "Size") would generate the same GIDs.
+      - Using "product.id" + "product.options" creates GIDs that allow pages
+        with optiongroups from various products, since "product.id" is unique
+        within a store.
+      - "Relatively safe" means that the failure mode of this design is
+        somewhat unlikely.  A scenario that fails is placing the same product
+        optiongroups in different parts of the page.
+      - Options for a truly "Safe GID":
+          - Setting a GUID at the root level would suffice, but we have not
+            devised a method that works with the "render" tag and that does not
+            require us to pass it as a parameter, which is highly undesireable.
+          - Using a timestamp to generate a GUID when needed would suffice.
+  - COPIED FROM [_m-addtocart]:
+    The selected variant in the Product Variants <select> list follows
+    well-defined rules.
+        - Rules in order of precedece:
+            1) Use the currently-selected variant if there is a valid
+               "?variant=" parameter in the URL.
+            2) Use the first variant in the "product.variants" array.
+        - The two rules above are coded in Liquid as follows:
+              assign _selected_variant = product.variants | first
+              assign _selected_variant = product.selected_variant | default: _selected_variant
+        - Any module that is rendered server-side follows this convention to make
+          sure all info shown on the page when first rendered is consistent.
+          We do not rely on client-side scripts to do this due to concerns
+          about showing data that mutates once scripts finish loading & firing.
+        - Wait!  Why don't we use "product.selected_or_first_available_variant"
+          to select the default variant?
+            - Testing shows that a product whose variants are all unavailable
+              returns empty/nil for "product.first_available_variant".
+              We can't use "product.selected_or_first_available_variant"
+              because the scenario where all variants are unavailable and
+              there's no "?variant=" in the URL still needs a fallback.
+            - This would be partially resolved if we removed any unavailable
+              items from the store.  However, this is unlikely to happen.
+              We want to capture interest in past inventory, and we plan to
+              keep all inventory around to help with SEO and cross-linking.
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- assign _product_option = product.options_with_values[index] -%}
+{%- if _product_option -%}
+  {%- assign _id_optiongroup = "_id-optiongroup-" | append: _product_option.name | append: "-" | append: product.id | downcase -%}
+  {%- assign _n_option = "_n-option-" | append: _product_option.name | append: "-" | append: product.id | downcase -%}
+  {%- assign _index = "option" | append: _product_option.position -%}
+  {%- capture _label -%} {%- render "_util-metafield-dictionary-lookup", key: _product_option.selected_value -%} {%- endcapture %}
+<fieldset class="_m-optiongroup _js-optiongroup" id="{{- _id_optiongroup -}}" data-u-productid="{{- product.id -}}" data-u-name="{{- _product_option.name -}}">
+  <legend>
+    <div class="_caption">
+      <div>
+        <span class="_name">{{- _product_option.name -}}</span>
+        <span class="_label _js-optiongroup-label">{{- _label -}}</span>
+      </div>
+    </div>
+  </legend>
+  <div class="_options">
+    {%- for _value in _product_option.values -%}
+      {%- assign _id_option = "_id-option-" | append: _product_option.name | append: "-" | append: product.id | append: "-" | append: forloop.index0 | downcase -%}
+      {%- assign _checked = "" -%} {%- if _value == _product_option.selected_value %} {%- assign _checked = "checked" -%} {%- endif %}
+      {%- capture _label -%} {%- render "_util-metafield-dictionary-lookup", key: _value -%} {%- endcapture -%}
+    <input id="{{- _id_option -}}" type="radio" name="{{- _n_option -}}" class="_option _js-option" value="{{- _value -}}" data-u-title="{{- _label -}}" data-u-index="{{- _index -}}" {{ _checked }} XXX-DEPRECATED-XXXdata-index="{{- _index -}}" XXX-DEPRECATED-XXXdata-single-option-selector />
+    <label for="{{- _id_option -}}" class="_label" title="{{- _label -}}">{{- _value -}}</label>
+    {%- endfor %}
+  </div>
+</fieldset>
+{%- endif -%}

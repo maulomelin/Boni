@@ -1,0 +1,30 @@
+/* _g-productpage.css ----------------------------------------------------------
+// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
+//----------------------------------------------------------------------------*/
+/* Structure & Layout */
+._g-productpage { width: 100%; display: grid; align-items: center; grid-template-areas: "pics" "info" "cart"; grid-template-columns: 1fr; grid-template-rows: auto; }
+._g-productpage ._g-productpage-pics { grid-area: pics; }
+._g-productpage ._g-productpage-info { grid-area: info; }
+._g-productpage ._g-productpage-cart { grid-area: cart; }
+/* Breakpoints */
+html[data-u-layout="region1"] ._g-productpage { grid-template-areas: "pics" "info" "cart"; grid-template-columns: 1fr; }
+html[data-u-layout="region2"] ._g-productpage { grid-template-areas: "pics" "info" "cart"; grid-template-columns: 1fr; }
+html[data-u-layout="region3"] ._g-productpage { grid-template-areas: "info pics" "cart cart"; grid-template-columns: 1fr 1fr; }
+html[data-u-layout="region4"] ._g-productpage { grid-template-areas: "pics pics" "info cart"; grid-template-columns: 1fr 1fr; }
+html[data-u-layout="region4"] ._g-productpage ._g-productpage-info { align-self: start; }
+html[data-u-layout="region4"] ._g-productpage ._g-productpage-cart { align-self: start; }
+html[data-u-layout="region5"] ._g-productpage { grid-template-areas: "pics pics" "info cart"; grid-template-columns: 1fr 1fr; }
+html[data-u-layout="region5"] ._g-productpage ._g-productpage-info { align-self: start; }
+html[data-u-layout="region5"] ._g-productpage ._g-productpage-cart { align-self: start; }
+html[data-u-layout="region6"] ._g-productpage { grid-template-areas: "info pics" "cart cart"; grid-template-columns: minmax(calc(200px), 1fr) minmax(calc(2/3*95vh), 1fr); }
+html[data-u-layout="region6"] ._g-productpage ._g-productpage-pics { align-self: start; }
+html[data-u-layout="region6"] ._g-productpage ._g-productpage-info { align-self: center; }
+html[data-u-layout="region6"] ._g-productpage ._g-productpage-cart { align-self: start; }
+html[data-u-layout="region7"] ._g-productpage { grid-template-areas: "info pics cart"; grid-template-columns: 1fr minmax(calc(2/3*95vh), 1fr) 1fr; }
+html[data-u-layout="error"] ._g-productpage { background: pink; }
+/* (Debug) -------------------------------------------------------------------*/
+._g-productpage._DEBUG { outline: dashed 1px pink; }
+._g-productpage._DEBUG ._g-productpage-pics { outline: dashed 1px yellow; background: lightyellow; }
+._g-productpage._DEBUG ._g-productpage-info { outline: dashed 1px green; background: honeydew; }
+._g-productpage._DEBUG ._g-productpage-cart { outline: dashed 1px blue; background: lightcyan; }
+/*----------------------------------------------------------------------------*/

@@ -1,0 +1,27 @@
+/* _m-footer.css ---------------------------------------------------------------
+// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
+//----------------------------------------------------------------------------*/
+/* Structure & Layout */
+footer._m-footer { margin: 2rem 0 0 0; padding: 1rem 0 0 0; border-top: solid 1px #e6e6e6; font-size: calc(1rem * 12/14); }
+footer._m-footer { display: flex; flex-flow: row wrap; justify-content: space-around; align-items: baseline; }
+footer._m-footer ._group { padding: 0 0 1rem 0; }
+footer._m-footer ._group { white-space: nowrap; color: #666666; }
+footer._m-footer ._group ul { list-style: none; margin: 0; padding: 0; display: flex; flex-flow: row nowrap; justify-content: center; }
+footer._m-footer ._group ul li { margin: 0 1rem; }
+footer._m-footer ._group ul li:first-of-type { margin-left: 1rem; }
+footer._m-footer ._group ul li:last-of-type { margin-right: 1rem; }
+footer._m-footer ._group a { color: #666666; text-decoration: none; }
+footer._m-footer ._group a:hover { color: black; text-decoration: underline; }
+/* Overrides */
+footer._m-footer ._group._info a { xtext-transform: uppercase; }
+footer._m-footer ._group._legal { xfont-size: calc(1rem * 10/14); }
+footer._m-footer ._group._legal a { color: #999999; xtext-transform: uppercase; }
+footer._m-footer ._group._copyright { color: #999999; padding: 0 2rem 1rem; }
+
+.template-index footer._m-footer { display: none; }
+/* (Debug) -------------------------------------------------------------------*/
+footer._m-footer._DEBUG { outline: dashed 1px pink; background: lightyellow; }
+footer._m-footer._DEBUG ._info { outline: dashed 1px orange; }
+footer._m-footer._DEBUG ._legal { outline: dashed 1px blue; }
+footer._m-footer._DEBUG ._copyright { outline: dashed 1px green; }
+/*----------------------------------------------------------------------------*/

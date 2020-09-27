@@ -1,0 +1,59 @@
+/* _m-carousel.css -------------------------------------------------------------
+// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
+//----------------------------------------------------------------------------*/
+/* Set up overal layout of all carousel elements. */
+._m-carousel { display: flex; flex-flow: column nowrap; align-items: center; justify-content: center; }
+._m-carousel { position: relative; }
+._m-carousel ._state { position: absolute; left: -999%; }
+._m-carousel ._viewer { order: 1; }
+._m-carousel ._controls { order: 2; }
+/* Set up the Viewer. */
+._m-carousel ._viewer { width: 100%; height: 100%; } /* Extend viewer to cover as much width as it can when it needs to. */
+._m-carousel ._viewer ._aspectratio { margin: 0 auto; } /* Center the frame. */
+@media only screen and (min-aspect-ratio: 2/3) { ._m-carousel ._viewer ._aspectratio { max-width: calc(80vh * 2/3); max-height: 80vh; } }
+@media only screen and (max-aspect-ratio: 2/3) { ._m-carousel ._viewer ._aspectratio { max-width: 80vw; max-height: calc(80vw * 3/2); } }
+._m-carousel ._viewer ._aspectratio ._viewport { width: 100%; padding-bottom: calc(100% * 3/2); } /* Expand the viewport to cover as much as it can. */
+._m-carousel ._viewer ._aspectratio ._viewport { position: relative; overflow: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; }
+._m-carousel ._viewer ._aspectratio ._viewport { -webkit-overflow-scrolling: touch; } /* Add momentum scrolling. */
+._m-carousel ._viewer ._aspectratio ._viewport { -ms-overflow-style: none; overflow: -moz-scrollbars-none; } /* Remove all scrollbars. */
+._m-carousel ._viewer ._aspectratio ._viewport::-webkit-scrollbar { display: none; } /* Remove all scrollbars. */
+._m-carousel ._viewer ._aspectratio ._viewport ._slides { position: absolute; width: 100%; height: 100%; display: flex; flex-flow: row nowrap; } /* "display: flex;" turns it from a vertical to a horizontal carousel. */
+._m-carousel ._viewer ._aspectratio ._viewport ._slides ._slide { display: flex; align-items: center; justify-content: center; min-width: 100%; scroll-snap-align: center; } /* Make each slide as large as the viewport. */
+._m-carousel ._viewer ._aspectratio ._viewport ._slides ._slide ._image { display: block; object-fit: contain; width: 100%; height: 100%; } /* Expand each image in a slide to cover as much space as it has. */
+/* Set up the Controls area. */
+._m-carousel ._controls { display: flex; flex-flow: row nowrap; align-items: center; justify-content: center; }
+._m-carousel ._controls { margin: 1rem 0; }
+._m-carousel ._controls ._prevs { order: 1; }
+._m-carousel ._controls ._dots { order: 2; }
+._m-carousel ._controls ._nexts { order: 3; }
+/* Set up the Dots. */
+._m-carousel ._dots { display: flex; flex-flow: row nowrap; align-items: center; justify-content: center; } /* Render Dots in a horizontal line. */
+._m-carousel ._dots { width: 100%; height: 2rem; }
+._m-carousel ._dots ._dot { display: block; background: lightgray; border: solid 1px lightgray; border-radius: 50%; } /* Default shape is a circle. */
+._m-carousel ._dots ._dot { width: 0.4rem; height: 0.4rem; margin: 0.1rem; } /* Default sizing and spacing is small. */
+._m-carousel ._dots ._dot { cursor: pointer; transition: all 0.25s; }
+._m-carousel ._dots ._dot:hover { border-color: black; }
+/* Set up the Prevs/Nexts. */
+._m-carousel ._prevs ._prev { display: none; }
+._m-carousel ._prevs ._prev { position: relative; color: gray; width: 2rem; xheight: 2rem; cursor: pointer; text-align: left; padding: 0.5rem 0; }
+.x_m-carousel ._prevs ._prev::after { content: ""; position: absolute; top: 0; left: 0; border-style: solid; border-width: 1rem 1rem 1rem 0; border-color: transparent lightgray transparent transparent; }
+.x_m-carousel ._prevs ._prev:hover::after { border-color: transparent black transparent transparent; }
+._m-carousel ._nexts ._next { display: none; }
+._m-carousel ._nexts ._next { position: relative; color: gray; width: 2rem; xheight: 2rem; cursor: pointer; text-align: right; padding: 0.5rem 0; }
+.x_m-carousel ._nexts ._next::after { content: ""; position: absolute; top: 0; right: 0; border-style: solid; border-width: 1rem 0 1rem 1rem; border-color: transparent transparent transparent lightgray; }
+.x_m-carousel ._nexts ._next:hover::after { border-color: transparent transparent transparent black; }
+
+/* (Debug) -------------------------------------------------------------------*/
+._m-carousel._DEBUG { border: dashed 1px pink; }
+._m-carousel._DEBUG ._viewer { border: dashed 1px gray; padding: 0.25rem; }
+._m-carousel._DEBUG ._viewer ._aspectratio { border: dashed 1px blue; background: lightblue; padding: 0.25rem; }
+._m-carousel._DEBUG ._viewer ._aspectratio ._viewport { border: dashed 1px green; background: palegreen; padding-top: 0.25rem; padding-right: 0.25rem; padding-left: 0.25rem; xpadding-bottom: used-to-set-height-above; }
+._m-carousel._DEBUG ._viewer ._aspectratio ._viewport ._slides { border: dashed 1px orange; background: yellow; padding: 0.25rem; }
+._m-carousel._DEBUG ._viewer ._aspectratio ._viewport ._slides ._slide { border: dashed 1px gray; background: lightgray; padding: 0.25rem; }
+@media only screen and (min-aspect-ratio: 2/3) { ._m-carousel._DEBUG ._viewer ._aspectratio { max-height: calc(80vh + 2 * 0.25rem); } }
+@media only screen and (max-aspect-ratio: 2/3) { ._m-carousel._DEBUG ._viewer ._aspectratio { max-height: calc(80vw * 3/2 + 2 * 0.25rem); } }
+._m-carousel._DEBUG ._viewer ._aspectratio ._viewport { padding-bottom: calc(100% * 3/2 - 3 * 0.25rem); }
+._m-carousel._DEBUG ._viewer ._aspectratio ._viewport ._slides { width: calc(100% - 2 * 0.25rem); height: calc(100% - 2 * 0.25rem); }
+._m-carousel._DEBUG ._prevs ._prev { outline: dashed 1px pink; }
+._m-carousel._DEBUG ._nexts ._next { outline: dashed 1px pink; }
+/*----------------------------------------------------------------------------*/

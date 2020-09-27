@@ -1,0 +1,100 @@
+/* _m-header.css ---------------------------------------------------------------
+// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
+//----------------------------------------------------------------------------*/
+/* Structure & Layout: Overall */
+._m-header-ancestor { display: contents; }
+._m-header ._stickyarea { position: sticky; top: 0; }
+._m-header ._scrollarea { position: absolute; top: 0; width: 100%; }
+._m-header ._overlay { position: fixed; top: 0; left: 0; width: 0; height: 0; }
+/* Structure & Layout: Drawers */
+._m-header ._stickyarea ._drawers { position: absolute; top: 0; }
+._m-header ._stickyarea ._drawers { display: flex; flex-flow: column; max-height: 85vh; }
+._m-header ._stickyarea ._drawers ._alert { flex-shrink: 0; visibility: hidden; }
+._m-header ._stickyarea ._drawers ._navbar { flex-shrink: 0; visibility: hidden; }
+._m-header ._stickyarea ._drawers ._menu { flex-shrink: 1; flex-grow: 1; }
+/* Structure & Layout: Drawers: Move Offscreen */
+._m-header ._stickyarea ._drawers ._menu { position: relative; width: 250px; left: -275px; }
+._m-header ._stickyarea ._drawers ._search { position: relative; width: 250px; left: -275px; }
+/* Structure & Layout: Drawers: Scrollbar */
+._m-header ._stickyarea ._drawers ._menu { overflow-y: scroll; padding: 0.25rem 0; }
+._m-header ._stickyarea ._drawers ._menu { -webkit-overflow-scrolling: touch;  -ms-overflow-style: none; overflow: -moz-scrollbars-none; }
+._m-header ._stickyarea ._drawers ._menu::-webkit-scrollbar { display: none; }
+/* Structure & Layout: Navbars */
+._m-header ._navbar { height: 4rem; }
+._m-header ._navbar { display: flex; flex-flow: row nowrap; align-items: center; justify-content: space-between; }
+._m-header ._navbar ._links { height: 100%; display: flex; flex-flow: row nowrap; align-items: center; }
+._m-header ._navbar ._links { list-style: none; margin: 0; padding: 0; }
+._m-header ._navbar ._links ._link { height: 100%; display: flex; align-items: center; }
+._m-header ._navbar ._links ._link a { height: 100%; display: flex; align-items: center; padding: 0 1rem; }
+._m-header ._navbar ._links ._link button { all: unset; }
+._m-header ._navbar ._links ._link button { height: 100%; display: flex; align-items: center; padding: 0 1rem; }
+/* Structure & Layout: Logo: Center & Resize */
+._m-header ._scrollarea ._navbar ._logo { height: 3rem; }
+._m-header ._scrollarea ._navbar ._logo a { text-decoration: none; }
+._m-header ._scrollarea ._navbar ._logo svg { width: 100%; height: 100%; }
+._m-header ._scrollarea ._navbar ._logo { flex: 1 1 content; }
+._m-header ._scrollarea ._navbar ._links { flex: 1 0 0; }
+/* Structure & Layout: Minimal Homepage */
+                                        ._m-header ._navbar ._links ._link._hpspacer { display: none; }
+._m-header-firstancestor.template-index ._m-header ._navbar ._links ._link:not(._bp-hp) { display: none; }
+._m-header-firstancestor.template-index ._m-header ._navbar ._links ._link._bp-hp { display: block !important; }
+/* Breakpoints & Transitions */
+                             ._m-header ._stickyarea ._drawers ._menu { display: none; }
+                             ._m-header ._stickyarea ._drawers ._search { display: none; }
+html[data-u-drawer="menu"]   ._m-header ._stickyarea ._drawers [data-u-drawer="menu"] { display: block; left: 0; }
+html[data-u-drawer="search"] ._m-header ._stickyarea ._drawers [data-u-drawer="search"] { display: block; left: 0; }
+                             ._m-header ._overlay { xtransition: all 0.25s linear; }
+html[data-u-drawer]          ._m-header ._overlay { width: 100%; height: 100%; xtransition: all 0.25s linear; }
+@media only screen and (max-width: 599px) {
+  ._m-header ._bp-account { display: none !important; }
+  ._m-header ._bp-search { display: none !important; }
+}
+/* Stack Levels & Pointer/Touch Events */
+._m-header ._stickyarea { z-index: 30; pointer-events: none; } /* Has "position: sticky;" */
+._m-header ._overlay { z-index: 20; } /* Has "position: fixed;" */
+._m-header ._scrollarea { z-index: 10; } /* Has "position: absolute;" */
+._m-header ._stickyarea ._alert { pointer-events: auto; }
+._m-header ._stickyarea ._links { pointer-events: auto; }
+._m-header ._stickyarea ._drawers ._menu { pointer-events: auto; }
+._m-header ._stickyarea ._drawers ._search { pointer-events: auto; }
+._m-header ._overlay { touch-action: manipulation; }
+/* Drawer: Menu */
+._m-header ._menu { xfont-size: calc(1rem * 12/14); }
+._m-header ._menu { border-radius: 0.25rem; background: white; box-shadow: 0 0 0.5rem 0.5rem white; } /* Fuzzy border. */
+._m-header ._menu hr { margin: 0.5rem 1rem; border: 0; height: 1px; background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));  }
+._m-header ._menu ul { padding: 0; margin: 0; list-style-type: none; }
+._m-header ._menu ul li { padding: 0 0 0 1rem; }
+._m-header ._menu ul li a { display: block; width: 100%; padding: 0.125rem 0; color: gray; text-decoration: none; }
+._m-header ._menu ul li a:hover { color: black; text-decoration: underline; }
+._m-header ._menu ul li a:focus { outline: auto black; }
+._m-header ._menu ul li a:visited { color: gray; }
+/* Drawer: Search */
+._m-header ._search { border-radius: 0.25rem; background: white; box-shadow: 0 0 0.5rem 0.5rem white; } /* Fuzzy border. */
+/* Fonts & Visuals */
+._m-header ._overlay { background: lightgray; opacity: 0.75; }
+._m-header ._alert { background: black; color: white; text-align: center; padding: 0.25rem; }
+._m-header ._alert a { color: white; }
+._m-header ._navbar ._links ._link a { text-decoration: none; color: gray; }
+._m-header ._navbar ._links ._link a:hover { text-decoration: underline; color: black; }
+._m-header ._navbar ._links ._link a:focus { xoutline: auto blue; }
+._m-header ._navbar ._links ._link button { font: inherit; cursor: pointer; color: gray; }
+._m-header ._navbar ._links ._link button:hover { text-decoration: underline; color: black; }
+._m-header ._navbar ._links ._link button:focus { xoutline: auto blue; }
+._m-header ._navbar ._links ._link ._label { border-radius: 0.25rem; background: white; box-shadow: 0 0 0.5rem 0.5rem white; } /* Fuzzy background on links and buttons. */
+._m-header ._scrollarea ._alert { visibility: hidden; }
+._m-header ._scrollarea ._navbar ._links { visibility: hidden; }
+._m-header ._scrollarea ._navbar ._logo { font-size: 2rem; }
+
+/* (Debug) -------------------------------------------------------------------*/
+._m-header._DEBUG ._stickyarea { outline: dashed 1px pink; }
+._m-header._DEBUG ._drawers { outline: dashed 1px pink; }
+._m-header._DEBUG ._navbar ._links ._link { outline: dashed 1px pink; }
+._m-header._DEBUG ._logo { outline: dashed 1px red; }
+._m-header._DEBUG ._scrollarea ._navbar ._links { visibility: visible; position: relative; top: 75%; }
+._m-header._DEBUG ._scrollarea ._navbar ._links a { color: red; background: lavenderblush; }
+._m-header._DEBUG ._scrollarea ._navbar ._links button { color: red; background: lavenderblush; }
+._m-header._DEBUG ._search { background: lightyellow; box-shadow: 0 0 0.5rem 0.5rem lightyellow; }
+._m-header._DEBUG ._menu { outline: dashed 1px red; background: lightyellow; box-shadow: 0 0 0.5rem 0.5rem lightyellow; }
+._m-header._DEBUG ._menu > * { outline: dashed 1px pink; }
+._m-header._DEBUG ._menu ul li * { outline: dashed 1px pink; }
+/*----------------------------------------------------------------------------*/

@@ -1,0 +1,63 @@
+{%- comment -%}-----------------------------------------------------------------
+Design Pattern:
+  [_m-related-colorvariants]
+
+Snippet:
+  _m-related-colorvariants.Liquid
+
+Usage:
+  {%- render "_m-related-colorvariant", handle: product.handle, heading: "Colors" -%}
+
+Parameters:
+  {handle} handle [ required ] // The product handle to draw data from.
+  {string} heading [ optional ] // The header string to use for the module.
+
+Output:
+  - An unordered list of <figures> that include an image and a caption.
+    For an example, see the [_m-related] design pattern.
+  - The specific images and caption are drawn from metadata.
+  - If the heading is omitted in the request, it is omitted in the output.
+
+Description:
+  - If no related data is found in the metadata, the module is not rendered.
+  - The related data is pulled from the global metafield settings object.
+    A utility function is used to find and render the data in the format
+    this module needs it.
+  - We only render the module if there are 2 or more related items.
+    The data will contain all items in an outfit, which includes the current
+    item itself (we do this because there are other places where we may
+    choose to render all outfits).  This avoids only showing the same item
+    you're looking at in a 1-item outfit, such as a dress.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- assign handles = shop.metafields.global.colorvariants[handle] -%}
+{%- if 1 < handles.size -%}
+<div class="_m-related">
+  <div class="_heading">
+  {%- if heading -%}
+    {{- heading -}}
+  {%- else -%}
+    {{- "product.related.colorvariants.defaultheading" | t -}}
+  {%- endif -%}
+  </div>
+  <div class="_items">
+    <ul>
+    {%- for h in handles -%}
+      {%- assign href = all_products[h].url | within: collection -%}
+      {%- assign src = all_products[h].featured_image | img_url: "medium" -%}
+      {%- assign alt = all_products[h].featured_image.alt -%}
+      {%- assign figcaption = shop.metafields.global.attributes[h].color | default: all_products[h].title -%}
+      <li>
+        <figure>
+          <a href="{{- href -}}">
+            <img src="{{- src -}}" alt="{{- alt -}}" />
+          </a>
+          <figcaption>{{- figcaption -}}</figcaption>
+        </figure>
+      </li>
+    {%- endfor %}
+    </ul>
+  </div>
+</div>
+{%- endif -%}

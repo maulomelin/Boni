@@ -1,0 +1,21 @@
+/* _m-cartsummary.css ----------------------------------------------------------
+// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
+//----------------------------------------------------------------------------*/
+._m-cartsummary { display: flex; flex-flow: column nowrap; max-width: 450px; padding: 0 2rem; margin: 0 auto; }
+._m-cartsummary ._tf { display: flex; flex-flow: row nowrap; justify-content: space-between; align-items: center; }
+._m-cartsummary ._tf { padding: 0.5rem 0; }
+._m-cartsummary ._line { padding: 1rem 0; background: linear-gradient(transparent 0% calc(50% - 1px), rgba(0,0,0,0.1) calc(50% - 1px) 50%, transparent 50% 100%); }
+._m-cartsummary ._button { align-self: center; padding: 1rem; margin: 2rem 0; width: 250px; color: white; background: black; border: solid 1px black; border-radius: 2px; }
+._m-cartsummary ._th { display: flex; flex-flow: row nowrap; justify-content: center; align-items: center; height: 3rem; font-weight: 500; padding: 0 0.5rem; background: white; border-bottom: solid 1px rgba(0,0,0,0.1); margin-bottom: 1rem; }
+._m-cartsummary ._tf-subtotal ._key {  }
+._m-cartsummary ._tf-subtotal ._value { font-weight: 500; }
+._m-cartsummary ._tf-shipping ._key {  }
+._m-cartsummary ._tf-shipping ._value { color: gray; }
+._m-cartsummary ._tf-taxes ._key {  }
+._m-cartsummary ._tf-taxes ._value { font-size: calc(1rem * 12/14); color: gray; }
+._m-cartsummary ._tf-total ._key { font-size: calc(1rem * 16/14); }
+._m-cartsummary ._tf-total ._value { font-weight: 500; font-size: calc(1rem * 21/14); }
+/* (Debug) -------------------------------------------------------------------*/
+._m-cartsummary._DEBUG > * { outline: dashed 1px pink; }
+._m-cartsummary._DEBUG ._line { padding: 1rem 0; margin: 0; background: linear-gradient(transparent 0% calc(50% - 1px), blue calc(50% - 1px) 50%, transparent 50% 100%); }
+/*----------------------------------------------------------------------------*/

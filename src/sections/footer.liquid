@@ -1,66 +1,40 @@
-{% comment %}
-NOTES:
-  - we follow Slate's convention of wrapping the content of a Section file in
-    an element with a "data-section-type" attribute.  The type is taken from
-    this attribute's value.
-  -
+{%- comment -%}-----------------------------------------------------------------
 
-TODOs:
-  - Decide if we want a footer.scss or the footer styles in boni.scss.
-  - Implement configurable social icon links.
-  - Make the social icons link to their respective pages.
-  - Decide if we want to include payment icons in the footer.
-  - Add social icons to our master icon table.
-  - Clean up the newsletter form; match it to the waitlist form in the ProductDetails page.
-  - In single-line mode, lock the legal line to the left, the info line center, and newsletter + social to the right.
-{% endcomment %}
+Notes:
+  - When Shopify renders a section theme tag (i.e. a {-% section %-} tag),
+    it wraps each section in a "<div>" element with a unique "[id]" attribute.
+    There is no need to write them out explicitly.
+  - To configure a section's properties, update its "{ % schema % }" tag.
+      https://shopify.dev/tutorials/develop-theme-use-sections
+      https://shopify.dev/docs/themes/settings
 
-<!-- header section (\src\sections\header.liquid) -->
-<div data-section-id="{{ section.id }}" data-section-type="footer">
+--------------------------------------------------------------{%- endcomment -%}
 
-  <footer class="_text-small _text-gray">
-
-    <div class="_legal">
-      {%- capture copyright_notice -%}&copy; {{ "now" | date: "%Y" }} {{ shop.name }}{%- endcapture -%}
-      {%- include "link-list", list: linklists.legalese, last: copyright_notice -%}
-    </div>
-    <div class="_info">
-      {%- include "link-list", list: linklists.footer -%}
-    </div>
-    <div class="_newsletter">
-      <label>Newsletter</label>
-      <input type="email" placeholder="E-mail address" />
-      <input type="submit" value="Sign Up" />
-    </div>
-    <div class="_social">
-      <ul>
-        <li>{% include "icons", icon: "facebook", class: "_icon" %}</li>
-        <li>{% include "icons", icon: "twitter", class: "_icon" %}</li>
-        <li>{% include "icons", icon: "pinterest", class: "_icon" %}</li>
-        <li>{% include "icons", icon: "youtube", class: "_icon" %}</li>
-      </ul>
-    </div>
-  </footer>
-
-</div>
+{% include "_m-footer" %}
 
 {% schema %}
   {
     "name": "Footer",
     "settings": [
       {
-        "type": "link_list",
-        "id": "footer_linklist",
-        "label": "First menu",
-        "default": "footer"
+        "type": "header",
+        "content": "Entries"
       },
       {
-        "type": "checkbox",
-        "id": "show_payment_icons",
-        "label": "Show payment icons",
-        "default": false
+        "id": "footer_support_menu",
+        "type": "link_list",
+        "label": "Support Menu"
+      },
+      {
+        "id": "footer_legal_menu",
+        "type": "link_list",
+        "label": "Legal Menu"
+      },
+      {
+        "id": "footer_copyright_text",
+        "type": "text",
+        "label": "Copyright Text"
       }
     ]
   }
-
 {% endschema %}

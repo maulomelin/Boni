@@ -1,0 +1,27 @@
+/* _m-variantpricing.css -------------------------------------------------------
+// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
+//----------------------------------------------------------------------------*/
+._m-variantpricing { display: flex; justify-content: center; padding: 0; }
+._m-variantpricing ._compare { padding: 0 0.5rem 0 0; text-decoration: line-through; color: lightgray; }
+._m-variantpricing ._price { padding: 0; }
+._m-variantpricing ._availability { font-style: italic; color: gray; }
+._m-variantpricing ._compare:empty { padding: 0; }
+._m-variantpricing ._price:empty { padding: 0; }
+/* These may be unecessary. */
+._m-variantpricing ._compare { order: 1; }
+._m-variantpricing ._price { order: 2; }
+._m-variantpricing ._availability { order: 3; }
+._m-variantpricing ._compare:empty:after { content: "\200b"; }
+._m-variantpricing ._price:empty:after { content: "\200b"; }
+._m-variantpricing ._availability:empty:after { content: "\200b"; }
+/* Breakpoints */
+html[data-u-layout="region3"] ._m-variantpricing { margin: 2rem 0 0 0 !important; }
+html[data-u-layout="region4"] ._m-variantpricing { margin: 2rem 0 0 0 !important; }
+html[data-u-layout="region5"] ._m-variantpricing { margin: 2rem 0 0 0 !important; }
+html[data-u-layout="region6"] ._m-variantpricing { margin: 2rem 0 0 0 !important; }
+/* (Debug) -------------------------------------------------------------------*/
+._m-variantpricing._DEBUG { outline: dashed 1px red; padding: 0.5rem; }
+._m-variantpricing._DEBUG ._price { outline: dashed 1px pink; padding: 0.5rem; }
+._m-variantpricing._DEBUG ._compare { outline: dashed 1px pink; padding: 0.5rem; }
+._m-variantpricing._DEBUG ._availability { outline: dashed 1px pink; padding: 0.5rem; }
+/*----------------------------------------------------------------------------*/

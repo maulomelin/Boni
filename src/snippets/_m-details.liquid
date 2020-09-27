@@ -1,0 +1,39 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_m-details]
+
+Snippet:
+  \src\snippets\_m-details.Liquid
+
+Usage:
+  {% include "_m-details" %}
+
+Parameters:
+  none
+
+Output:
+  - A content area containing product details with a visibility toggle control.
+
+Description:
+  - The module contains javascript hooks that enable the toggle control to:
+      1) Change the label, depending on the visiblity state of its content.
+      2) Show/Hide the content.
+  - The module's CSS rules can be tweaked to force a visibility state on a
+    given breakpoint.
+  - The content is loaded into product.content (alias for product.description).
+
+--------------------------------------------------------------{%- endcomment -%}
+
+<div class="_m-details _js-details">
+  <button type="button" class="_toggle _js-details-toggle" data-u-hidelabel="{{ 'product.details.toggle_hide' | t }}" data-u-showlabel="{{ 'product.details.toggle_show' | t }}">
+    {{- 'product.details.toggle_show' | t -}}
+  </button>
+  <div class="_content _js-details-content">
+    {%- if empty == product.description -%}
+      {{- "product.details.nodetails" | t -}}
+    {%- else -%}
+      {{ product.description }}
+    {%- endif -%}
+  </div>
+</div>

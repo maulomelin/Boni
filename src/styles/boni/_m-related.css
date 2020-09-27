@@ -1,0 +1,27 @@
+/* _m-related.css --------------------------------------------------------------
+// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
+//----------------------------------------------------------------------------*/
+/* Set up the overall containers and scrolling behaviour. */
+._m-related { margin: 1rem; }
+._m-related ._heading { padding: 1rem 0; }
+._m-related ._items { display: flex; overflow-x: auto; }
+._m-related ._items { -webkit-overflow-scrolling: touch; -ms-overflow-style: none; overflow: -moz-scrollbars-none; }
+._m-related ._items::-webkit-scrollbar { display: none; }
+/* Set up the CSS Grid. */
+._m-related ._items ul { display: grid; grid-template-rows: auto min-content; gap: 0 2rem; grid-auto-flow: column; grid-auto-columns: 100px; }
+/* Remove some containers from the flow and clean them up. */
+._m-related ._items ul { list-style: none; margin: 0; padding: 0; }
+._m-related ._items ul li { display: contents; }
+._m-related ._items ul li figure { display: contents; }
+/* Style the image and text elements. */
+._m-related ._items ul a { align-self: end; }
+._m-related ._items ul a img { display: block; width: 100%; height: 100%; object-fit: contain; }
+._m-related ._items ul figcaption { font-size: calc(1rem * 12/14); text-align: center; overflow: hidden; text-overflow: ellipsis; padding: 1rem 0; }
+/* (Debug) -------------------------------------------------------------------*/
+._m-related._DEBUG { outline: dashed 1px red; padding: 0.5rem; }
+._m-related._DEBUG ._title { outline: dashed 1px pink; }
+._m-related._DEBUG ._items { outline: dashed 1px pink; padding: 0.5rem; }
+._m-related._DEBUG ._items ul { outline: dashed 1px blue; padding: 0.5rem; }
+._m-related._DEBUG ._items ul a { outline: dashed 1px green; }
+._m-related._DEBUG ._items ul figcaption { outline: dashed 1px orange; }
+/*----------------------------------------------------------------------------*/

@@ -1,0 +1,39 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_m-heading]
+
+Snippet:
+  \src\snippets\_m-heading.Liquid
+
+Usage:
+  {% include "_m-heading" %}
+
+Parameters:
+  none
+
+Output:
+  - The designer/vendor and name of the item.
+
+Description:
+  - The designer is loaded into the product.vendor field.
+  - The name of the piece is loaded into the product.title field.
+      - The Product page uses it since it explicitly shows all product options.
+      - Remember that product.title (and variant.title) is used in the Checkout
+        page, where we have no control over the template:
+
+            Cardenal Dress - Pearl / M
+
+  - A "friendly" name for an item can exist in a metafield.  This alternate
+    version is designed for pages where we show multiple variants that would
+    have the same product.title, such as the Collection or Search Results pages:
+
+        Cardenal Dress in Pearl
+        Cardenal Dress in Cinnamon
+
+--------------------------------------------------------------{%- endcomment -%}
+
+<div class="_m-heading">
+  <div class="_designer"> {{- product.vendor -}} </div>
+  <div class="_title"> {{- product.title -}} </div>
+</div>

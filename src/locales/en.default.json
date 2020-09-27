@@ -78,8 +78,8 @@
       "shipping_at_checkout": "Shipping & taxes calculated at checkout",
       "update": "Update Cart",
       "checkout": "Check Out",
-      "empty": "Your cart is currently empty.",
-      "cookies_required": "Enable cookies to use the shopping cart",
+      "empty": "Your cart is currently empty.\n\n\nContinue shopping.",
+      "cookies_required": "Enable cookies to use the shopping cart.",
       "continue_browsing_html": "Continue browsing <a href=\"/collections/all\">here</a>.",
       "item_quantity": "Item quantity",
       "savings": "You're saving"
@@ -102,11 +102,17 @@
   "contact": {
     "form": {
       "name": "Name",
-      "email": "Email",
+      "email_label": "Your E-mail Address",
+      "email_placeholder": "Your E-mail Address",
+      "email": "E-mail",
       "phone": "Phone Number",
+      "message_label": "Message",
+      "message_placeholder": "Message",
       "message": "Message",
       "send": "Send",
-      "post_success": "Thanks for contacting us. We'll get back to you as soon as possible."
+      "post_success": "Thanks for contacting us.\n\nWe'll get back to you as soon as possible.\n\n",
+      "post_failure": "Something went wrong.\n\nYour message was not sent.\n\nPlease try again.\n\n",
+      "dismiss": "Dismiss"
     }
   },
   "customer": {
@@ -223,6 +229,11 @@
     }
   },
   "layout": {
+    "header": {
+      "home": "Home",
+      "cart": "Cart",
+      "search": "Search"
+    },
     "cart": {
       "title": "Bag",
       "items_count": {
@@ -241,6 +252,68 @@
       "social_platform": "{{ name }} on {{ platform }}",
       "copyright": "Copyright",
       "payment_methods": "Payment methods accepted"
+    }
+  },
+  "product": {
+    "details": {
+      "toggle_show": "Show Details",
+      "toggle_hide": "Hide Details",
+      "nodetails": "Sorry!  No details available. :("
+    },
+    "variantpricing": {
+      "instock": "Selection is in stock",
+      "outofstock": "Selection is out of stock",
+      "soldout": "Selection is sold out",
+      "unavailable": "Selection is unavailable",
+      "error": "ERROR"
+    },
+    "sizechart": {
+      "showchart": "Show Size Chart",
+      "hidechart": "Hide Size Chart",
+      "nochart": "Sorry!  No size chart available. :(",
+      "topinfo": "All measurements are approximate, measured flat.\n\n",
+      "bottominfo_html": "\nVariations in sizing may be caused by the nature of our artisanal pieces. If you require other measurements, or you want the specific measurement of a particular piece, please <a href='/pages/contact-us'>Contact Us</a>."
+    },
+    "addtocart": {
+      "productform": {
+        "success_message": "Success!\n\nWe will send you e-mail when the item is in stock.\n\n",
+        "failure_message": "Something went wrong.\n\nItem was not added to the cart.\n\nPlease try again.\n\n",
+        "dismiss": "Dismiss"
+      },
+      "alertform": {
+        "success_message": "Success!\n\nAlert set.\n\nWe will send you an e-mail when the item is in stock.\n\n",
+        "failure_message": "Failure!\n\nAlert not set.\n\n",
+        "dismiss": "Dismiss",
+        "email_label": "Your E-mail Address",
+        "email_placeholder": "Your E-mail Address"
+      }
+    },
+    "related": {
+      "colorvariants": {
+        "defaultheading": "Other Colors"
+      },
+      "pairedwith": {
+        "defaultheading": "Styled With"
+      },
+      "alsopairedwith": {
+        "defaultheading": "See It Also Styled With"
+      }
+    }
+  },
+  "productpricing": {
+    "message": {
+      "p": "",
+      "deltap": "",
+      "c-p": "",
+      "c-deltap": "",
+      "deltac-p": "",
+      "deltac-deltap": "",
+      "deltac-meshes-deltap": "On Sale",
+      "deltac-crosses-p": "On Sale",
+      "c-crosses-deltap": "On Sale",
+      "deltac-crosses-deltap": "On Sale",
+      "error": "Error",
+      "unavailable": "Currently Unavailable"
     }
   },
   "products": {

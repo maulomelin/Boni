@@ -1,0 +1,15 @@
+/* _m-emptycart.css ------------------------------------------------------------
+// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
+//----------------------------------------------------------------------------*/
+._m-emptycart { display: flex; flex-direction: column; justify-content: center; text-align: center; align-items: center; }
+/* Shopping Buttons */
+._m-emptycart ._shop { display: flex; flex-flow: row wrap; justify-content: space-evenly; margin: 2rem 0; }
+._m-emptycart ._shop ul { display: contents; }
+._m-emptycart ._shop ul li { display: contents; }
+._m-emptycart ._shop a { display: block; width: 200px; padding: 1rem 3rem; margin: 1rem 2rem; font-size: calc(1rem * 18/14); text-decoration: none; text-transform: uppercase; text-align: center; white-space: nowrap; border: solid 1px gray; border-radius: 2px; color: black; }
+._m-emptycart ._shop a:hover { background: black; color: white; }
+._m-emptycart ._shop a { background: black; color: white; }
+/* (Debug) -------------------------------------------------------------------*/
+._m-emptycart._DEBUG { outline: dashed 1px pink; background: lightyellow; padding: 0.5rem; }
+._m-emptycart._DEBUG ._shop { outline: dashed 1px orange; }
+/*----------------------------------------------------------------------------*/

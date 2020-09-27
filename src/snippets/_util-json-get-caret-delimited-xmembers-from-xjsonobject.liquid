@@ -1,0 +1,51 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_util-json-get-caret-delimited-xmembers-from-xjsonobject]
+
+Snippet:
+  _util-json-get-caret-delimited-xmembers-from-xjsonobject.Liquid
+
+Usage:
+  {% capture caret_delimited_xmembers %}
+    {% render "_util-json-get-caret-delimited-xmembers-from-xjsonobject", xjsonobject: xjsonobject %}
+  {% endcapture %}
+
+Parameters:
+  {string} xjsonobject
+
+Output:
+  - A caret-delimited string delimiting all xmembers of the XJSONObject.
+
+Description:
+  - The relationship between JSONObject and its Members is as follows:
+
+        XJSONObject --> JSONObject | <delim1> || XMembers
+          XMembers --> XMember { <delim1> XMember}*
+            XMember --> JSONObjectMember | <delim2> || XJSONString <delim2> XJSON
+
+  - When the xjsonobject is "split: '||'" into arr_xjsonobject, its metadata
+    is located in arr_xjsonobject[0].  We must be careful not to consider
+    arr_xjsonobject[1] as its body, because there may be other "||" string
+    sequences throughout the string.
+      - To get at the body of xjsonobject, we must remove the meta part from
+        it.  We do so by reconstructing the meta section and removing it
+        with the "remove_first: metablob" filter.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- liquid
+  assign arr_xjsonobject = xjsonobject | split: "||"
+
+  assign meta = arr_xjsonobject[0]
+  assign arr_meta = meta | split: "|"
+  assign type = arr_meta[0]
+  assign delim = arr_meta[1]
+
+  assign blob = meta | append: "||"
+  assign xmembers = xjsonobject | remove_first: blob
+
+  assign caret_delimited_xmembers = xmembers | replace: delim, "^"
+
+  echo caret_delimited_xmembers
+-%}

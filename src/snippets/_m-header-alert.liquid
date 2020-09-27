@@ -1,0 +1,39 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_m-header-alert]
+
+Snippet:
+  \src\snippets\_m-header-alert.Liquid
+
+Usage:
+  {% include "_m-header-alert" %}
+
+Parameters:
+  none
+
+Output:
+  - The ._alert structure used in the [_m-header] module.
+
+Description:
+  - The routine renders the alert bar based on its Section Settings
+    in the Shopify Admin UI.
+  - If conditions are not met, nothing is returned.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{% if
+  true == section.settings.show_header_alert
+  and
+  blank != section.settings.header_alert_text
+-%}
+<div class="_alert">
+  {%- if blank != section.settings.header_alert_link -%}
+  <a href="{{ section.settings.header_alert_link }}">
+  {%- endif -%}
+    {{ section.settings.header_alert_text }}
+  {%- if blank != section.settings.header_alert_link -%}
+  </a>
+  {%- endif -%}
+</div>
+{%- endif %}

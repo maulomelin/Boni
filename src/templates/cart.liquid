@@ -1,11 +1,12 @@
-{% comment %}
-  - https://help.shopify.com/en/themes/development/templates/cart-liquid
-  - The contents of /template/cart.liquid are in /sections/cart.liquid.
-  - Implementing it as a section lets us configure it in the ThemeAdmin page.
+{%- comment -%}-----------------------------------------------------------------
 
-TODOs:
-  - This is where a sidebar with the navigation menu would be added.
-    See /secdtion/product.liquid.
-{% endcomment %}
+  - This is the template for the Shopping Cart page.
+    https://help.shopify.com/en/themes/development/templates/cart-liquid
 
-{% section "cart" %}
+  - The use of sections allows us configure them in the Shopify Theme Editor.
+
+  - Sections can be found in \src\sections.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{% section "cartpage" %}

@@ -27,14 +27,39 @@
 @import url('modules/header.scss');
 @import url('modules/gift-card-template.scss');
 
-/*================ Boni ================*/
-@import url('global/boni.scss');    /* Clean this up! */
+/*===== Boni ================================*/
+/*----- Layouts -----------------------------*/
+@import url('boni/_g-cartpage.css');
+@import url('boni/_g-collectionpage.css');
+@import url('boni/_g-productpage.css');
+@import url('boni/_g-supportpage.css');
+/*----- Modules -----------------------------*/
+@import url('boni/_m-addtocart.css');
+@import url('boni/_m-carousel.css');
+@import url('boni/_m-cart.css');
+@import url('boni/_m-cartsummary.css');
+@import url('boni/_m-categories.css');
+@import url('boni/_m-collection.css');
+@import url('boni/_m-details.css');
+@import url('boni/_m-emptycart.css');
+@import url('boni/_m-footer.css');
+@import url('boni/_m-header.css');
+@import url('boni/_m-heading.css');
+@import url('boni/_m-homepage.css');
+@import url('boni/_m-optiongroup.css');
+@import url('boni/_m-pagetitle.css');
+@import url('boni/_m-sizechart.css');
+@import url('boni/_m-variantpricing.css');
+@import url('boni/_m-supportmenu.css');
+/*----- ToDo:InProgress ---------------------*/
+@import url('boni/_m-legalese.css');
+@import url('boni/_m-related.css');
+@import url('boni/_m-contactus.css');
+@import url('boni/_global.css');
+/*----- ToDo:Pending ------------------------*/
+/*----- ToDo:Deprecate ----------------------*/
+@import url('global/boni.scss');
 @import url('boni/_productinfo.css');
-@import url('boni/_related.css');
-@import url('boni/_optiongroup.css');
-@import url('boni/_menu.css');
 @import url('boni/_infochart.css');
 @import url('boni/_breadcrumb.css');
-@import url('boni/_addtocart.css');
-@import url('boni/_carousel.css');
-@import url('boni/_header.css');
+/*----- /ToDo -------------------------------*/

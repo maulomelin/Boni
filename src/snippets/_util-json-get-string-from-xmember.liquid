@@ -1,0 +1,50 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_util-json-get-string-from-xmember]
+
+Snippet:
+  _util-json-get-string-from-xmember.Liquid
+
+Usage:
+  {% capture string %}
+    {% render "_util-json-get-string-from-xmember", xmember: xmember %}
+  {% endcapture %}
+
+Parameters:
+  {string} xmember
+
+Output:
+  - A string with the JSONString's string of the Member.
+
+Description:
+  - The string is is found in the XMember as follows:
+
+        XMember --> <meta> || <data>
+          <meta> --> XJSONObjectMember | <delim>
+          <data> --> XJSONString <delim> XJSON
+            XJSONString --> JSONString || string
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- liquid
+  assign arr_xmember = xmember | split: "||"
+
+  assign meta = arr_xmember[0]
+  assign arr_meta = meta | split: "|"
+  assign type = arr_meta[0]
+  assign delim = arr_meta[1]
+
+  assign blob = meta | append: "||"
+  assign data = xmember | remove_first: blob
+
+  assign arr_data = data | split: delim
+  assign xjsonstring = arr_data[0]
+  assign xjson = arr_data[1]
+
+  assign arr_xjsonstring = xjsonstring | split: "||"
+  assign type = arr_xjsonstring[0]
+  assign string = arr_xjsonstring[1]
+
+  echo string
+-%}

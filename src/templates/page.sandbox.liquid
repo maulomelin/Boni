@@ -1,0 +1,1326 @@
+{%- comment -%}-----------------------------------------------------------------
+
+  - Custom template for testing stuff.
+
+  - Remove before deploying to production/publishing your theme.
+
+  - Open as http://localhost:3000/pages/sitemap?view=sandbox
+      - "sitemap" is any page defined at [Shopify > Online Store > Pages].
+
+--------------------------------------------------------------{%- endcomment -%}
+
+
+{%- comment -%}-----------------------------------------------------------------
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script> $("._x").click(function () { console.log("Do Something"); }); </script>
+--------------------------------------------------------------{%- endcomment -%}
+
+
+//==============================================================================
+// Doodles
+//==============================================================================
+
+{% capture str_json %}
+{
+  "item": {
+    "id": 1234567890,
+    "name": "Size",
+    "value": "S",
+    "availability": "instock",
+    "price": 2800,
+    "compare_at_price": 2900,
+    "variant": {
+      "id": 14945450983467,
+      "title": "Cinnamon S Bohemian",
+      "option1": "Cinnamon",
+      "option2": "S",
+      "option3": "Bohemian",
+      "options": [
+        "Cinnamon",
+        "S",
+        "Bohemian"
+      ],
+      "price": 2800,
+      "compare_at_price": 2900,
+      "inventory_quantity": 1,
+      "inventory_management": "shopify",
+      "inventory_policy": "continue",
+    }
+  }
+}
+{% endcapture %}
+{% capture str_string %}
+"This is a sentence"
+{% endcapture %}
+
+{% assign s1 = str_string | split: "" %}
+{% assign s1_stripped = str_string | strip | split: "" %}
+{% assign s2 = str_json | split: "" %}
+{% assign s2_stripped = str_json | strip | split: "" %}
+
+[s1 | size]=[{{ s1 | size }}]=[{{ s1 }}]
+[s1_stripped | size]=[{{ s1_stripped | size }}]
+[s2 | size]=[{{ s2 | size }}]
+[s2_stripped | size]=[{{ s2_stripped | size }}]
+[{{ s1 | newline_to_br }}]
+[{{ s1_stripped | newline_to_br }}]
+
+Goal is to enable us to enter metadata in JSON format and being able to convert it into (or treat it as) an iterable hash or array.
+
+{# render "_util-get-json-data", jsonpath: "item.variant.options", jsonstring: str_json #}
+
+
+We can escape characters in string sequences:
+https://stackoverflow.com/questions/32983352/escaping-characters-in-liquid-string
+
+{% assign x = "x\200Dx" | escape %}
+[x]=[{{x}}]
+[x]=[{{x | split: "" | size }}]
+
+{% capture escape_to_unicode %}
+  {% assign tags = "4′ × 6′, 5′ × 8′, ..., 16″ × 16″ × 16″, 24″ × 36″, ..., rectangular, 55″ × 57″ with lip" | split: ',' %}
+{% endcapture %}
+{{ escape_to_unicode | replace: "‘", \2018 | replace: "’", \2019 | replace: '“', \201C | replace: '”', \201D }}
+[escape_to_unicode]=[{{escape_to_unicode}}]
+{% assign tags2 = "4′ × 6′, 5′ × 8′, ..., 16″ × 16″ × 16″, 24″ × 36″, ..., rectangular, 55″ × 57″ with lip" | split: "," %}
+[tags2]=[{{tags2}}]
+[tags2 | size]=[{{tags2 | size}}]
+{% for t in tags2 %}
+  [t]=[{{t | replace: "′", \2020 | replace: '″', \2030 }}]
+{% endfor %}
+
+{% assign x = "abcd" %}
+
+
+//------------------------------------------------------------------------------
+// Calculate number of entries in a dot-delimited list - in one line.
+//------------------------------------------------------------------------------
+{% assign path = "this.is.a.test" %}
+{% assign arr_path = path | split: "." %}
+{% assign npath = arr_path | size %}
+[npath]=[{{npath}}]
+{% assign npath2 = path | split: "." | size %}
+[npath2]=[{{npath2}}]
+
+//------------------------------------------------------------------------------
+// Set a line feed / carriage return into a variable.
+//------------------------------------------------------------------------------
+{% capture _crlf %}
+{% endcapture %}
+{% capture _crlf2 %}
+
+{% endcapture %}
+
+
+//------------------------------------------------------------------------------
+// Test to see if we can set the max of a # in one line.
+//  - max(x, maxx) := {% assign s = x | size %} {% assign maxx = maxx | at_least: s %}
+//------------------------------------------------------------------------------
+{% assign maxn = 0 %}
+{% assign array = "one,two,three,four,five" | split: "," %}
+{% for n in array %}
+  [n]=[{{n}}]
+  [n.size]=[{{n.size}}]
+  [n | size]=[{{n | size}}]
+  {% assign s = n | size -%}
+  [s = n | size]=[{{s}}]
+  {% assign maxn = n.size | at_least: maxn -%}
+  [maxn]=[{{maxn}}]
+{% endfor %}
+[maxn]=[{{maxn}}]
+
+
+//------------------------------------------------------------------------------
+// Test to see how to output the variable used in a switch statement.
+//------------------------------------------------------------------------------
+{% liquid
+  assign handle = "cake"
+  assign string = nil
+  case handle
+    when "cake"
+      assign string = string | append: handle
+    else
+      assign string = "nope"
+  endcase
+
+  echo string
+%}
+
+
+//------------------------------------------------------------------------------
+// Check to see if a variable is a number or a string.
+//  - This only seems to work if the variable itself is not surrounded with quotes.
+//    When we split a string into an array, all array elements are strings.
+//  - This approach won't work if we get a value to check from a split array's entry.
+//  https://community.shopify.com/c/Shopify-Design/How-to-check-if-a-string-is-just-a-number-not-the-same-as/td-p/411174
+//  https://stackoverflow.com/questions/27198710/convert-string-to-integer-in-shopify-liquid
+//  https://www.tetchi.ca/liquids-capture-tag-and-numbers
+//------------------------------------------------------------------------------
+{%- assign samples = "six, 6, 6., 6.2, 6.2E+2, 6s, true, false, nil, null" -%}
+{%- assign arr_samples = samples | replace: " ", "" | split: "," %}
+[arr_samples]=[{{ arr_samples }}]
+[arr_samples | strip]=[{{ arr_samples | strip }}]
+
+{% for sample in arr_samples %}
+  {% capture y %}{{ sample | json }}{% endcapture %}
+  [sample]=[{{sample}}]
+  [sample | json]=[{{y}}]
+  {% if y contains '"' %} string {% else %} number {% endif %}
+{% endfor %}
+
+{% assign string = "5.2fdsa" %}
+{% assign arr_string = string | split: "" %}
+{% assign sout = nil %}
+{% for s in arr_string %}
+  {% assign sout = sout | append: s %}
+  [s]=[{{s}}]
+  [sout]=[{{sout}}]
+{% endfor %}
+{% capture y %}{{ sout | json }}{% endcapture %}
+[sout | json]=[{{y}}]
+{% if y contains '"' %} string {% else %} number {% endif %}
+
+{% assign var1 = "six" %}
+{% capture testValue %}{{ var1 | json }}{% endcapture %}
+{% if testValue contains '"' %}"string"{% else %}"number"{% endif %}
+
+{% assign var1 = "1E+10" %}
+{% assign num = var1 | plus: 0 %}
+[num]=[{{num}}]
+
+
+//------------------------------------------------------------------------------
+// Test the "slice" filter.
+//------------------------------------------------------------------------------
+{% liquid
+  assign x = "0123456789abcdef"
+  echo x
+  echo _crlf2
+
+  assign y = x | slice: 0, 3
+  assign x = x | slice: 3, x.size
+  echo y
+  echo _crlf
+  echo x
+  echo _crlf2
+
+  assign y = x | slice: 0, 3
+  assign x = x | slice: 3, x.size
+  echo y
+  echo _crlf
+  echo x
+  echo _crlf2
+
+  assign y = x | slice: 0, 3
+  assign x = x | slice: 3, x.size
+  echo y
+  echo _crlf
+  echo x
+  echo _crlf2
+
+  assign y = x | slice: 0, 3
+  assign x = x | slice: 3, x.size
+  echo y
+  echo _crlf
+  echo x
+  echo _crlf2
+
+  assign y = x | slice: 0, 3
+  assign x = x | slice: 3, x.size
+  echo y
+  echo _crlf
+  echo x
+  echo _crlf2
+
+  assign y = x | slice: 0, 3
+  assign x = x | slice: 3, x.size
+  echo y
+  echo _crlf
+  echo x
+  echo _crlf2
+%}
+
+
+//------------------------------------------------------------------------------
+// Test "append" and "remove_first" filters in one line.
+//------------------------------------------------------------------------------
+{% liquid
+  assign x = "JSONObject|#####||Member|###||JSONString||products###JSONObject|##||..."
+
+  assign arr_x = x | split: "||"
+
+  assign metablob = arr_x[0]
+  assign meta = metablob | append: "||"
+  assign datablob = x | remove_first: meta
+
+  assign datablob2 = x | remove_first: metablob | append: "||"
+%}
+[x]=[{{x}}]
+[metablob]=[{{metablob}}]
+[datablob]=[{{datablob}}]
+[datablob2]=[{{datablob2}}]
+
+
+//------------------------------------------------------------------------------
+// Test the "split" filter.
+//------------------------------------------------------------------------------
+{% assign x = "x###y###z" %}
+[x]=[{{x | strip}}]
+[x | strip: "#"]=[{{x | split: "#" | strip}}]
+[x | strip: "##"]=[{{x | split: "##" | strip}}]
+[x | strip: "###"]=[{{x | split: "###" | strip}}]
+[x | strip: "####"]=[{{x | split: "####" | strip}}]
+
+{% assign x4 = "x###y###z" | split: "####" %}
+{% if x == x4[0] %}
+  SAME, SHIFT THE DELIMITER
+{% else %}
+  DIFFERENT, DELIMITER WORKED
+{% endif %}
+
+
+//------------------------------------------------------------------------------
+// Test a string-based stack.
+//  - push(x) := {% assign stack = stack | prepend: x %}
+//  - pop(x) := {% assign x = stack | slice: 1 %} {% assign stack = stack | slice: 1, stack.size %}
+//------------------------------------------------------------------------------
+{% liquid
+  assign stack = nil
+  assign stack = stack | prepend: "o"
+  assign stack = stack | prepend: "o"
+  assign stack = stack | prepend: "a"
+  assign stack = stack | prepend: "a"
+  assign stack = stack | prepend: "a"
+  echo stack
+  echo _crlf
+
+  assign x = stack | slice: 1
+  assign stack = stack | slice: 1, stack.size
+  echo stack
+  echo _crlf
+
+  assign x = stack | slice: 1
+  assign stack = stack | slice: 1, stack.size
+  echo stack
+  echo _crlf
+
+  assign stack = stack | prepend: "x"
+  echo stack
+  echo _crlf
+
+  assign x = stack | slice: 1
+  assign stack = stack | slice: 1, stack.size
+  echo stack
+  echo _crlf
+%}
+
+//------------------------------------------------------------------------------
+// Whiteboard
+//------------------------------------------------------------------------------
+JSONObject@
+JSONString@@@@general@@@JSONObject@@@@JSONString@@@@@@@version@@@@@@JSONString@@@@@@@1.0@@@@@
+JSONString@@@@@@@date@@@@@@JSONString@@@@@@@2020-07@@JSONString@@@@specific@@@JSONLiteral@@@@1
+
+@@@@@@@ #
+@@@@@@ ##
+@@@@@ ###
+@@@@ ####
+@@@ #####
+@@ ######
+@ #######
+
+JSONObject#######
+  JSONString####general#####
+    JSONObject####
+      JSONString#version##JSONString#1.0###
+      JSONString#date##JSONString#2020-07######
+  JSONString####specific#####JSONLiteral####1
+
+JSONObject#######
+  JSONString####general#####
+    JSONObject####
+      JSONString#version##JSONString#1.0###
+      JSONString#date##JSONString#2020-07######
+    JSONString####specific#####JSONNumber####1
+
+//------------------------------------------------------------------------------
+JSONArray@JSONObject@JSONString@@@@name@@@JSONString@@@@Molecule Man@@JSONString@@@@age@@@JSONNumber@@@@29@@JSONString@@@@secretIdentity@@@JSONString@@@@Dan Jukes@@JSONString@@@@powers@@@JSONArray@@@@JSONString@@@@Radiation resistance@@JSONString@@@@Turning tiny@@JSONString@@@@Radiation blastJSONObject@@JSONString@@@@@name@@@@JSONString@@@@@Madame Uppercut@@@JSONString@@@@@age@@@@JSONNumber@@@@@39@@@JSONString@@@@@secretIdentity@@@@JSONString@@@@@Jane Wilson@@@JSONString@@@@@powers@@@@JSONArray@@@@@JSONString@@@@@Million tonne punch@@@JSONString@@@@@Damage resistance@@@JSONString@@@@@Superhuman reflexes
+
+JSONArray#####
+  JSONObject#####
+    JSONString##name###JSONString##Molecule Man####
+    JSONString##age###JSONNumber##29####
+    JSONString##secretIdentity###JSONString##Dan Jukes####
+    JSONString##powers###
+      JSONArray##
+        JSONString##Radiation resistance####
+        JSONString##Turning tiny####
+        JSONString##Radiation blast           (((-------------- ERROR RIGHT HERE
+  JSONObject####
+      JSONString#name##JSONString#Madame Uppercut###
+      JSONString#age##JSONNumber#39###
+      JSONString#secretIdentity##JSONString#Jane Wilson###
+      JSONString#powers##
+        JSONArray#JSONString#Million tonne punch###
+        JSONString#Damage resistance###
+        JSONString#Superhuman reflexes
+
+//------------------------------------------------------------------------------
+
+{
+  {
+    "powers": [
+      "strong"
+    ]
+  },
+  {
+    "powers": [
+      "fast"
+    ]
+  }
+}
+
+JSONObject@
+  JSONObject@@@@
+    JSONString@@@@@@@powers@@@@@@
+      JSONArray@@@@@@@
+        JSONString@@@@@@@@@@strong@@
+  JSONObject@@@@
+    JSONString@@@@@@@powers@@@@@@
+      JSONArray@@@@@@@
+        JSONString@@@@@@@@@@fast
+
+JSONObject##########
+  JSONObject#######
+    JSONString####powers#####
+      JSONArray####
+        JSONString#strong#########
+  JSONObject#######
+    JSONString####powers#####
+      JSONArray####
+        JSONString#fast
+
+//------------------------------------------------------------------------------
+
+JSONObject##########
+  JSONString#######general########
+    JSONObject#######
+      JSONString####version#####JSONString####1.0######
+      JSONString####date#####JSONString####2020-07-02T05:08#########
+  JSONString#######products########
+    JSONArray#######
+      JSONObject####
+        JSONString#id##JSONNumber#12345###
+        JSONString#name##JSONString#Long Dress######
+      JSONObject####
+        JSONString#id##JSONNumber#67890###
+        JSONString#name##JSONString#Short Dress######
+      JSONObject####JSONString#id##JSONNumber#24680###
+      JSONString#name##JSONString#Long Sleeve Blouse######
+    JSONObject####
+      JSONString#id##JSONNumber#13579###
+      JSONString#name##JSONString#Capri Pants
+
+//------------------------------------------------------------------------------
+
+JSONObject|@||JSONString|@@||general@@JSONObject|@@@||JSONString|@@@@||version@@@@JSONString|@@@@||1.0@@@JSONString|@@@@||date@@@@JSONString|@@@@||2020-07@JSONString|@@||specific@@JSONArray|@@@||JSONNumber||1@@@JSONNumber||2@@@JSONNumber||3
+
+JSONObject|####||
+  JSONString|###||general###
+    JSONObject|##||
+      JSONString|#||version#JSONString|#||1.0##
+      JSONString|#||date#JSONString|#||2020-07####
+    JSONString|###||specific###
+      JSONArray|##||
+        JSONNumber||1##
+        JSONNumber||2##
+        JSONNumber||3
+
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+
+//==============================================================================
+// JSON Transformer
+//==============================================================================
+
+//------------------------------------------------------------------------------
+// Initialize the JSON string.
+//------------------------------------------------------------------------------
+{%- capture json0 -%}
+{
+  "general" : {
+    "version": "1.0",
+    "date": "2020-07"
+  },
+  "specific" : [ 1, 2, 3 ]
+}
+{%- endcapture -%}
+
+{%- capture json1 -%}
+{
+  "general" : {
+    "version": "1.0",
+    "date": "2020-07"
+  },
+  "specific" : 1
+}
+{%- endcapture -%}
+
+{%- capture json2 -%}
+{
+  "item1": {
+    "id": 1234567890,
+    "name": "Size",
+    "variant": {
+      "id": 14945450983467,
+      "title": "Bohemian",
+      "options": [
+        "Cinnamon",
+        "S",
+        "Bohemian"
+      ],
+      "price": 2800,
+    }
+  },
+  "item2": {
+    "id": 6789012345,
+    "name": "Weight",
+    "variant": {
+      "id": 98346714945450,
+      "title": "Caribbean",
+      "options": [
+        "Red",
+        "XL",
+        "Caribbean"
+      ],
+      "price": 200,
+    }
+  }
+}
+{%- endcapture -%}
+
+{%- capture json3 -%}
+{
+  {
+    "name": "Molecule Man",
+    "age": 29,
+    "secretIdentity": "Dan Jukes",
+    "powers": [
+      "Radiation resistance",
+      "Turning tiny",
+      "Radiation blast"
+    ]
+  },
+  {
+    "name": "Madame Uppercut",
+    "age": 39,
+    "secretIdentity": "Jane Wilson",
+    "powers": [
+      "Million tonne punch",
+      "Damage resistance",
+      "Superhuman reflexes"
+    ]
+  }
+}
+{%- endcapture -%}
+
+{%- capture json4 -%}
+{
+  {
+    "powers": [
+      "strong"
+    ]
+  },
+  {
+    "powers": [
+      "fast"
+    ]
+  }
+}
+{%- endcapture -%}
+
+{%- capture json5 -%}
+{
+    "general" : {
+        "version": "1.0",
+        "date": "2020-07-02T05:08"
+    },
+    "products" : [
+        {
+            "id": 12345,
+            "name": "Long Dress"
+        },
+        {
+            "id": 67890,
+            "name": "Short Dress"
+        },
+        {
+            "id": 24680,
+            "name": "Long Sleeve Blouse"
+        },
+        {
+            "id": 13579,
+            "name": "Capri Pants"
+        }
+    ]
+}
+{%- endcapture -%}
+
+{%- capture json6 -%}
+{
+  "general" : {
+    "version": "1.0",
+    "date": "2020-07-02"
+  },
+  "dictionary" : {
+    "S": "Small",
+    "M": "Medium",
+    "L": "Large",
+    "XL": "Extra Large",
+    "OS": "One Size"
+  }
+}
+{%- endcapture -%}
+
+{%- capture json7 -%}
+{
+    "products" : {
+        "item1" : {
+            "related" : [ "123", "456", "789" ]
+        },
+        "item2" : {
+            "related" : [ "246", "357", "963" ]
+        }
+    }
+}
+{%- endcapture -%}
+
+{%- capture json8 -%}
+{
+    "products" : {
+        "12345" : {
+            "measurements" : [
+                [ "Measures", "Neck", "Bust", "Shoulder", "Hip" ],
+                [ "S", "8", "6", "15-1-2", "3-3-4" ],
+                [ "M", "8-1-4", "6-1-4", "16", "4" ],
+                [ "L", "8-1-2", "6-1-2", "16-1-2", "4-1-4" ]
+            ]
+        },
+        "67890" : {
+            "measurements" : [
+                [ "Measures", "Neck", "Bust", "Shoulder", "Hip" ],
+                [ "M", "8", "6", "16-1-2", "5" ],
+                [ "L", "9-1-2", "7", "17", "5-1-4" ],
+                [ "XL", "10", "7-1-2", "18", "6" ]
+            ]
+        }
+    }
+}
+{%- endcapture -%}
+
+{%- capture json9 -%}
+{
+  "general" : {
+    "version": "1.0",
+    "date": "2020-07"
+  },
+  "productids" : [ 12345, 67890, 24680, 13579 ]
+}
+{%- endcapture -%}
+
+{% assign sjson = json8 %}
+[sjson]=[{{sjson}}]
+
+//------------------------------------------------------------------------------
+// Convert the JSON string into an array.
+//------------------------------------------------------------------------------
+{% assign arr_json1 = sjson | split: "" %}
+[arr_json1]=[{{arr_json1}}]
+[arr_json1 | strip]=[{{arr_json1 | strip}}]
+
+{% assign arr_json2 = sjson | strip_newlines | split: "" %}
+[arr_json2]=[{{arr_json2}}]
+[arr_json2 | strip]=[{{arr_json2 | strip}}]
+
+{% assign arr_json = arr_json2 %}
+[arr_json]=[{{arr_json}}]
+[arr_json | strip]=[{{arr_json | strip}}]
+
+//------------------------------------------------------------------------------
+// Transform the JSON array ("#"-delimiter for both type and data).
+//  - out(x) := {% echo x %}
+//  - append(x, c) := {% assign x = x | append: c %}
+//  - shift(x, n | n > 0) := {% assign x = x | append: "@^n" %}
+//  - shift(x, n | n < 0) := {% assign x = x | remove_first: "@^n" %}
+//  - max(x, maxx) := {% assign maxx = x.size | at_least: maxx %}
+//------------------------------------------------------------------------------
+{% liquid
+  assign bliteral = false
+  assign bstring = false
+  assign string = nil
+  assign delim = nil
+  assign maxd = 0
+
+  capture xjson
+    for char in arr_json
+      case char
+        when "{"
+          if true == bstring or true == bliteral
+            assign string = string | append: char
+          else
+            echo "JSONObject"
+            assign delim = delim | append: "@"
+            echo delim
+            assign maxd = delim.size | at_least: maxd
+            assign delim = delim | append: "@@"
+          endif
+
+        when "}"
+          if true == bstring
+            assign string = string | append: char
+          elsif true == bliteral
+            if "true" == string
+              echo "JSONTrue"
+            elsif "false" == string
+              echo "JSONFalse"
+            elsif "null" == string
+              echo "JSONNull"
+            else
+              echo "JSONNumber"
+              assign string = string | plus: 0
+            endif
+            assign delim = delim | append: "@"
+            echo delim
+            assign maxd = delim.size | at_least: maxd
+            echo string
+            assign delim = delim | remove_first: "@"
+            assign bliteral = false
+            assign string = nil
+            assign delim = delim | remove_first: "@@@"
+          else
+            assign delim = delim | remove_first: "@@@"
+          endif
+
+        when "["
+          if true == bstring or true == bliteral
+            assign string = string | append: char
+          else
+            echo "JSONArray"
+            assign delim = delim | append: "@"
+            echo delim
+            assign maxd = delim.size | at_least: maxd
+            assign delim = delim | append: "@@"
+          endif
+
+        when "]"
+          if true == bstring or true == bliteral
+            assign string = string | append: char
+          elsif true == bliteral
+            if "true" == string
+              echo "JSONTrue"
+            elsif "false" == string
+              echo "JSONFalse"
+            elsif "null" == string
+              echo "JSONNull"
+            else
+              echo "JSONNumber"
+              assign string = string | plus: 0
+            endif
+            assign delim = delim | append: "@"
+            echo delim
+            assign maxd = delim.size | at_least: maxd
+            echo string
+            assign delim = delim | remove_first: "@"
+            assign bliteral = false
+            assign string = nil
+            assign delim = delim | remove_first: "@@@"
+          else
+            assign delim = delim | remove_first: "@@@"
+          endif
+
+        when '"'
+          if true == bliteral
+            assign string = string | append: char
+          else
+            if true == bstring
+              echo "JSONString"
+              assign delim = delim | append: "@"
+              echo delim
+              assign maxd = delim.size | at_least: maxd
+              echo string
+              assign delim = delim | remove_first: "@"
+              assign bstring = false
+              assign string = nil
+            else
+              assign bstring = true
+              assign string = nil
+            endif
+          endif
+
+        when ":"
+          if true == bstring or true == bliteral
+            assign string = string | append: char
+          else
+            echo delim
+            assign maxd = delim.size | at_least: maxd
+          endif
+
+        when ","
+          if true == bstring
+            assign string = string | append: char
+          elsif true == bliteral
+            if "true" == string
+              echo "JSONTrue"
+            elsif "false" == string
+              echo "JSONFalse"
+            elsif "null" == string
+              echo "JSONNull"
+            else
+              echo "JSONNumber"
+              assign string = string | plus: 0
+            endif
+            assign delim = delim | append: "@"
+            echo delim
+            assign maxd = delim.size | at_least: maxd
+            echo string
+            assign delim = delim | remove_first: "@"
+            assign bliteral = false
+            assign string = nil
+            assign delim = delim | remove_first: "@"
+            echo delim
+            assign maxd = delim.size | at_least: maxd
+            assign delim = delim | append: "@"
+          else
+            assign delim = delim | remove_first: "@"
+            echo delim
+            assign maxd = delim.size | at_least: maxd
+            assign delim = delim | append: "@"
+          endif
+
+        when " "
+          if true == bstring or true == bliteral
+            assign string = string | append: char
+          endif
+
+        else
+          if false == bstring and false == bliteral
+            assign bliteral = true
+            assign string = nil
+          endif
+          assign string = string | append: char
+
+      endcase
+
+    endfor
+  endcapture
+%}
+[xjson]=[{{xjson}}]
+[maxd]=[{{maxd}}]
+//------------------------------------------------------------------------------
+// Generate the delimiter mapping table and execute the final transform.
+//  - @^n -> #^(maxn - n + 1)
+//  - For example:
+//      @@@@ -> #
+//      @@@ -> ##
+//      @@ -> ###
+//      @ -> ####
+//------------------------------------------------------------------------------
+{%- assign string = xjson -%}
+
+{%- assign search = "@" -%}
+{% for i in (1..maxd) %}
+  {%- assign search = search | append: "@" -%}
+{% endfor %}
+{% assign replace = nil %}
+{% for i in (1..maxd) -%}
+  {%- assign search = search | remove_first: "@" -%}
+  {%- assign replace = replace | append: "#" -%}
+  {{ search }} -> {{ replace }}
+  {%- assign string = string | replace: search, replace -%}
+{% endfor %}
+[{{ string }}]
+
+{% assign xjson = string %}
+
+
+//------------------------------------------------------------------------------
+// Transform the JSON array ("|+"-delimiter for meta, "#+"-delimiter for data).
+//
+// Spec -> Liquid equivalents:
+//    - print(x) := {% echo x %}
+//    - append(x, c) := {% assign x = x | append: c %}
+//    - shift(x, n | n > 0) := {% assign x = x | append: "@^n" %}
+//    - shift(x, n | n < 0) := {% assign x = x | remove_first: "@^n" %}
+//    - push(stack, x) := {% assign stack = stack | prepend: x %}
+//    - pop(stack) := {% assign x = stack | slice: 1 %} {% assign stack = stack | slice: 1, stack.size %} {% echo x %}
+//    - str2num(x) := {% assign x = x | plus: 0 %}
+//    - set(x, max(x, length(y))) := {% assign x = y.size | at_least: x %}
+//        - length(x) := {% echo x.size %}
+//        - max(x, y) := {% echo y | at_least: x %}
+//        - set(x, y) := {% assign x = y %}
+//    - clear(x) := {% assign x = nil %}
+//
+//  TEST an example where we have alternating nestings of objects and arrays, to test the push/pop container stack.
+//  TEST an example with an object nested inside an array, to test the lack of JSONArrayElement header.
+//------------------------------------------------------------------------------
+{% liquid
+  assign container = nil
+  assign containers = nil
+  assign bliteral = false
+  assign literal = nil
+  assign bstring = false
+  assign delim = nil
+  assign n = 0
+
+  capture xjson
+    for char in arr_json
+      case char
+
+        when "{"
+
+          if true == bstring
+            echo char
+          elsif true == bliteral
+            assign literal = literal | append: char
+          else
+            assign delim = delim | append: "@"
+
+            echo "JSONObject"
+            echo "|"
+            echo delim
+            echo "||"
+            assign n = delim.size | at_least: n
+
+            assign containers = containers | prepend: container
+            assign container = "obj"
+
+            assign delim = delim | append: "@"
+
+            echo "JSONObjectMember"
+            echo "|"
+            echo delim
+            echo "||"
+            assign n = delim.size | at_least: n
+          endif
+
+
+        when "}"
+
+          if true == bstring
+            echo char
+          elsif true == bliteral
+            if "true" == literal
+              echo "JSONTrue"
+            elsif "false" == literal
+              echo "JSONFalse"
+            elsif "null" == literal
+              echo "JSONNull"
+            else
+              echo "JSONNumber"
+              assign literal = literal | plus: 0
+            endif
+            echo "||"
+            echo literal
+
+            assign bliteral = false
+            assign literal = nil
+
+            assign delim = delim | remove_first: "@@"
+
+            assign container = containers | slice: 0, 3
+            assign containers = containers | slice: 3, containers.size
+          else
+            assign delim = delim | remove_first: "@@"
+
+            assign container = containers | slice: 0, 3
+            assign containers = containers | slice: 3, containers.size
+          endif
+
+
+        when "["
+
+          if true == bstring
+            echo char
+          elsif true == bliteral
+            assign literal = literal | append: char
+          else
+            assign delim = delim | append: "@"
+
+            echo "JSONArray"
+            echo "|"
+            echo delim
+            echo "||"
+            assign n = delim.size | at_least: n
+
+            assign containers = containers | prepend: container
+            assign container = "arr"
+
+            assign delim = delim | append: "@"
+          endif
+
+
+        when "]"
+          if true == bstring
+            echo char
+          elsif true == bliteral
+            if "true" == literal
+              echo "JSONTrue"
+            elsif "false" == literal
+              echo "JSONFalse"
+            elsif "null" == literal
+              echo "JSONNull"
+            else
+              echo "JSONNumber"
+              assign literal = literal | plus: 0
+            endif
+            echo "||"
+            echo literal
+
+            assign bliteral = false
+            assign literal = nil
+
+            assign delim = delim | remove_first: "@@"
+
+            assign container = containers | slice: 0, 3
+            assign containers = containers | slice: 3, containers.size
+          else
+            assign delim = delim | remove_first: "@@"
+
+            assign container = containers | slice: 0, 3
+            assign containers = containers | slice: 3, containers.size
+          endif
+
+
+        when ","
+          if true == bstring
+            echo char
+          elsif true == bliteral
+            if "true" == literal
+              echo "JSONTrue"
+            elsif "false" == literal
+              echo "JSONFalse"
+            elsif "null" == literal
+              echo "JSONNull"
+            else
+              echo "JSONNumber"
+              assign literal = literal | plus: 0
+            endif
+            echo "||"
+            echo literal
+
+            assign bliteral = false
+            assign literal = nil
+
+            assign delim = delim | remove_first: "@"
+            echo delim
+            assign delim = delim | append: "@"
+
+            if "obj" == container
+              echo "JSONObjectMember"
+              echo "|"
+              echo delim
+              echo "||"
+            endif
+          else
+            assign delim = delim | remove_first: "@"
+            echo delim
+            assign delim = delim | append: "@"
+
+            if "obj" == container
+              echo "JSONObjectMember"
+              echo "|"
+              echo delim
+              echo "||"
+            endif
+          endif
+
+
+        when '"'
+          if true == bstring
+            assign bstring = false
+          elsif true == bliteral
+            assign literal = literal | append: char
+          else
+            echo "JSONString"
+            echo "||"
+            assign bstring = true
+          endif
+
+
+        when ":"
+          if true == bstring
+            echo char
+          elsif true == bliteral
+            assign literal = literal | append: char
+          else
+            echo delim
+          endif
+
+
+        when " "
+          if true == bstring
+            echo char
+          elsif true == bliteral
+            assign literal = literal | append: char
+          endif
+
+
+        else
+          if true == bstring
+            echo char
+          elsif true == bliteral
+            assign literal = literal | append: char
+          else
+            assign bliteral = true
+            assign literal = literal | append: char
+          endif
+
+      endcase
+
+    endfor
+  endcapture
+%}
+[xxjsonx]=[{{xjson}}]
+[xnx]=[{{n}}]
+
+//------------------------------------------------------------------------------
+// Generate the delimiter mapping table and execute the final transform.
+//  - @^n -> #^(maxn - n + 1)
+//  - For example:
+//      @@@@ -> #
+//      @@@ -> ##
+//      @@ -> ###
+//      @ -> ####
+//------------------------------------------------------------------------------
+{%- assign string = xjson -%}
+
+{%- assign search = "@" -%}
+{% for i in (1..n) %}
+  {%- assign search = search | append: "@" -%}
+{% endfor %}
+{% assign replace = nil %}
+{% for i in (1..n) -%}
+  {%- assign search = search | remove_first: "@" -%}
+  {%- assign replace = replace | append: "#" -%}
+  {{ search }} -> {{ replace }}
+  {%- assign string = string | replace: search, replace -%}
+{% endfor %}
+[{{ string }}]
+
+{% assign xjson = string %}
+
+
+//==============================================================================
+// Snippet: Convert JSON -> XJSON
+//==============================================================================
+[sjson]=[{{sjson}}]
+{%- capture xjson -%}
+  {%- render "_util-json-convert-json-to-xjson", json: sjson -%}
+{%- endcapture %}
+[xjson]=[{{xjson}}]
+
+
+//==============================================================================
+// JSON Traverser
+//==============================================================================
+
+//------------------------------------------------------------------------------
+// Get the JSON string.
+//------------------------------------------------------------------------------
+{%- assign str_metadata1 = "
+general###version#1.0##date#2020-07-02T05:08####
+dictionary###S#Small##M#Medium##L#Large##XL#Extra Large##OS#One Size##
+" -%}
+
+{%- assign str_metadata2 = "
+general#####
+  version###1.0####date###2020-07######
+products#####
+  id#12345##name#Long Dress####
+  id#67890##name#Short Dress####
+  id#24680##name#Long Sleeve Blouse####
+  id#13579##name#Capri Pants
+" -%}
+
+{%- assign str_metadata3 = "
+  general ###
+    version # 1.0 ##
+    date # 2020-07-02 ####
+  dictionary ###
+    S # Small ##
+    M # Medium ##
+    L # Large ##
+    XL # Extra Large ##
+    OS # One Size
+" -%}
+
+{% assign str_metadata = str_metadata3 %}
+[str_metadata]=[{{str_metadata}}]
+
+
+//------------------------------------------------------------------------------
+// Figure out how deep it is.
+//  - There is no "while" loop in Liquid, so we have to use a "for" loop.
+//  - To use a "for" loop, we need to establish a range "(1..max)".
+//  - For ease of calculation, we'll use the length of the string as upper bound.
+//  - On a section of the JSON string, this procedure may fail if there are
+//    missing delimiter lengths in the segment it's given.
+//------------------------------------------------------------------------------
+{% assign depth = 0 -%}
+{%- assign delimiter = nil -%}
+{%- assign nmax = str_metadata | size -%}
+{%- for n in (1..nmax) -%}
+  {%- assign delimiter = delimiter | append: "#" -%}
+  {%- unless str_metadata contains delimiter -%}
+    {%- assign depth = forloop.index0 -%}
+    {%- break -%}
+  {%- endunless -%}
+{%- endfor -%}
+[depth]=[{{depth}}]
+[delimiter]=[{{delimiter}}]
+
+
+//------------------------------------------------------------------------------
+// Parse the JSON path.
+//------------------------------------------------------------------------------
+{% assign path1 = "dictionary.L.foo.bar.coop" -%}
+{%- assign path2 = "dictionary.L" -%}
+{%- assign path3 = "products" -%}
+{%- assign path = path2 -%}
+{%- assign arr_path = path | split: "." -%}
+{%- assign npath = arr_path | size -%}
+[arr_path]=[{{arr_path | strip}}]
+[npath]=[{{npath}}]
+
+
+//------------------------------------------------------------------------------
+// Traverse the JSON tree following the JSON path.
+//  - We need the depth because that's the first delimiter we'll use.
+//    The delimiter shortens as we step down nesting levels.
+// TODOs:
+//  - At some point we need to either check every time we "split" the string
+//    that the split with the given delimiter was successful, or we need to
+//    determine if it makes sense to compact all delimiters in the input string
+//    when it is pre-processed.
+//------------------------------------------------------------------------------
+{%- assign str_json = str_metadata %}
+[str_json]=[{{str_json}}]
+
+// Walk down all path nodes, looking for matches.
+{% for n in (1..npath) %}
+
+  // Get the current node from the path.
+  {%- assign pathnode = arr_path[forloop.index0] -%}
+
+  // Set the delimiter for this nesting level.
+  {%- assign delimiter = delimiter | remove_first: "#" %}
+
+  // Debug info.
+  [n of npath]=[{{n}} of {{npath}}]
+  [pathnode]=[{{pathnode}}]
+  [delimiter]=[{{delimiter}}]
+
+  // Determine the type of blob we have.
+
+  // Split the data blob into its various elements.
+  {% assign arr_json = str_json | split: delimiter -%}
+  [arr_json]=[{{arr_json | strip}}]
+
+  {%- assign bnodematch = false -%}
+  {%- assign delimiter = delimiter | remove_first: "#" -%}
+  {%- for str in arr_json -%}
+
+    // If it's an array:
+    //  - The data is in an array.
+    //  - Look through the data blob as a simple array.
+
+    // If it's an object:
+    //  - The data is in key:value groups.
+    //  - Loop through each key:value group looking for node name matches.
+    {%- assign arr_str = str | split: delimiter -%}
+    {%- assign key = arr_str[0] | strip -%}
+    {%- assign value = arr_str[1] | strip %}
+
+    // Current key:value group:
+    [key]=[{{key}}]
+    [value]=[{{value}}]
+
+    {%- if pathnode == key %}
+      // => Found a match!  Flag it and break out of this inner.
+      {%- assign bnodematch = true %}
+      {%- break %}
+    {%- else %}
+      // => No match.  Check the next group.
+    {%- endif -%}
+  {%- endfor %}
+
+
+  // Check if a node match was found.
+  {%- if true == bnodematch %}
+    // Node match found.  Move on to the next node.
+    {%- assign str_json = value %}
+  {%- else %}
+    // Node match not found.  End outer loop.
+    {%- break %}
+  {%- endif %}
+
+{% endfor %}
+
+{% if true == bnodematch -%}
+  // Path match was found.
+  [value]=[{{value}}]
+{% else -%}
+  // Path was not found.
+{%- endif %}
+
+
+//==============================================================================
+// Snippet: Search path in XJSON.
+//==============================================================================
+[sjson]=[{{sjson}}]
+{% assign path = "products.67890.measurements" %}
+[path]=[{{path}}]
+[xjson]=[{{xjson}}]
+{% echo _crlf2 %}
+
+{%- capture xjson -%}
+  {%- render "_util-json-search-path-in-xjson", xjson: xjson, path: path -%}
+{%- endcapture %}
+[xjson]=[{{xjson}}]
+
+//==============================================================================
+// Parse an array of arrays using XJSON routines.
+//==============================================================================
+{%- capture columns -%}
+  {%- render "_util-json-get-caret-delimited-xelements-from-xjsonarray", xjsonarray: xjson -%}
+{%- endcapture %}
+[columns]=[{{columns}}]
+
+{%- assign arr_columns = columns | split: "^" -%}
+{%- for column in arr_columns %}
+
+  [column]=[{{column}}]
+  {%- capture rows -%}
+    {%- render "_util-json-get-caret-delimited-xelements-from-xjsonarray", xjsonarray: column -%}
+  {%- endcapture -%}
+  {%- assign arr_rows = rows | split: "^" -%}
+  {%- for row in arr_rows -%}
+
+    {%- capture datum -%}
+      {%- render "_util-json-get-data-from-xjson", xjson: row -%}
+    {%- endcapture %}
+    [row]=[{{row}}] ==> [datum]=[{{datum}}]
+
+  {%- endfor -%}
+
+{%- endfor -%}
+
+
+
+
+.

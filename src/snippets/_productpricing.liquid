@@ -1,0 +1,281 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_productpricing]
+
+Snippet:
+  _productpricing.Liquid
+
+Usage:
+  {% capture productpricing %}
+    {%- render "_productpricing", product: product -%}
+  {% endcapture %}
+
+Parameters:
+  {product} product
+
+Output:
+  - The product pricing HTML structure.
+  - The snippet is designed to be called with the "render" tag.
+    As such, its output should be captured in a variable.
+
+Description:
+  - The design of the algorithm is thoroughly documented in a design document.
+  - This document is organized as follows:
+      - The first section of initializes all variables that may be needed.
+      - The second part is the algorithm that calculates the pricing message,
+        using as many of the variables as the decision tree needs.
+      - A more performant design would calculate a variable only when needed.
+        Given the verbosity of the code, we prefer compartmentalization over
+        performance because it makes the code easier to maintain.
+        At least until we test and evaluate it.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- comment -%} Determine the Boolean Predicate: ∀xy(Px = Py) {%- endcomment -%}
+{%- liquid
+  capture is_pline_horizontal
+    render "_util-is-pline-horizontal", product: product
+  endcapture
+  assign is_pline_horizontal = is_pline_horizontal | strip | downcase
+  if "true" == is_pline_horizontal
+    assign is_pline_horizontal = true
+  else
+    assign is_pline_horizontal = false
+  endif
+-%}
+
+{%- comment -%} Determine the Boolean Predicate: ∀x(Cx ≤ Px) {%- endcomment -%}
+{%- liquid
+  capture is_cline_below_pline
+    render "_util-is-cline-below-pline", product: product
+  endcapture
+  assign is_cline_below_pline = is_cline_below_pline | strip | downcase
+  if "true" == is_cline_below_pline
+    assign is_cline_below_pline = true
+  else
+    assign is_cline_below_pline = false
+  endif
+-%}
+
+{%- comment -%} Determine the Boolean Predicate: ∀x(Px < Cx) {%- endcomment -%}
+{%- liquid
+  capture is_cline_above_pline
+    render "_util-is-cline-above-pline", product: product
+  endcapture
+  assign is_cline_above_pline = is_cline_above_pline | strip | downcase
+  if "true" == is_cline_above_pline
+    assign is_cline_above_pline = true
+  else
+    assign is_cline_above_pline = false
+  endif
+-%}
+
+{%- comment -%} Determine the Boolean Predicate: ∀xy(Cx = Cy) {%- endcomment -%}
+{%- liquid
+  capture is_cline_horizontal
+    render "_util-is-cline-horizontal", product: product
+  endcapture
+  assign is_cline_horizontal = is_cline_horizontal | strip | downcase
+  if "true" == is_cline_horizontal
+    assign is_cline_horizontal = true
+  else
+    assign is_cline_horizontal = false
+  endif
+-%}
+
+{%- comment -%} Determine the Boolean Predicate: ∀x(Pmax < Cx) {%- endcomment -%}
+{%- liquid
+  capture is_cline_above_pmax
+    render "_util-is-cline-above-pmax", product: product
+  endcapture
+  assign is_cline_above_pmax = is_cline_above_pmax | strip | downcase
+  if "true" == is_cline_above_pmax
+    assign is_cline_above_pmax = true
+  else
+    assign is_cline_above_pmax = false
+  endif
+-%}
+
+
+{%- comment -%} Determine the Pricing Message Pattern {%- endcomment -%}
+{%- liquid
+  assign pattern = nil
+  if is_cline_below_pline
+    if is_pline_horizontal
+      assign pattern = "p"
+    else
+      assign pattern = "deltap"
+    endif
+  else
+    if is_cline_above_pline
+      if is_cline_horizontal
+        if is_pline_horizontal
+          assign pattern = "c-p"
+        else
+          assign pattern = "c-deltap"
+        endif
+      else
+        if is_pline_horizontal
+          assign pattern = "deltac-p"
+        else
+          if is_cline_above_pmax
+            assign pattern = "deltac-deltap"
+          else
+            assign pattern = "deltac-meshes-deltap"
+          endif
+        endif
+      endif
+    else
+      if is_pline_horizontal
+        assign pattern = "deltac-crosses-p"
+      else
+        if is_cline_horizontal
+          assign pattern = "c-crosses-deltap"
+        else
+          assign pattern = "deltac-crosses-deltap"
+        endif
+      endif
+    endif
+  endif
+-%}
+
+
+{%- comment -%} Generate Base Pricing Data {%- endcomment -%}
+{%- liquid
+  assign pmin = nil
+  assign pmax = nil
+  assign cmin = nil
+  assign cmax = nil
+  for v in product.variants
+    capture availability
+      render "_util-variant-availability", variant: v
+    endcapture
+    if "instock" == availability or "outofstock" == availability
+
+      if nil == pmin
+        assign pmin = v.price
+      else
+        if v.price < pmin
+          assign pmin = v.price
+        endif
+      endif
+
+      if nil == pmax
+        assign pmax = v.price
+      else
+        if pmax < v.price
+          assign pmax = v.price
+        endif
+      endif
+
+      assign compare_at_price = v.compare_at_price | default: 0
+      if nil == cmin
+        assign cmin = compare_at_price
+      else
+        if compare_at_price < cmin
+          assign cmin = compare_at_price
+        endif
+      endif
+
+      if nil == cmax
+        assign cmax = compare_at_price
+      else
+        if cmax < compare_at_price
+          assign cmax = compare_at_price
+        endif
+      endif
+
+    endif
+  endfor
+-%}
+{%- capture p -%} <div class="_price"><ul><li>{{- pmin | money_without_trailing_zeros -}}</li></ul></div> {%- endcapture -%}
+{%- capture deltap -%} <div class="_price"><ul><li>{{- pmin | money_without_trailing_zeros -}}</li><li>{{- pmax | money_without_trailing_zeros -}}</li></ul></div>{%- endcapture -%}
+{%- capture c -%}<div class="_compare"><ul><li>{{- cmin | money_without_trailing_zeros -}}</li></ul></div>{%- endcapture -%}
+{%- capture deltac -%}<div class="_compare"><ul><li>{{- cmin | money_without_trailing_zeros -}}</li><li>{{- cmax | money_without_trailing_zeros -}}</li></ul></div>{%- endcapture -%}
+
+
+{%- comment -%} Assemble Pricing Data into Components {%- endcomment -%}
+{%- liquid
+  capture availability
+    render "_util-product-availability", product: product
+  endcapture
+  if "instock" == availability or "outofstock" == availability
+    if "p" == pattern
+      assign message = nil
+      assign compare = nil
+      assign price = p
+    elsif "deltap" == pattern
+      assign message = nil
+      assign compare = nil
+      assign price = deltap
+    elsif "c-p" == pattern
+      assign message = nil
+      assign compare = c
+      assign price = p
+    elsif "c-deltap" == pattern
+      assign message = nil
+      assign compare = c
+      assign price = deltap
+    elsif "deltac-p" == pattern
+      assign message = nil
+      assign compare = deltac
+      assign price = p
+    elsif "deltac-deltap" == pattern
+      assign message = nil
+      assign compare = deltac
+      assign price = deltap
+    elsif "deltac-meshes-deltap" == pattern
+      assign message = "productpricing.message.deltac-meshes-deltap" | t
+      assign compare = nil
+      assign price = deltap
+    elsif "deltac-crosses-p" == pattern
+      assign message = "productpricing.message.deltac-crosses-p" | t
+      assign compare = nil
+      assign price = p
+    elsif "c-crosses-deltap" == pattern
+      assign message = "productpricing.message.c-crosses-deltap" | t
+      assign compare = nil
+      assign price = deltap
+    elsif "deltac-crosses-deltap" == pattern
+      assign message = "productpricing.message.deltac-crosses-deltap" | t
+      assign compare = nil
+      assign price = deltap
+    else
+      assign message = "productpricing.message.error" | t
+      assign compare = nil
+      assign price = nil
+    endif
+  else
+    assign message = "productpricing.message.unavailable" | t
+    assign compare = nil
+    assign price = nil
+  endif
+-%}
+{%- if nil != message -%}
+  {%- capture message -%} <div class="_message">{{- message -}}</div> {%- endcapture -%}
+{%- endif -%}
+
+
+{%- comment -%} Render the Pricing Message Structure {%- endcomment -%}
+<div class="_productpricing">
+  {{- message -}}
+  {{- compare -}}
+  {{- price -}}
+</div>
+
+
+{%- comment -%} Debug {%- endcomment -%}
+{%- if false -%}
+  [availability]=[{{availability}}]
+  [is_pline_horizontal]=[{{is_pline_horizontal}}]<br/>
+  [is_cline_below_pline]=[{{is_cline_below_pline}}]<br/>
+  [is_cline_above_pline]=[{{is_cline_above_pline}}]<br/>
+  [is_cline_horizontal]=[{{is_cline_horizontal}}]<br/>
+  [is_cline_above_pmax]=[{{is_cline_above_pmax}}]<br/>
+  [pattern]=[{{pattern}}]<br/>
+  [p]=[{{p}}]<br/>
+  [deltap]=[{{deltap}}]<br/>
+  [c]=[{{c}}]<br/>
+  [deltac]=[{{deltac}}]<br/>
+{%- endif -%}

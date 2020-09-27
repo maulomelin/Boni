@@ -1,0 +1,47 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_util-is-pline-horizontal]
+
+Snippet:
+  _util-is-pline-horizontal.Liquid
+
+Usage:
+  {% capture is_pline_horizontal %}
+    {%- render "_util-is-pline-horizontal", product: product -%}
+  {% endcapture %}
+
+Parameters:
+  {product} product
+
+Output:
+  - The boolean string is either "true" or "false".
+    The callee must do extra work to cast these into boolean types.
+
+Description:
+  - A "boolean string" for the predicate ∀xy(Px = Py)
+  - The design of the algorithm is thoroughly documented in a design document.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- liquid
+  assign bool = true
+  assign p = nil
+  for v in product.variants
+    capture availability
+      render "_util-variant-availability", variant: v
+    endcapture
+    if "instock" == availability or "outofstock" == availability
+      if p == nil
+        assign p = v.price
+      else
+        if p != v.price
+          assign bool = false
+          break
+        endif
+      endif
+    endif
+  endfor
+
+  echo bool
+-%}

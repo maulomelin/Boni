@@ -1,0 +1,60 @@
+{%- comment -%}-----------------------------------------------------------------
+
+  - Custom template for showing the complete catalog.
+
+  - Remove before deploying to production/publishing your theme.
+
+  - Open as http://localhost:3000/pages/xxx?view=sandbox
+      - "xxx" is any page defined at [Shopify > Online Store > Pages].
+
+  - If we wish to add http://datatables.net support, add these CSS + JS:
+
+      <link rel="stylesheet" href="//cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+      <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+      <script>
+        $(document).ready( function () { $('#_id-DataTable').DataTable(); } );
+      </script>
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{% paginate collections.all.products by 200 %}
+<style>
+  ._t { margin: 0 auto; border-collapse: collapse; }
+  ._t th { border: solid 1px lightgray; white-space: nowrap; }
+  ._t td { border: solid 1px lightgray; }
+</style>
+<table class="_t" id="_id-DataTable">
+  <tr>
+    <th> # </th>
+    <th> Name </th>
+    <th> Price </th>
+    <th> Images </th>
+    <th> # Images </th>
+    <th> Tags </th>
+  </tr>
+  {% assign products_by_price = collections.all.products | sort: "price" %}
+  {% for product in products_by_price %}
+  <tr>
+    <td> {{ current_offset | plus: forloop.index }} </td>
+    <td> <a href="{{ product.url }}"> {{ product.title }} </a> </td>
+    <td> {{ product.price | money_without_trailing_zeros }} </td>
+    <td>
+      {% assign imax = product.images.size | minus: 1 %}
+      {% for i in (0..imax) %}
+        {% assign src = product.images[forloop.index0].src | img_url: "small" %}
+        <img src="{{ src }}">
+      {% endfor %}
+    </td>
+    <td> {{ product.images.size }} </td>
+    <td>
+      <code class="_block _text-small">
+      {% for tag in product.tags %}
+        {{ tag }}<br/>
+      {% endfor %}
+      </code>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{{ paginate | default_pagination }}
+{% endpaginate %}

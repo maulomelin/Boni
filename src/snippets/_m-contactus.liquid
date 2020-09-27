@@ -1,0 +1,69 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_m-contactus]
+
+Snippet:
+  \src\snippets\_m-contactus.Liquid
+
+Usage:
+  {% render "_m-contactus" %}
+
+Parameters:
+  none
+
+Output:
+  - The "Contact Us" form.
+
+Description:
+  - The form is responsive.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- assign _id_contactusform = "_id-contactusform" -%}
+<div class="x_DEBUG _m-contactus _js-contactus _js-contactus-formcontrols">
+
+  <div class="_input _js-contactus-input">
+    <input id="_id-contactus-email" type="email" form="{{- _id_contactusform -}}" name="contact[email]"
+      placeholder="{{ 'contact.form.email_placeholder' | t }}" value="{% if customer %}{{ customer.email }}{% endif %}"
+      class="_js-contactus-email _js-contactus-inputcontrol"
+      spellcheck="false" autocomplete="off" autocapitalize="off">
+    <label for="_id-contactus-email">{{ 'contact.form.email_label' | t }}</label>
+    <div class="_validation"> Please enter a valid e-mail address </div>
+  </div>
+
+  <div class="_input _js-contactus-input">
+    <textarea id="_id-contactus-message" form="{{- _id_contactusform -}}" name="contact[message]"
+      placeholder="{{ 'contact.form.message_placeholder' | t }}" class="_js-contactus-message _js-contactus-inputcontrol"></textarea>
+    <label for="_id-contactus-message">{{ 'contact.form.message_label' | t }}</label>
+    <div class="_validation"> Please enter a message </div>
+  </div>
+
+  <div class="_button">
+    <button type="submit" form="{{- _id_contactusform -}}" class="_js-contactus-submitbutton">{{ "contact.form.send" | t }}</button>
+  </div>
+
+  {% form "contact", id: _id_contactusform, novalidate: true %}
+
+    {%- if form.posted_successfully? %}
+    <div class="_response _js-contactus-response">
+      <div class="_message _success">
+        {{- "contact.form.post_success" | t | newline_to_br -}}
+        <button type="button">{{- "contact.form.dismiss" | t -}}</button>
+      </div>
+    </div>
+    {%- endif -%}
+
+    {%- if form.errors %}
+    <div class="_response _js-contactus-response">
+      <div class="_message _failure">
+        {{- "contact.form.post_failure" | t | newline_to_br -}}
+        {{ form.errors | default_errors }}
+        <button type="button">{{- "contact.form.dismiss" | t -}}</button>
+      </div>
+    </div>
+    {%- endif -%}
+
+  {% endform %}
+
+</div>

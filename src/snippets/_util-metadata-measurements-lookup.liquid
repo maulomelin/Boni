@@ -1,0 +1,89 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_util-metadata-measurements-lookup]
+
+Snippet:
+  _util-metadata-measurements-lookup.Liquid
+
+Usage:
+  {% capture table %}
+    {% render "_util-metadata-measurements-lookup", product_handle: product.id, class_table: "_table", class_column: "_js-sizechart-tablecolumn" %}
+  {% endcapture %}
+
+Parameters:
+  {integer} product_handle // Product handle to render measurements table for.
+  {string} class_table // Class to use for the table.
+  {string} class_column // Class to use for each column.
+
+Output:
+  - A measurements table that can go into the [_m-sizechart] module, primarily.
+  - If no data is found for the given productid, nothing is returned.
+
+Description:
+  - The sizechart data is pulled from the global settings object:
+
+        {{ settings.metadata_measurements }}
+
+  - The measurements data is configurable via the Shopify Theme Editor.
+
+        [ Shopify > Themes > Current theme: Customize > Theme settings > Metadata ]
+
+  - The measurements data is in JSON format.
+      - The routines invoked to get the data are based on how it is structured.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- assign json = settings.metadata_measurements -%}
+{%- assign path = "measurements." | append: product_handle -%}
+{%- capture xjson -%}{%- render "_util-json-convert-json-to-xjson", json: json -%}{%- endcapture -%}
+{%- capture xjsonobject -%}{%- render "_util-json-search-path-in-xjson", xjson: xjson, path: path -%}{%- endcapture -%}
+
+<div class="{{- class_table -}}">
+
+{%- if empty == xjsonobject -%}
+
+  {{- "product.sizechart.nochart" | t -}}
+
+{%- else -%}
+
+  {%- capture columns -%}{%- render "_util-json-get-caret-delimited-xmembers-from-xjsonobject", xjsonobject: xjsonobject -%}{%- endcapture %}
+  {%- assign arr_columns = columns | split: "^" -%}
+  {%- for column in arr_columns %}
+    <!-- column: [{{ column }}] -->
+    {%- assign bcol = forloop.index -%}
+
+    {%- capture column_header -%}{%- render "_util-json-get-string-from-xmember", xmember: column -%}{%- endcapture -%}
+    {%- capture column_data -%}{%- render "_util-json-get-xjson-from-xmember", xmember: column -%}{%- endcapture -%}
+    {%- capture rows -%}{%- render "_util-json-get-caret-delimited-xelements-from-xjsonarray", xjsonarray: column_data -%}{%- endcapture %}
+
+    <ul class="{{- class_column | strip -}}" data-u-value="{{- column_header | strip -}}">
+      <li>{{- column_header | strip -}}</li>
+
+    {%- assign arr_rows = rows | split: "^" -%}
+    {%- for row in arr_rows %}
+      <!-- row: [{{ row }}] -->
+
+      {%- capture datum -%}{%- render "_util-json-get-data-from-xjson", xjson: row -%}{%- endcapture %}
+
+      {%- if 1 == bcol -%}
+        <li>{{- datum -}}</li>
+      {%- else -%}
+        {%- assign arr_n = datum | split: "-" -%}
+        {%- case arr_n.size -%}
+          {%- when 1 -%} <li>{{- arr_n[0] -}}</li>
+          {%- when 2 -%} <li>&frac{{- arr_n[0] -}}{{- arr_n[1] -}};</li>
+          {%- when 3 -%} <li>{{- arr_n[0] -}}&nbsp;&frac{{- arr_n[1] -}}{{- arr_n[2] -}};</li>
+          {%- else -%} <li>{{- datum -}}</li>
+        {%- endcase -%}
+      {%- endif -%}
+
+    {%- endfor %}
+
+    </ul>
+
+  {%- endfor %}
+
+{%- endif -%}
+
+</div>

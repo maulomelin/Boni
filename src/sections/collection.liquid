@@ -1,0 +1,93 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Notes:
+  - When Shopify renders a section theme tag (i.e. a {-% section %-} tag),
+    it wraps each section in a "<div>" element with a unique "[id]" attribute.
+    There is no need to write them out explicitly.
+  - To configure a section's properties, update its "{ % schema % }" tag.
+      https://shopify.dev/tutorials/develop-theme-use-sections
+      https://shopify.dev/docs/themes/settings
+
+--------------------------------------------------------------{%- endcomment -%}
+
+<div class="x_DEBUG _g-collectionpage">
+  <div class="_g-collectionpage-categories">
+    {% render "_m-categories" %}
+  </div>
+  {%- comment -%}
+  <div class="_g-collectionpage-refine">
+    [REMOVE]
+  </div>
+  {%- endcomment -%}
+  <div class="_g-collectionpage-title">
+    {% render "_m-pagetitle", title: collection.title %}
+  </div>
+  <div class="_g-collectionpage-content">
+    {% render "_m-collection" %}
+  </div>
+  {%- comment -%}
+  <div class="_g-collectionpage-views">
+    [REMOVE]
+  </div>
+  {%- endcomment -%}
+</div>
+
+{% schema %}
+  {
+    "name": "Collection Page",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Menu Control"
+      },
+      {
+        "id": "categories_menu",
+        "type": "link_list",
+        "label": "Categories Menu"
+      },
+      {
+        "id": "menu_label",
+        "type": "text",
+        "label": "Menu Label",
+        "default": "Categories:"
+      },
+      {
+        "id": "menu_default_selection",
+        "type": "text",
+        "label": "Menu Default Selection",
+        "default": "Shop for..."
+      },
+      {
+        "id": "menu_indent_character",
+        "type": "text",
+        "label": "Menu Indent Character",
+        "default": "-&nbsp;-&nbsp;"
+      },
+      {
+        "type": "header",
+        "content": "Pagination Control"
+      },
+      {
+        "id": "paginate_page_size",
+        "type": "range",
+        "label": "Results Per Page",
+        "min": 12,
+        "max": 240,
+        "step": 12,
+        "default": 48
+      },
+      {
+        "id": "paginate_previous_string",
+        "type": "text",
+        "label": "String: Previous",
+        "default": "&laquo; Previous"
+      },
+      {
+        "id": "paginate_next_string",
+        "type": "text",
+        "label": "String: Next",
+        "default": "Next &raquo;"
+      }
+    ]
+  }
+{% endschema %}

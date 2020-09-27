@@ -1,0 +1,22 @@
+/* _m-categories.css -----------------------------------------------------------
+// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
+//----------------------------------------------------------------------------*/
+/* Fonts & Visuals */
+._m-categories { xpadding: 1rem; }
+._m-categories ._menu._dropdown { padding: 1rem; text-align: center; }
+._m-categories ._menu._dropdown select { padding: 0.5rem; border: solid 1px black; border-radius: 4px; }
+._m-categories ._menu._tree { xfont-size: calc(1rem * 12/14); }
+._m-categories ._menu._tree ul { margin: 0; padding: 0; list-style-type: none; }
+._m-categories ._menu._tree ul li { padding: 0 0 0 1rem; }
+._m-categories ._menu._tree ul li a { display: block; width: 100%; padding: 0.125rem 0; }
+._m-categories ._menu._tree ul li a { color: gray; text-decoration: none; }
+._m-categories ._menu._tree ul li a:hover { color: black; text-decoration: underline; }
+._m-categories ._menu._tree ul li a:focus { outline: auto black; }
+._m-categories ._menu._tree ul li a:visited { color: gray; }
+/* (Debug) -------------------------------------------------------------------*/
+._m-categories._DEBUG { outline: dashed 1px pink; padding: 0.5rem; }
+._m-categories._DEBUG ._menu._dropdown { outline: dashed 1px green; background: honeydew; }
+._m-categories._DEBUG ._menu._tree { outline: dashed 1px orange; background: lightyellow; }
+._m-categories._DEBUG ._menu._tree ul li { outline: dashed 1px gray; background: whitesmoke; }
+._m-categories._DEBUG ._menu._tree ul li a { outline: dashed 1px blue; background: azure; }
+/*----------------------------------------------------------------------------*/

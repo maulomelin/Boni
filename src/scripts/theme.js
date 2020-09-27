@@ -22,17 +22,42 @@ window.boni = window.boni || {};
 // =require templates/customers-addresses.js
 // =require templates/customers-login.js
 
-/*================ Boni ================*/
+/*===== Boni ================================*/
+/*----- Layouts -----------------------------*/
+// =require boni/_g-cartpage.js
+// =require boni/_g-productpage.js
+/*----- Modules -----------------------------*/
+// =require boni/_m-addtocart.js
+// =require boni/_m-carousel.js
+// =require boni/_m-categories.js
+// =require boni/_m-details.js
+// =require boni/_m-header.js
+// =require boni/_m-optiongroup.js
+// =require boni/_m-sizechart.js
+// =require boni/_m-variantpricing.js
+// =require boni/_m-collection.js
+// =require boni/_m-supportmenu.js
+// =require boni/_m-contactus.js
+/*----- ToDo:InProgress ---------------------*/
+/*----- ToDo:Pending ------------------------*/
+/*----- ToDo:Deprecate ----------------------*/
 // =require boni.js
-// =require boni/_addtocart.js
 // =require boni/_infochart.js
 // =require boni/_infochart-button.js
-// =require boni/_optiongroup.js
-// =require boni/_header.js
-// =require boni/_carousel.js
+/*----- /ToDo -------------------------------*/
 
 $(document).ready(function() {
   var sections = new slate.Sections();
+/*****
+  If we choose to, these each need a file in \src\scripts\sections
+  However, registering a section looks for elements with the attribute
+  [data-section-type], which the theme tag "section" does not generate.
+  So...it seems pointless to use, unless we manually add those extra divs.
+/*****/
+/*****
+  sections.register("collection", theme.Collection);
+  sections.register("footer", boni.Footer);
+/*****/
   sections.register("product", theme.Product);
   sections.register("header", boni.Header);
   sections.register("cart", boni.Cart);

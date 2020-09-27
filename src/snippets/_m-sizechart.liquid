@@ -1,0 +1,70 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_m-sizechart]
+
+Snippet:
+  \src\snippets\_m-sizechart.Liquid
+
+Usage:
+  {% render "_m-sizechart", productid: product.id %}
+
+Parameters:
+  {integer} productid
+
+Output:
+  - A collapsed size chart for the given productid.
+  - A built-in button (and associated module script) toggles the visibility
+    of the chart.
+
+Description:
+  - If no sizechart data is found, a default message is shown.
+  - The sizechart data is pulled by a utility function.
+    The utility function finds and renders the data in the appropriate format.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+<div class="_m-sizechart _js-sizechart" data-u-productid="{{- product.id -}}" data-u-name="Size">
+  <button type="button" class="_toggle _js-sizechart-toggle" data-u-hidelabel="{{- 'product.sizechart.hidechart' | t -}}" data-u-showlabel="{{- 'product.sizechart.showchart' | t -}}">
+    {{- "product.sizechart.showchart" | t -}}
+  </button>
+  <div class="_content _js-sizechart-content">
+    {{- "product.sizechart.topinfo" | t | newline_to_br -}}
+    <div class="_table">
+    {%- assign measurements = shop.metafields.global.measurements[product.handle] -%}
+{%- if false -%}
+<!-- Debug [_m-sizechart] -->
+<!-- [measurements]=[{{measurements}}] -->
+<!-- [product.metafields]=[{{product.metafields}}] -->
+<!-- [product.metafields.global]=[{{product.metafields.global}}] -->
+<!-- /Debug [_m-sizechart] -->
+{%- endif -%}
+    {%- if blank == measurements %}
+      {{ "product.sizechart.nochart" | t }}
+    {%- else -%}
+      {%- for column in measurements -%}
+        {%- assign ncol = forloop.index -%}
+        {%- assign column_header = column | first | strip -%}
+        {%- assign column_data = column | last %}
+      <ul class="_js-sizechart-tablecolumn" data-u-value="{{- column_header -}}">
+        <li>{{- column_header -}}</li>
+        {%- for datum in column_data -%}
+          {%- if 1 == ncol %}
+        <li>{{- datum -}}</li>
+          {%- else -%}
+            {%- assign arr_n = datum | split: "-" -%}
+            {%- case arr_n.size -%}
+              {%- when 1 -%} <li>{{- arr_n[0] -}}''</li>
+              {%- when 2 -%} <li>&frac{{- arr_n[0] -}}{{- arr_n[1] -}};''</li>
+              {%- when 3 -%} <li>{{- arr_n[0] -}}&nbsp;&frac{{- arr_n[1] -}}{{- arr_n[2] -}};''</li>
+              {%- else -%} <li>{{- datum -}}</li>
+            {%- endcase -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+      {%- endfor -%}
+    {%- endif -%}
+    </div>
+    {{- "product.sizechart.bottominfo_html" | t | newline_to_br -}}
+  </div>
+</div>

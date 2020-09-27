@@ -1,0 +1,59 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_m-emptycart]
+
+Snippet:
+  \src\snippets\_m-emptycart.Liquid
+
+Usage:
+  {% include "_m-emptycart" %}
+
+Parameters:
+  none
+
+Output:
+  - The html structure for an empty cart.
+
+Description:
+  - The empty cart module shows the same buttons shown on the homepage.
+  - If the handle for the homepage's button link list does not exist, a single
+    button to all the products collection is rendered.
+
+        <a href="{-{ routes.all_products_collection_url }-}">Shop</a>
+
+--------------------------------------------------------------{%- endcomment -%}
+
+<div class="_m-emptycart">
+
+  {% comment %}-----------------------------------------------------------------
+    Cart empty state without cookie support.
+    If cookies are not enabled, prompt user to enable them.
+  --------------------------------------------------------------{% endcomment %}
+  <div class="supports-no-cookies">
+    {{ "cart.general.cookies_required" | t }}
+  </div>
+
+  {%- comment -%}---------------------------------------------------------------
+    Cart empty state if cookies are supported.
+  ------------------------------------------------------------{%- endcomment -%}
+  <div class="supports-cookies">
+    {{ "cart.general.empty" | t | newline_to_br }}
+  </div>
+
+  {%- comment -%}---------------------------------------------------------------
+    Continue shopping buttons.
+  ------------------------------------------------------------{%- endcomment -%}
+  <div class="_shop supports-cookies">
+    {% assign _h = section.settings.cartpage_shop_buttons %}
+    {% if blank != _h %}
+      {% include "_util-linklist-to-ul", list: linklists[_h] %}
+    {% else %}
+    <ul>
+      <li>
+        <a href="{{ routes.all_products_collection_url }}">Shop All</a>
+      </li>
+    </ul>
+    {% endif %}
+  </div>
+</div>

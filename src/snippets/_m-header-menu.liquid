@@ -1,0 +1,64 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_m-header-menu]
+
+Snippet:
+  \src\snippets\_m-header-menu.Liquid
+
+Usage:
+  {% include "_m-header-menu" %}
+
+Parameters:
+  none
+
+Output:
+  - The ._menu structure used in the [_m-header] module.
+
+Description:
+  - The routine populates from a list of pre-specified menu items defined by
+    the user in the Shopify Admin UI.
+      - The expected menu groups are first cast into an array.
+      - Iterate through the array, rendering only defined menus, and placing
+        a horizontal rule between rendered groups.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+<div class="_menu" data-u-drawer="menu">
+
+  {% comment %} The first group of links are all special cases. {% endcomment %}
+  <ul>
+    <li>
+      <a href="/">{{ "layout.header.home" | t }}</a>
+    </li>
+    <li>
+      <a href="/cart">
+        {{- "layout.header.cart" | t -}}
+        {%- if 0 < cart.item_count -%}
+          ({{cart.item_count}})
+        {%- endif -%}
+      </a>
+    </li>
+  </ul>
+  <hr/>
+
+  {% comment %} Cast the expected menu groups into an array. {% endcomment %}
+  {%- capture _handles_data -%}
+    {{- section.settings.header_shop_menu -}} ##
+    {{- section.settings.header_support_menu -}} ##
+    {{- section.settings.header_legal_menu -}}
+  {%- endcapture -%}
+  {%- assign _handles_array = _handles_data | split: "##" -%}
+
+  {% comment %} Render all valid menu groups. {% endcomment %}
+  {%- assign _bflag = false -%}
+  {%- for _handle in _handles_array -%}
+    {%- assign _h = _handle | strip -%}
+    {%- if blank != _h -%}
+      {%- if true == _bflag -%} <hr/> {%- endif -%}
+      {%- assign _bflag = true -%}
+      {% include "_util-linklist-to-ul", list: linklists[_h] %}
+    {%- endif -%}
+  {%- endfor -%}
+
+</div>

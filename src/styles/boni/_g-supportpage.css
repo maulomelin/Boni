@@ -1,0 +1,43 @@
+/* _g-supportpage.css ----------------------------------------------------------
+// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
+//----------------------------------------------------------------------------*/
+._g-supportpage { display: grid; grid-template-areas: "menu" "title" "page" "info"; grid-template-columns: 1fr; }
+._g-supportpage ._g-supportpage-menu { grid-area: menu; }
+._g-supportpage ._g-supportpage-title { grid-area: title; }
+._g-supportpage ._g-supportpage-page { grid-area: page; }
+._g-supportpage ._g-supportpage-hr { grid-area: hr; }
+._g-supportpage ._g-supportpage-info { grid-area: info; }
+@media only screen and (max-width: 599px) {
+  ._g-supportpage { grid-template-areas: "menu" "title" "page" "info"; grid-template-columns: 1fr; }
+  ._g-supportpage ._g-supportpage-menu { text-align: center; }
+  ._g-supportpage ._g-supportpage-info { text-align: center; }
+  ._g-supportpage ._bp-supportpage-narrow-hide { display: none !important; }
+  ._g-supportpage ._bp-supportpage-narrow-show { display: block !important; }
+}
+@media only screen and (min-width: 600px) and (max-width: 799px) {
+  ._g-supportpage { grid-template-areas: ". title" "menu page" "info info"; grid-template-columns: minmax(min-content, max-content) 1fr; }
+  ._g-supportpage ._g-supportpage-menu { width: 200px; }
+  ._g-supportpage ._g-supportpage-info { text-align: center; }
+  ._g-supportpage ._bp-supportpage-wide-hide { display: none !important; }
+  ._g-supportpage ._bp-supportpage-wide-show { display: block !important; }
+}
+@media only screen and (min-width: 800px) {
+  ._g-supportpage { grid-template-areas: ". title ." "menu page info"; grid-template-columns: 1fr 3fr 1fr; } /* !!! REVISIT !!! */
+  ._g-supportpage ._g-supportpage-menu { width: 200px; }
+  ._g-supportpage ._g-supportpage-info { width: 200px; }
+  ._g-supportpage ._bp-supportpage-full-hide { display: none !important; }
+  ._g-supportpage ._bp-supportpage-full-show { display: block !important; }
+}
+
+._g-supportpage ._g-supportpage-page ._g-supportpage-page-content { max-width: 500px; margin: 0 auto; padding: 0 1rem; }
+._g-supportpage ._g-supportpage-info ._g-supportpage-info-content { padding: 0 1rem; }
+._g-supportpage hr { margin: 2rem 1rem; border: 0; height: 1px; background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));  }
+
+/* (Debug) -------------------------------------------------------------------*/
+._g-supportpage._DEBUG { outline: dashed 1px red; background: lavenderblush; padding: 0.5rem; text-align: center; }
+._g-supportpage._DEBUG ._g-supportpage-menu { outline: dashed 1px orange; background: lightyellow; }
+._g-supportpage._DEBUG ._g-supportpage-title { outline: dashed 1px green; background: honeydew; }
+._g-supportpage._DEBUG ._g-supportpage-page { outline: dashed 1px green; background: honeydew; }
+._g-supportpage._DEBUG ._g-supportpage-info { outline: dashed 1px orange; background: lightyellow; }
+._g-supportpage._DEBUG ._g-supportpage-page ._g-supportpage-page-content { outline: dashed 1px pink; background: lavenderblush; }
+/*----------------------------------------------------------------------------*/

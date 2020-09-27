@@ -1,0 +1,30 @@
+/* _m-details.css --------------------------------------------------------------
+// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
+//----------------------------------------------------------------------------*/
+._m-details { max-width: 375px; text-align: center; margin: 0 auto 1rem; padding: 0 2rem; }
+._m-details { font-size: calc(1rem * 12/14); }
+._m-details ._toggle { background: none; border: none; text-decoration: underline; cursor: pointer; color: #999999; font: inherit; }
+._m-details ._toggle { font-size: calc(1rem * 10/14); }
+._m-details ._toggle:focus { outline: none; }
+._m-details ._content { display: none; text-align: center; margin: 1rem 0 2rem 0; }
+/* Breakpoints */
+html[data-u-layout="region3"] ._m-details { margin: 0 auto !important; }
+html[data-u-layout="region3"] ._m-details ._toggle { display: none !important; }
+html[data-u-layout="region3"] ._m-details ._content { display: block !important; }
+html[data-u-layout="region4"] ._m-details { margin: 0 auto !important; }
+html[data-u-layout="region4"] ._m-details ._toggle { display: none !important; }
+html[data-u-layout="region4"] ._m-details ._content { display: block !important; }
+html[data-u-layout="region5"] ._m-details { margin: 0 auto !important; }
+html[data-u-layout="region5"] ._m-details ._toggle { display: none !important; }
+html[data-u-layout="region5"] ._m-details ._content { display: block !important; }
+html[data-u-layout="region6"] ._m-details { margin: 0 auto !important; }
+html[data-u-layout="region6"] ._m-details ._toggle { display: none !important; }
+html[data-u-layout="region6"] ._m-details ._content { display: block !important; }
+html[data-u-layout="region7"] ._m-details { margin: 0 auto !important; }
+html[data-u-layout="region7"] ._m-details ._toggle { display: none !important; }
+html[data-u-layout="region7"] ._m-details ._content { display: block !important; }
+/* (Debug) -------------------------------------------------------------------*/
+._m-details._DEBUG { outline: dashed 1px red; }
+._m-details._DEBUG ._toggle { outline: dashed 1px pink; }
+._m-details._DEBUG ._content { outline: dashed 1px pink; }
+/*----------------------------------------------------------------------------*/

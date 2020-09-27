@@ -1,0 +1,109 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_util-linklist-to-select]
+
+Snippet:
+  _util-linklist-to-select.Liquid
+
+Usage:
+  {% include "_util-linklist-to-select", list: linklists.main-menu, class: "_js-hook", default: "Shop for..." %}
+
+Parameters:
+  {linklist} list [required]
+  {string} label [optional]
+  {string} id [optional]
+  {string} class [optional]
+  {string} default_selection [optional]
+  {string} indent_character [optional]
+  {boolean} __recursion [ = false, private ]
+  {integer} __level [ = 0, private ]
+
+Output:
+  - A select  (i.e. <ul>) list of nested links constructed from the contents
+    of the linklist object.
+
+Description:
+  - The output is a recursively nested list of line items.
+  - The routine calls itself recursively on any nested menu items in the list.
+  - This is a category of "utility" functions:
+    https://hackernoon.com/software-complexity-naming-6e02e7e6c8cb
+  - We opted not to do anything special {-% if true == _link.active %-}.
+      - It is unclear where/how it makes sense to do anything special, such as
+        the menu in the header or the nav menu in the sidebar or drop-down.
+      - It screws up any "home" link on the homepage's Shop buttons since
+        we only style "a" tags.
+  - Nesting is done by pre-pending to an option's content with a pre-defined
+    number of indent strings per level, thus mimicking a nested menu hierarchy.
+      - The indent string is configurable via the Shopify Theme Editor.
+  - The option list has a default <optiongroup> that causes the iPhone's Picker
+    control to left-align all options instead of centering them.
+      - This set up does not appear to cause issues in other browsers.
+      - It is placed at the bottom of the list to get out of the way.
+  - The option list has an optional <option disabled selected> that forces
+    it to show as the default option with a label like "Shop for...".
+      - This is configurable via the Shopify Theme Editor.
+      - It is placed at the top of the list to show by default to the user.
+  - We put the code to calculate the indentation inside the FOR loop that
+    executes a recursive call into this snippet.  We do this because this
+    is invoked via the "include" tag as opposed to the "render" tag.
+      - The "include" tag has access to variables in its parent template.
+        As a result, any recursive calls within the FOR loop can change
+        the "_level" variable.
+      - The "render" tag has very restricted variable scope.  It does not have
+        access to variables in its parent template.  That would probably make
+        that a safer tag to use for this routine.
+      - We opted to use "include", for now, because we're familiar with it.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- if blank != list.links -%}
+
+  {%- if blank == __recursion %}
+
+    {%- comment -%} Render the <label> element. {%- endcomment -%}
+    {%- if blank != label and blank == id %}
+      <label>{{ label }}</label>
+    {%- else %}
+      <label for="{{ id }}">{{ label }}</label>
+    {%- endif %}
+
+    {% comment %} Render the <select> element. {% endcomment %}
+    {% if blank == id and blank == class %}
+      <select>
+    {% elsif blank == id and blank != class %}
+      <select class="{{ class }}">
+    {% elsif blank != id and blank == class %}
+      <select id="{{ id }}">
+    {% else %}
+      <select id="{{ id }}" class="{{ class }}">
+    {% endif %}
+
+    {% comment %} Render a selected/disabled option. {% endcomment %}
+    <option disabled selected>{{ default_selection }}</option>
+
+  {%- endif -%}
+
+  {%- assign _level = __level | plus: 1 %}
+
+  {% comment %} Render all <options> recursively. {% endcomment %}
+  {%- for _link in list.links -%}
+
+    {% comment %} Render the <option> element with an indented label. {% endcomment %}
+    {%- assign _indentation = "" -%}
+    {%- for i in (2.._level) -%}
+      {%- assign _indentation = _indentation | append: indent_character -%}
+    {%- endfor %}
+    <option value="{{ _link.url }}">{{- _indentation -}}{{- _link.title -}}</option>
+
+    {% comment %} Recurse through the list. {% endcomment %}
+    {%- render "_util-linklist-to-select", list: _link, indent_character: indent_character, __recursion: true, __level: _level %}
+
+  {%- endfor -%}
+
+  {%- if blank == __recursion %}
+    <optgroup disabled></optgroup>
+    </select>
+  {%- endif -%}
+
+{%- endif -%}

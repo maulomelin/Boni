@@ -1,0 +1,85 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_m-collection]
+
+Snippet:
+  \src\snippets\_m-collection.Liquid
+
+Usage:
+  {% include "_m-collection" %}
+
+Parameters:
+  none
+
+Output:
+  - A CSS Grid-based structure that is used to showcase a specific Collection.
+
+Description:
+  - The results are paginated using the "paginate" tags.
+    https://shopify.dev/docs/themes/liquid/reference/tags/theme-tags#paginate
+  - The results per page constant is configurable via the Shopify Theme Editor.
+  - Limit of 50 products per page.
+    https://help.shopify.com/en/themes/development/templates/collection-liquid
+      - Unless we use {-% layout none %-}.
+        https://ecommerce.shopify.com/c/ecommerce-design/t/filter-collection-without-tags-502924
+      - A test shows we can show more than 50 products per page without {-% layout none %-}!
+      - If the design of the page is 2/3/4 images wide, in order to have all
+        images on interim pages to frame the page completely, we want pages to
+        paginate at counts of 12n: 12/24/36/48/60/72/84/96/...
+      - Paginate at 48 items.
+  - Must request a specific image size when using the "img_url" filter,
+    else a (100x100)px one is returned.
+    https://shopify.dev/docs/themes/liquid/reference/filters/url-filters#img_url
+  - Shopify's built-in pagination control does not render any content if there
+    is not enough content for more than one page.
+
+TODOs:
+  - The routine to change the default product title to the collection name
+    given in a metadata field was commented out because of performance issues.
+      - This should be re-enabled once perf issues can be addressed.
+        For the time being, the decision is to leave the generic name and allow
+        the images to make the distinction.
+      - Replace:
+          {{- product.title -}}
+        with:
+          {%- capture _title -%}{%- render "_util-metafield-attributes-lookup", handle: product.handle, attribute: "collectionname" -%}{%- endcapture -%}
+          {%- assign _title = _title | default: product.title -%}
+          {{- _title -}}
+
+--------------------------------------------------------------{%- endcomment -%}
+
+<div class="_m-collection _js-collection">
+  {% paginate collection.products by section.settings.paginate_page_size -%}
+  <div class="_grid _js-collection-grid">
+    {%- for product in collection.products %}
+    <figure>
+      <a href="{{- product.url -}}">
+        <img src="{{- product.featured_image | img_url: "400x600" -}}" />
+      </a>
+      <figcaption>
+        <ul>
+          <li class="_vendor">
+            {{- product.vendor -}}
+          </li>
+          <li class="_title">
+            <a href="{{- product.url -}}">
+              {%- comment -%}
+              {%- capture _title -%}{%- render "_util-metafield-attributes-lookup", handle: product.handle, attribute: "collectionname" -%}{%- endcapture -%}
+              {%- assign _title = _title | default: product.title -%}
+              {{- _title -}}
+              {%- endcomment -%}
+              {{- product.title -}}
+            </a>
+          </li>
+          <li class="_price">{%- render "_productpricing", product: product -%}</li>
+        </ul>
+      </figcaption>
+    </figure>
+    {% endfor -%}
+  </div>
+  <div class="pagination">
+    {{ paginate | default_pagination: previous: section.settings.paginate_previous_string, next: section.settings.paginate_next_string }}
+  </div>
+  {%- endpaginate %}
+</div>

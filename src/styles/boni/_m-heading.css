@@ -1,0 +1,16 @@
+/* _m-heading.css --------------------------------------------------------------
+// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
+//----------------------------------------------------------------------------*/
+._m-heading { text-align: center; }
+._m-heading ._designer { margin: 0 0 1rem 0; }
+._m-heading ._title { }
+/* Breakpoints */
+html[data-u-layout="region1"] ._m-heading { margin: 2rem 0 0 0 !important; }
+html[data-u-layout="region2"] ._m-heading { margin: 2rem 0 0 0 !important; }
+html[data-u-layout="region4"] ._m-heading { margin: 2rem 0 0 0 !important; }
+html[data-u-layout="region5"] ._m-heading { margin: 2rem 0 0 0 !important; }
+/* (Debug) -------------------------------------------------------------------*/
+._m-heading._DEBUG { outline: dashed 1px pink; }
+._m-heading._DEBUG ._designer { outline: dashed 1px blue; }
+._m-heading._DEBUG ._title { outline: dashed 1px green; }
+/*----------------------------------------------------------------------------*/

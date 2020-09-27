@@ -1,0 +1,73 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_util-json-search-path-in-xjson]
+
+Snippet:
+  _util-json-search-path-in-xjson.Liquid
+
+Usage:
+  {% capture xjsonnode %}
+    {% render "_util-json-search-path-in-xjson", xjson: xjson, path: string %}
+  {% endcapture %}
+
+Parameters:
+  {string} xjson
+  {string} path
+
+Output:
+  - An XJSON node at the path traversed through the XJSON.
+    If the path is invalid on the given XJSON, an empty value is returned.
+
+Description:
+  - This routine recursively parses through the XJSON looking for nodes that
+    match each node in the given path node.
+      - A path describes how to access an object's properties.
+  - This routine currently only supports dot-notation paths.
+      - Example of dot-notation:
+            person.age
+            person.name.last
+      - Dot-notation can only target nested JSONObjects.
+        This means that this routine will not consider other types.
+  - This routine does not currently support bracket notation path.
+      - Examples of bracket notation that are *not* supported:
+            person["age"]
+            person["name"]["first"]
+            person.interests[1]
+      - Bracket notation could target both JSONObjects AND JSONArrays.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- assign arr_path = path | split: "." -%}
+{%- for node in arr_path -%}
+
+  {%- assign bfound = false -%}
+  {%- capture type -%}{%- render "_util-json-get-type-from-xjson", xjson: xjson -%}{%- endcapture -%}
+
+  {%- if "JSONObject" == type -%}
+    {%- capture caret_delimited_xmembers -%}{%- render "_util-json-get-caret-delimited-xmembers-from-xjsonobject", xjsonobject: xjson -%}{%- endcapture -%}
+    {%- assign arr_xmembers = caret_delimited_xmembers | split: "^" -%}
+    {%- for xmember in arr_xmembers -%}
+      {%- capture string -%}{%- render "_util-json-get-string-from-xmember", xmember: xmember -%}{%- endcapture -%}
+      {%- if node == string -%}
+        {%- capture xjson -%}{%- render "_util-json-get-xjson-from-xmember", xmember: xmember -%}{%- endcapture -%}
+        {%- assign bfound = true -%}
+        {%- break -%}
+      {%- else -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- else -%}
+    {%- break -%}
+  {%- endif -%}
+
+  {%- if false == bfound -%}
+    {%- break -%}
+  {%- endif -%}
+
+{%- endfor -%}
+
+{%- if true == bfound -%}
+  {%- echo xjson -%}
+{%- else -%}
+  {%- echo nil -%}
+{%- endif -%}

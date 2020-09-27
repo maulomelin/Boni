@@ -1,0 +1,91 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_m-carousel]
+
+Snippet:
+  \src\snippets\_m-carousel.Liquid
+
+Usage:
+  {%- include "_m-carousel" -%}
+
+Parameters:
+  none
+
+Output:
+  - A carousel structure with all the current product's images as content.
+
+Description:
+  - This procedure renders all images in the product.images array.
+  - We render CSS rules for all pagination elements (Dots/Next/Prev controls)
+    at run-time because the CSS rules form them depend on the number of images.
+  - Image sizes are, by default, "master".
+    https://webdesign.tutsplus.com/tutorials/how-to-work-with-images-in-shopify--cms-26149
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- assign _n = product.images | size -%}
+
+<style>
+  /* Prevs */
+  {%- for _i in (1.._n) -%}
+    {%- if true == forloop.first %}
+  ._m-carousel ._state:nth-of-type({{- _i -}}):checked ~ ._controls ._prevs ._prev:nth-of-type({{- _n -}}) { display: block; }
+    {%- else %}
+  ._m-carousel ._state:nth-of-type({{- _i -}}):checked ~ ._controls ._prevs ._prev:nth-of-type({{- _i | minus: 1 -}}) { display: block; }
+    {%- endif -%}
+  {%- endfor %}
+  /* Nexts */
+  {%- for _i in (1.._n) -%}
+    {%- if true == forloop.last %}
+  ._m-carousel ._state:nth-of-type({{- _i -}}):checked ~ ._controls ._nexts ._next:nth-of-type(1) { display: block; }
+    {%- else %}
+  ._m-carousel ._state:nth-of-type({{- _i -}}):checked ~ ._controls ._nexts ._next:nth-of-type({{- _i | plus: 1 -}}) { display: block; }
+    {%- endif -%}
+  {%- endfor %}
+  /* Dots */
+  {%- for _i in (1.._n) %}
+  ._m-carousel ._state:nth-of-type({{- _i -}}):checked ~ ._controls ._dots ._dot:nth-of-type({{- _i -}}) { background: black; border-color: black; }
+  {%- endfor %}
+</style>
+
+<div class="_m-carousel _js-carousel">
+  {%- for _i in (1.._n) -%}
+    {%- assign _id = "_id-carousel-state-" | append: _i -%}
+    {%- assign _targetid = "#_id-carousel-slide-" | append: _i -%}
+    {%- assign _checked = "" -%} {%- if true == forloop.first -%} {%- assign _checked = "checked" -%} {%- endif %}
+  <input id="{{- _id -}}" type="radio" name="_n-carousel" class="_state _js-carousel-state" data-u-targetid="{{- _targetid -}}" {{ _checked }} />
+  {%- endfor %}
+  <div class="_viewer">
+    <div class="_aspectratio">
+      <div class="_viewport _js-carousel-viewport">
+        <div class="_slides _js-carousel-slides">
+          {%- for _image in product.images -%}
+            {%- assign _id = "_id-carousel-slide-" | append: forloop.index -%}
+            {%- assign _targetid = "#_id-carousel-state-" | append: forloop.index %}
+          <div class="_slide _js-carousel-slide" id="{{- _id -}}" data-u-targetid="{{- _targetid -}}">
+            <img class="_image" src="{{- _image | img_url: 'master' -}}" alt="{{- _image.alt -}}" />
+          </div>
+          {%- endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="_controls">
+    <div class="_dots">
+      {%- for _i in (1.._n) %}
+      <label for="{{- "_id-carousel-state-" | append: _i -}}" class="_dot"></label>
+      {%- endfor %}
+    </div>
+    <div class="_prevs">
+      {%- for _i in (1.._n) %}
+      <label for="{{- "_id-carousel-state-" | append: _i -}}" class="_prev"> &#x3008; </label>
+      {%- endfor %}
+    </div>
+    <div class="_nexts">
+      {%- for _i in (1.._n) %}
+      <label for="{{- "_id-carousel-state-" | append: _i -}}" class="_next"> &#x3009; </label>
+      {%- endfor %}
+    </div>
+  </div>
+</div>

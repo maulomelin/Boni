@@ -1,0 +1,37 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_m-pagetitle]
+
+Snippet:
+  \src\snippets\_m-pagetitle.Liquid
+
+Usage:
+  {% include "_m-pagetitle" %}
+
+Parameters:
+  {string} title // The string to use as content.
+
+Output:
+  - A very simple html construct for a page's title.
+  - If no title is provided, nothing is returned.
+
+Description:
+  - This module was originally coded to understand where the title was
+    pulled from based on the template it was rendered for.  It did so
+    via case/when statements with different logic for each.
+      - For "cart", the title was a translated key pulled from the locale file.
+        https://shopify.dev/tutorials/develop-theme-localization-use-translation-keys
+      - For "collection", the title was pulled from "collection.title".
+      - Possible template.names from https://shopify.dev/docs/themes/files.
+    Eventually, this logic was pushed back to the callee, who "owns" knowing
+    where the title of the page it's requesting be rendered, resides.
+  - This module is a simple wrapper for display classes of a title string.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- if title -%}
+<div class="_m-pagetitle">
+  {{- title -}}
+</div>
+{%- endif -%}

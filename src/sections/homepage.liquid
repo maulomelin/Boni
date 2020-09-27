@@ -1,0 +1,45 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Notes:
+  - When Shopify renders a section theme tag (i.e. a {-% section %-} tag),
+    it wraps each section in a "<div>" element with a unique "[id]" attribute.
+    There is no need to write them out explicitly.
+  - To configure a section's properties, update its "{ % schema % }" tag.
+      https://shopify.dev/tutorials/develop-theme-use-sections
+      https://shopify.dev/docs/themes/settings
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{% include "_m-homepage" %}
+
+{% schema %}
+  {
+    "name": "Homepage",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Message"
+      },
+      {
+        "id": "show_homepage_message",
+        "type": "checkbox",
+        "default": false,
+        "label": "Show Homepage Message"
+      },
+      {
+        "id": "homepage_message_text",
+        "type": "textarea",
+        "label": "Homepage Message"
+      },
+      {
+        "type": "header",
+        "content": "Shop Buttons"
+      },
+      {
+        "id": "homepage_shop_buttons",
+        "type": "link_list",
+        "label": "Shop Buttons"
+      }
+    ]
+  }
+{% endschema %}

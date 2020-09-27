@@ -1,0 +1,50 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_util-json-get-caret-delimited-xelements-from-xjsonarray]
+
+Snippet:
+  _util-json-get-caret-delimited-xelements-from-xjsonarray.Liquid
+
+Usage:
+  {% capture caret_delimited_xelementss %}
+    {% render "_util-json-get-caret-delimited-xelements-from-xjsonarray", xjsonarray: xjsonarray %}
+  {% endcapture %}
+
+Parameters:
+  {string} xjsonarray
+
+Output:
+  - A caret-delimited string delimiting all xelements of the XJSONArray.
+
+Description:
+  - The relationship between XJSONArray and its XElements is as follows:
+
+        XJSONArray --> JSONArray | <delim> || XElements
+            XElements --> XJSON { <delim> XJSON }*
+
+  - When the xjsonarray is "split: '||'" into arr_xjsonarray, its metadata
+    is located in arr_xjsonarray[0].  We must be careful not to consider
+    arr_xjsonarray[1] as its body, because there may be other "||" string
+    sequences throughout the string.
+      - To get at the body of xjsonarray, we must remove the meta part from
+        it.  We do so by reconstructing the meta section and removing it
+        with the "remove_first: blob" filter.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- liquid
+  assign arr_xjsonarray = xjsonarray | split: "||"
+
+  assign meta = arr_xjsonarray[0]
+  assign arr_meta = meta | split: "|"
+  assign type = arr_meta[0]
+  assign delim = arr_meta[1]
+
+  assign blob = meta | append: "||"
+  assign xelements = xjsonarray | remove_first: blob
+
+  assign caret_delimited_xelements = xelements | replace: delim, "^"
+
+  echo caret_delimited_xelements
+-%}

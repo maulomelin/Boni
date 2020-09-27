@@ -1,0 +1,52 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_m-homepage]
+
+Snippet:
+  \src\snippets\_m-homepage.Liquid
+
+Usage:
+  {%- include "_m-homepage" -%}
+
+Parameters:
+  none
+
+Output:
+  - The [_m-homepage] structure.
+
+Description:
+  - The function simply fills a pre-defined template.
+    See the design patterns doc for details.
+  - If the handle for the link list does not exist, a single shopping button
+    to the collection that contals all of the products in the shop is rendered.
+
+        <a href="{-{ routes.all_products_collection_url }-}">Shop</a>
+
+--------------------------------------------------------------{%- endcomment -%}
+
+<div class="x_DEBUG _m-homepage">
+  <style>
+  </style>
+  <div class="_hero">
+    {% if true == section.settings.show_homepage_message %}
+    <div class="_talk">
+      <div class="_message">
+        {{ section.settings.homepage_message_text | newline_to_br }}
+      </div>
+    </div>
+    {% endif %}
+    <div class="_shop">
+      {% assign _h = section.settings.homepage_shop_buttons %}
+      {% if blank != _h %}
+        {% include "_util-linklist-to-ul", list: linklists[_h] %}
+      {% else %}
+      <ul>
+        <li>
+          <a href="{{ routes.all_products_collection_url }}">Shop</a>
+        </li>
+      </ul>
+      {% endif %}
+    </div>
+  </div>
+</div>

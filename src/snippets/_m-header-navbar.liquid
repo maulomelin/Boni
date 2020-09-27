@@ -1,0 +1,106 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_m-header-navbar]
+
+Snippet:
+  \src\snippets\_m-header-navbar.Liquid
+
+Usage:
+  {% include "_m-header-navbar" %}
+
+Parameters:
+  {string} type [required]
+    type: "sticky" // Returns the navbar for the ._stickyarea div.
+    type: "scroll" // Returns the navbar for the ._scrollarea div.
+    type: "spacer" // Returns the navbar for the ._drawers div.
+
+Output:
+  - The navbar structure for the requested div.
+
+Description:
+  - The function simply fills a pre-defined template.
+  - If no type is given, a tag without any content is returned.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+<div class="_navbar">
+{% case type %}
+  {% when "spacer" %}
+  {%- comment -%}-----------------------------------------------------------------
+    - Return the tag without any content.
+    - The spacing styles applied to the root tag are sufficient.
+  --------------------------------------------------------------{%- endcomment -%}
+  {% when "sticky" %}
+  {%- comment -%}-----------------------------------------------------------------
+    - Return a fully-populated tag.
+  --------------------------------------------------------------{%- endcomment -%}
+  <ul class="_links">
+    <li class="_link _bp-hp"> <button class="_js-header-button" data-u-drawer="menu"> <span class="_label">Menu</span> </button> </li>
+    {% if section.settings.show_header_search_link %}
+    <li class="_link _bp-search"> <button class="_js-header-button" data-u-drawer="search"> <span class="_label">Search</span> </button> </li>
+    {% endif %}
+  </ul>
+  <ul class="_links">
+    {% if section.settings.show_header_account_link %}
+    <li class="_link _bp-account">
+      <a href="#TODO">
+        <span class="_label">Account</span>
+      </a>
+    </li>
+    {% endif %}
+    <li class="_link">
+      <a href="{{ routes.cart_url }}">
+        <span class="_label">
+          Cart {%- if 0 < cart.item_count -%} ({{- cart.item_count -}}) {% endif %}
+        </span>
+      </a>
+    </li>
+  </ul>
+  {% when "scroll" %}
+  {%- comment -%}-----------------------------------------------------------------
+    - Return a partially-populated tag.
+    - We only need enough content to give us the necessary spacing elements.
+  --------------------------------------------------------------{%- endcomment -%}
+  <ul class="_links">
+    <li class="_link _bp-hp"> <button> <span class="_label">Menu</span> </button> </li>
+    {% if section.settings.show_header_search_link %}
+    <li class="_link _bp-search"> <button> <span class="_label">Search</span> </button> </li>
+    {% endif %}
+  </ul>
+  <div class="_logo">
+    {% if section.settings.link_logo_to_homepage %}
+    <a href="/">
+    {% endif %}
+      <svg viewBox="0 0 100 30" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle">
+          {{ section.settings.header_logo_text }}
+        </text>
+      </svg>
+    {% if section.settings.link_logo_to_homepage %}
+    </a>
+    {% endif %}
+  </div>
+  <ul class="_links">
+    {% if section.settings.show_header_account_link %}
+    <li class="_link _bp-account">
+      <a href="#TODO">
+        <span class="_label">Account</span>
+      </a>
+    </li>
+    {% endif %}
+    <li class="_link">
+      <a href="#">
+        <span class="_label">
+          Cart {%- if 0 < cart.item_count -%} ({{- cart.item_count -}}) {% endif %}
+        </span>
+      </a>
+    </li>
+    <li class="_link _bp-hp _hpspacer"> <button> <span class="_label">Menu</span> </button> </li>
+  </ul>
+  {% else %}
+    {%- comment -%}-----------------------------------------------------------------
+      - Return the tag without any content.
+    --------------------------------------------------------------{%- endcomment -%}
+{% endcase %}
+</div>

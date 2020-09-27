@@ -1,0 +1,38 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_util-json-get-data-from-xjson]
+
+Snippet:
+  _util-json-get-data-from-xjson.Liquid
+
+Usage:
+  {% capture data %}
+    {% render "_util-json-get-data-from-xjson", xjson: xjson %}
+  {% endcapture %}
+
+Parameters:
+  {string} xjson
+
+Output:
+  - A string with the XJSON data.
+
+Description:
+  - There is no restriction on the type of XJSON provided.
+  - The routine simply strips the head section and returns the datablob.
+  - This routine is designed to fetch the value of terminal nodes, like
+    JSONString, JSONTrue, JSONFalse, JSONNull, JSONNumber.
+  - The data is is found in an XJSON structure as follows:
+
+        XJSON --> meta || data
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- liquid
+  assign arr_xjson = xjson | split: "||"
+  assign meta = arr_xjson[0]
+  assign blob = meta | append: "||"
+  assign data = xjson | remove_first: blob
+
+  echo data
+-%}

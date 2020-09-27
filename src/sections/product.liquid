@@ -1,188 +1,64 @@
 {%- comment -%}-----------------------------------------------------------------
+
 Notes:
-  - The product page is completely implemented as a section.
-    Implementing it as a section lets us configure it in the ThemeAdmin page.
-  - Shopify does not support ternary operators.  However, if we only need it to
-    avoid nil and falsy values, use the following design pattern:
+  - When Shopify renders a section theme tag (i.e. a {-% section %-} tag),
+    it wraps each section in a "<div>" element with a unique "[id]" attribute.
+    There is no need to write them out explicitly.
+  - To configure a section's properties, update its "{ % schema % }" tag.
+        https://shopify.dev/tutorials/develop-theme-use-sections
+        https://shopify.dev/docs/themes/settings
+  - The dependency on these Slate scripts was removed by the new framework:
+        \src\scripts\sections\product.js
+        \src\scripts\slate\variants.js
+    To re-enable this dependency:
+      1) Wrap the contents of the "._g-productpage" element with these tags:
+           <div data-section-id="{{ section.id }}" data-section-type="product">
+             <div class="_g-productpage"> . . . </div>
+           </div>
+      2) Replace all instances of "XXX-DEPRECATED-XXX" with "" from the modules:
+           [_m-optiongroup]
+           [_m-addtocart]
+         The scripts rely on the remaining attributes being found under the
+         tags in #1.
 
-        {% assign foo = bar | default: foobar %}
+---------------------------------------------------------------{%- endcomment %}
 
-    Source: https://github.com/Shopify/liquid/issues/236
-  - The [photoswipe] control *must* be outside the <form> container.
-    Clicking on the next/prev navigational arrows cause a form submit.
-
-TODOs:
-  - Support ARIA (https://www.w3.org/WAI/tutorials/forms/labels/, https://www.w3.org/TR/wai-aria-practices/#radiobutton).
-  - Support Semantic Tags.
-  - Implement Microdata fields for Google [and Bing].
-  - Support for "no-js".
-  - Set min and max on all input fields.
-  - Review customizations supported by Shopify themes (https://help.shopify.com/themes/customization/).
-      - Add breadcrumbs (https://help.shopify.com/themes/customization/navigation/add-breadcrumbs).
-      - Add a back-to-the-top button (https://help.shopify.com/themes/customization/store/add-back-to-top-button).
-  - Review specific implementation details (https://help.shopify.com/themes/development/)
-      - Select fonts from Shopify's font library (https://help.shopify.com/themes/development/fonts/library).
-      - Allow custom Liquid, CSS, and Javascript files to use values from theme settings (https://help.shopify.com/themes/development/theme-editor/other-theme-files).
-  - Outline editorial guidelines (e.g. "add to cart" vs. "Add to cart" vs. "Add to Cart" vs. "Add To Cart" vs. "ADD TO CART").
-  - Style input controls (e.g. checkboxes, radio buttons, etc.) to have their entire region around the control and label select that control (https://ux.stackexchange.com/questions/23552/should-the-space-between-the-checkbox-and-label-be-clickable).
-  - Populate text input cells (http://steadicat.github.io/labels/).
-  - Structure forms correctly (https://developer.mozilla.org/en-US/docs/Learn/HTML/Forms/How_to_structure_an_HTML_form).
-  - Do we design the selection of colors different from that of sizes?  (e.g. dropdowns & buttons vs. buttons & buttons vs. list & buttons vs. etc.)?
-  - Figure out how to use the whitespace filter to get all controls, sections, snippets, and any html to render nicely tabbed.
-  - Design a "Recommended Products" section on all product details pages (https://help.shopify.com/themes/customization/products/features/recommend-related-products).
-  - Consider wrapping the master quantity and master product select fields (which are normally hidden), and implementing a default CSS for them.
-  - Add logic and visuals to indicate when a variant is not available (not just the button label).
-  - Enable/disable unavailable color/size selectors.
-      - Add logic to figure out when a product is shown.
-      - Add visual elements (e.g. gray out any single option selectors not available).
-  - Place the image gallery inside a <section> element, or the more appropriate one.
-  - Find a more elegant solution to close off the image gallery than a trailing filler <div>.
-  - JSDoc everything.
-  - Enable deep-linking into variants on the ProductDetails page, so we can highlight specific ones on other parts of the site or outside (https://www.shopify.com/partners/blog/product-variants/).
-  - Update all gallery <div> to a <section> with an appropriate role.
-  - Content:
-      - todo: header, breadcrumb, title, price, options, description, follow, footer, e-mail registration, reviews, add-to-cart, size guide, add-to-favorites, share, quantity, style/pair it with...
-      - done: header, breadcrumb, title, price, options, description, follow, footer, e-mail registration, reviews, add-to-cart, size guide, add-to-favorites, share, quantity, style/pair it with...
-  - Add role of "tablist" to the containing <div> of the tabs.
-  - Fine-tune the tabs (http://alistapart.com/article/radio-controlled-web-design/).
-  - Use the https://validator.w3.org/nu/ to test html.
-  - Add dynamic checkout buttons and skip the cart page (i.e. "Buy Now" or "Buy with ApplePay" or "Buy with PayPal" or "Buty with amazon pay").
-      - See https://help.shopify.com/en/themes/customization/store/dynamic-checkout-buttons/
-      - Sample code:
-          {{ form | payment_button }}
-  - Link product options so that unavailable items (e.g. a size) is grayed out and/or not selectable.
-  - Implement a grayed out mode for colors and sizes.
-  - Test options with multi-word color names (e.g. "Jewel Blue").
-  - Refactor options crossing (i.e. "/" and "X") and generalize with the function.product-options-matrix.liquid and associated javascript.
-  - Refactor options crossing to use conditional identifiers, such as "X(White|s1)" or "X(Hummus|)" or "/(Blue|s1,s2)" where permutations are all drawn out (see notes).
-  - See ProductDetails page and pop-up view off ProductBrowse page on macys.com.  They change images on color mouse-over.
-  - Implement mouse-over/hover behaviour for options.  See https://www.aritzia.com/us/en/product/arjun-knit-top/66139.html?dwvar_66139_color=12696
-  - Implement breadcrumb.
-  - IMPORTANT!!!  Ajaxify the add-to-cart button.
-      - Enable customers to stay on the product page when a product is added to te cart.
-        https://help.shopify.com/en/themes/customization/products/add-to-cart/stay-on-product-page-when-items-added-to-cart/
-      - Build a cart flyout on the header.
-      - Show a big "Item added to shopping cart!" message."
-  - Ajaxify the contact/notification form.
-  - Review UX and requirements/policies of the notify form.  See versace.com.
-  - Figure out if we need to include attributes like [ itemscope itemtype="http://schema.org/Product" ] in the topmost div.
-  - Figure out if we need to include the "data-enable-history-state" attribute in the topmost div.
-  - Verify everybody who needs a "form=..." attribute has it.
-  - Make sure that all sizes are Sold Out or Unavailable the state is shown as such.
-  - Add these notes somewhere... (a feature design doc):
-      - Notes about image resources:
-          - A product can have many different types of images associated with it,
-            such as outfit images or sizing images.
-          - The type of image is determined by its filename prefix:
-              - "outfit----------" for outfit images.
-              - "featured----------" for featured image (e.g. full body shot).
-              - "sizing----------" for sizing images.
-              - etc.
-          - This scheme gives us the ability to incorporate image or product metadata
-            in the image filename.  For example, outfit images encode the name of
-            all items in an outfit and their color; sizing images encode the sizing
-            information for the product and the image itself is the sizing template.
-            More image types or attributes can be added and imported via a CSV.
-          - Before an image can be used in an element, we must know its type because
-            we are overloading the use of images for different things.
-          - Be mindful of image filenames having additional characters "tacked on" to
-            the filename by the CDN (e.g. outfit-----mederick--orange_3FDH-4FFJ.jpg).
-  - RENAME "._xxx-grid" to "._grid-xxx" and all nested grid areas as "._ga-yyy".
-    the CSS will look like:
-        ._grid-product ._ga-xxx { ... }
-        ._grid-product ._ga-yyy { ... }
-        ._grid-product ._ga-zzz { ... }
-  - Make [photoswipe] module a snippet.
-  - Make social its own snippet.
---------------------------------------------------------------{%- endcomment -%}
-
-{%- assign bDebug = true -%}
-{%- assign global_idcounter = 0 -%}
-
-<!-- product section (\src\sections\product.liquid) -->
-<div data-section-id="{{ section.id }}" data-section-type="product" data-enable-history-state="true">
-
-  <div class="_product-grid">
-    <div class="_ga-nav">
-      {%- include "_menu", class: "_text-small", list: linklists.header-drawer -%}
-    </div>
-    <div class="_ga-head">
-      {%- include "_breadcrumb", class: "_text-small", tree: linklists.header-drawer -%}
-    </div>
-    <div class="_ga-carousel">
-      {%- include "_carousel", product: product -%}
-    </div>
-    <div class="_ga-related">
-      {%- include "_related", product: product, type: "outfititems", heading: "Outfit Items" -%}
-      {%- include "_related", product: product, type: "itemcolorvarieties", heading: "Color Varieties" -%}
-    </div>
-    <div class="_ga-details">
-      <h1>{{ product.title }}</h1>
-      {%- for option in product.options_with_values -%}
-        {%- include "_optiongroup", product: product, index: forloop.index0 -%}
-        {%- include "_infochart", product: product, name: product.options_with_values[forloop.index0].name -%}
-      {%- endfor -%}
-      {%- include "_addtocart", product: product -%} <br/>
-      {%- include "_productinfo", product: product -%}
-    </div>
+<div class="_g-productpage _js-productpage">
+  <div class="_g-productpage-pics">
+    {% render "_m-carousel" %}
   </div>
-
-  <!-- [social] -->
-  {% if section.settings.show_share_buttons %}
-    {% include 'social-sharing', share_title: product.title, share_permalink: product.url, share_image: product %}
-  {% endif %}
-  <!-- /[social] -->
-
-  <!-- [data-product-json] -->
-  <script data-product-json type="application/json">
-    {{ product | json }}
-  </script>
-  <!-- /[data-product-json] -->
-
-  <!-- [photoswipe] -->
-  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="pswp__bg"></div>
-      <div class="pswp__scroll-wrap">
-          <div class="pswp__container">
-              <div class="pswp__item"></div>
-              <div class="pswp__item"></div>
-              <div class="pswp__item"></div>
-          </div>
-          <div class="pswp__ui pswp__ui--hidden">
-              <div class="pswp__top-bar">
-                  <div class="pswp__counter"></div>
-                  <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-                  <button class="pswp__button pswp__button--share" title="Share"></button>
-                  <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-                  <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-                  <div class="pswp__preloader">
-                      <div class="pswp__preloader__icn">
-                        <div class="pswp__preloader__cut">
-                          <div class="pswp__preloader__donut"></div>
-                        </div>
-                      </div>
-                  </div>
-              </div>
-              <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-                  <div class="pswp__share-tooltip"></div>
-              </div>
-              <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
-              <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
-              <div class="pswp__caption">
-                  <div class="pswp__caption__center"></div>
-              </div>
-          </div>
-      </div>
+  <div class="_g-productpage-info">
+    {% render "_m-heading" %}
+    {% render "_m-details" %}
   </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe-ui-default.min.js"></script>
-  <!-- /[photoswipe] -->
-
+  <div class="_g-productpage-cart">
+    {% render "_m-variantpricing" %}
+    {% for option in product.options_with_values %}
+      {% render "_m-optiongroup", product: product, index: forloop.index0 %}
+      {% if "Size" == option.name %}
+        {% render "_m-sizechart" %}
+      {% endif %}
+    {% endfor %}
+    {% include "_m-addtocart", product: product %}
+  </div>
 </div>
+
+<script data-product-json type="application/json">
+  {{ product | json }}
+</script>
+
+{% render "_m-related-colorvariants", handle: product.handle, heading: "Other Colors" %}
+{% render "_m-related-pairedwith", handle: product.handle, heading: "Outfit Items" %}
+{% render "_m-related-alsopairedwith", handle: product.handle, heading: "See It Also Styled With" %}
+
+{% comment %} Debug Info
+{% render "debug-product-info" %}
+{% endcomment %}
+
 
 {% schema %}
   {
-    "name": "Product pages",
+    "name": "Product Page",
     "settings": [
       {
         "type": "checkbox",

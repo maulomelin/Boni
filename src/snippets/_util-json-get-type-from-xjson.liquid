@@ -1,0 +1,35 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_util-json-get-type-from-xjson]
+
+Snippet:
+  _util-json-get-type-from-xjson.Liquid
+
+Usage:
+  {% capture type %}
+    {% render "_util-json-get-type-from-xjson", xjson: xjson %}
+  {% endcapture %}
+
+Parameters:
+  {string} xjson
+
+Output:
+  - A string with the type-tag of the XJSON.
+
+Description:
+  - The type-tag is found in the meta-head of the XJSON string:
+
+        XJSON --> meta || data
+          meta --> type-tag | data-delimiter
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- liquid
+  assign arr_xjson = xjson | split: "||"
+  assign meta = arr_xjson[0]
+  assign arr_meta = meta | split: "|"
+  assign type = arr_meta[0]
+
+  echo type
+-%}

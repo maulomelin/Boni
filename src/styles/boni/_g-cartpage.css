@@ -1,0 +1,26 @@
+/* _g-cartpage.css -------------------------------------------------------------
+// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
+//----------------------------------------------------------------------------*/
+/* Structure & Layout */
+._g-cartpage { display: grid; grid-template-areas: "title title" "empty empty" "cart summary"; grid-template-columns: 2fr 1fr; }
+._g-cartpage ._g-cartpage-title { grid-area: title; }
+._g-cartpage ._g-cartpage-empty { grid-area: empty; }
+._g-cartpage ._g-cartpage-cart { grid-area: cart; }
+._g-cartpage ._g-cartpage-summary { grid-area: summary; }
+._g-cartpage ._g-cartpage-title { margin: 0 0 1rem 0; }
+
+html[data-u-layout="full"] ._g-cartpage { grid-template-areas: "title title" "empty empty" "cart summary"; grid-template-columns: 2fr 1fr; }
+html[data-u-layout="wide"] ._g-cartpage { grid-template-areas: "title" "empty" "cart"; grid-template-columns: 1fr; }
+html[data-u-layout="wide"] ._g-cartpage ._g-cartpage-summary { display: none !important; }
+html[data-u-layout="narrow"] ._g-cartpage { grid-template-areas: "title" "empty" "cart"; grid-template-columns: 1fr; }
+html[data-u-layout="narrow"] ._g-cartpage ._g-cartpage-summary { display: none !important; }
+html[data-u-layout="compact"] ._g-cartpage { grid-template-areas: "title" "empty" "cart"; grid-template-columns: 1fr; }
+html[data-u-layout="compact"] ._g-cartpage ._g-cartpage-summary { display: none !important; }
+
+/* (Debug) -------------------------------------------------------------------*/
+._g-cartpage._DEBUG { outline: dashed 1px red; background: lavenderblush; }
+._g-cartpage._DEBUG ._g-cartpage-title { outline: dashed 1px orange; background: lightyellow; }
+._g-cartpage._DEBUG ._g-cartpage-empty { outline: dashed 1px gray; background: whitesmoke; }
+._g-cartpage._DEBUG ._g-cartpage-cart { outline: dashed 1px green; background: honeydew; }
+._g-cartpage._DEBUG ._g-cartpage-summary { outline: dashed 1px blue; background: azure; }
+/*----------------------------------------------------------------------------*/

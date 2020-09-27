@@ -1,0 +1,83 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_util-product-availability]
+
+Snippet:
+  _util-product-availability.Liquid
+
+Usage:
+  {% capture availability %}
+    {%- render "_util-product-availability", product: product -%}
+  {% endcapture %}
+
+Parameters:
+  {product} product
+
+Output:
+  - The availability state of the given product.  This is one of:
+
+      [ "instock", "outofstock", "soldout", "unavailable", "error" ]
+
+  - The snippet is designed to be called with the "render" tag.
+    As such, its output should be captured in a variable.
+
+Description:
+  - A product's availability state is a manifestation of the aggregate
+    availability state of all its variants.  We define the aggregate state
+    as the most "available" it can be, in the following rank order:
+
+      [ "instock", "outofstock", "soldout", "unavailable", "error" ]
+
+  - In terms of predicate logic:
+
+      Given a product p with n variants {v1, v2, ..., vn}
+      Given the variant availability function
+          A(v) = {x | x ∈ [ "instock", "outofstock", "soldout", "unavailable", "error" ]}
+      Given the product availability function:
+          P(p) = {x | x ∈ [ "instock", "outofstock", "soldout", "unavailable", "error" ]}
+      Then:
+          P(p) == "instock"     <=> ∃x("instock" == A(x))
+          P(p) == "outofstock"  <=> (P(p) != "instock")     ∧ ∃x("outofstock" == A(x))
+          P(p) == "soldout"     <=> (P(p) != "outofstock")  ∧ ∃x("soldout" == A(x))
+          P(p) == "unavailable" <=> (P(p) != "soldout")     ∧ ∃x("unavailable" == A(x))
+          P(p) == "error"       <=> ∀x("error" == A(x))
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- liquid
+  assign instock = false
+  assign outofstock = false
+  assign soldout = false
+  assign unavailable = false
+  assign error = false
+  for v in product.variants
+    capture availability
+      render "_util-variant-availability", variant: v
+    endcapture
+    case availability
+      when "instock"
+        assign instock = true
+      when "outofstock"
+        assign outofstock = true
+      when "soldout"
+        assign soldout = true
+      when "unavailable"
+        assign unavailable = true
+      when "error"
+        assign error = true
+    endcase
+  endfor
+
+  if true == instock
+    echo "instock"
+  elsif true == outofstock
+    echo "outofstock"
+  elsif true == soldout
+    echo "soldout"
+  elsif true == unavailable
+    echo "unavailable"
+  elsif true == error
+    echo "error"
+  endif
+-%}

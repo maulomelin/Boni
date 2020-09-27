@@ -1,0 +1,30 @@
+/* _m-sizechart.css ------------------------------------------------------------
+// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
+//----------------------------------------------------------------------------*/
+._m-sizechart { width: 100%; text-align: center; margin: 0 0 1rem 0; }
+._m-sizechart { font-size: calc(1rem * 12/14); }
+._m-sizechart ._toggle { background: none; border: none; text-decoration: underline; cursor: pointer; color: #999999; font: inherit; }
+._m-sizechart ._toggle { font-size: calc(1rem * 10/14); }
+._m-sizechart ._toggle:focus { outline: none; }
+._m-sizechart ._content { display: none; text-align: center; margin: 1rem 0 2rem 0; }
+/* These style the <ul>s into a CSS Grid. */
+._m-sizechart ._content ._table { width: min-content; margin: 0 auto; }
+._m-sizechart ._content ._table { display: grid; grid-auto-flow: column; grid-auto-columns: max-content /*minmax(max-content, auto)*/; }
+._m-sizechart ._content ._table ul { display: contents; list-style: none; }
+._m-sizechart ._content ._table ul:first-of-type li { grid-column: 1; }
+/* These style the grid borders. */
+._m-sizechart ._content ._table ul li { border-top: solid 1px lightgray; border-left: solid 1px lightgray; }
+._m-sizechart ._content ._table ul:last-of-type li { border-right: solid 1px lightgray; }
+._m-sizechart ._content ._table ul li:last-of-type { border-bottom: solid 1px lightgray; }
+/* These style the table cells. */
+._m-sizechart ._content ._table ul { list-style: none; }
+._m-sizechart ._content ._table ul li { padding: 0 0.5rem; }
+.x_m-sizechart ._content ._table ul:first-of-type li:first-of-type { visibility: hidden; } /* "visibility: hidden;" hides the element but retains the space occupied by it. */
+._m-sizechart ._content ._table ul:not(:first-of-type) li { text-align: center; }
+._m-sizechart ._content ._table ul._t-highlight li { background: black; color: white; }
+/* (Debug) -------------------------------------------------------------------*/
+._m-sizechart._DEBUG { outline: dashed 1px pink; }
+._m-sizechart._DEBUG ._toggle { outline: dashed 1px orange; }
+._m-sizechart._DEBUG ._content { outline: dashed 1px orange; }
+._m-sizechart._DEBUG ._content ._table { outline: dashed 1px red; }
+/*----------------------------------------------------------------------------*/

@@ -1,0 +1,46 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_m-supportpage-menu]
+
+Snippet:
+  \src\snippets\_m-supportpage-menu.Liquid
+
+Usage:
+  {% include "_m-supportpage-menu" %}
+
+Parameters:
+  none
+
+Output:
+  - The ._menu structure used in the [_g-supportpage] module.
+
+Description:
+  - The menu shown in a collection page has two forms:
+      1) Multi-Level Hierarchical - shown on wide screens as a nested menu.
+      2) Collapsed Select Options - shown on narrow screens as a drop-down.
+  - Both forms are rendered and are turned on/off using visual toggles issued
+    by the [_g-supportpage] layout, depending on the width of the screen.
+  - A menu must be defined.  The routine will simply return an empty container
+    element if no menu is defined.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+<div class="_m-supportmenu _js-supportmenu">
+
+  {%- assign _h = section.settings.support_nav_menu -%}
+
+  <div class="_menu _dropdown _bp-supportpage-wide-hide _bp-supportpage-full-hide">
+    {%- render "_util-linklist-to-select",
+      list: linklists[_h], label: section.settings.menu_label,
+      id: "_id-select-menu", class: "_js-supportmenu-dropdownmenu",
+      default_selection: section.settings.menu_default_selection,
+      indent_character: section.settings.menu_indent_character
+    -%}
+  </div>
+
+  <div class="_menu _tree _bp-supportpage-narrow-hide">
+    {%- render "_util-linklist-to-ul", list: linklists[_h] -%}
+  </div>
+
+</div>

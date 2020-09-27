@@ -1,0 +1,47 @@
+/* _m-collection.css -----------------------------------------------------------
+// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
+//----------------------------------------------------------------------------*/
+/* Grid */
+._m-collection ._grid { display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 1rem; }
+._m-collection ._grid figure { margin: auto; display: flex; flex-flow: column nowrap; justify-content: flex-start; }
+._m-collection ._grid figure img { display: block; max-width: 100%; object-fit: contain; }
+._m-collection ._grid figure figcaption { margin-top: 0.5rem; order: 1; }
+._m-collection ._grid figure figcaption ul { list-style: none; margin: 0; padding: 0; display: flex; flex-flow: column nowrap; }
+._m-collection ._grid ._vendor { text-align: center; order: 1; xfont-size: calc(1rem * 12/14); xfont-weight: 500; }
+._m-collection ._grid ._title { text-align: center; order: 2; xfont-size: calc(1rem * 12/14); font-weight: 500; }
+._m-collection ._grid ._price { text-align: center; order: 3; }
+/* Clickable Elements */
+._m-collection ._grid a { color: black; text-decoration: none; }
+._m-collection ._grid a:visited { color: black; }
+._m-collection ._grid a:hover { text-decoration: underline; }
+._m-collection ._grid a:hover img { xoutline: solid 2px black; }
+._m-collection ._grid a:focus img { xbox-shadow: 0 0 0 5px blue; }
+/* Product Pricing */
+._m-collection ._grid ._price ._productpricing { display: flex; flex-flow: row wrap; justify-content: center; align-items: center; }
+._m-collection ._grid ._price ._productpricing > * { margin: 0 0.25rem; }
+._m-collection ._grid ._price ._productpricing ._message { font-size: calc(1rem * 11/14); color: #bbbbbb; text-transform: uppercase; white-space: nowrap; }
+._m-collection ._grid ._price ._productpricing ._compare { xfont-size: calc(1rem * 12/14); color: #bbbbbb; text-decoration: line-through; }
+._m-collection ._grid ._price ._productpricing ._price { color: black; }
+._m-collection ._grid ._price ._productpricing ul { list-style: none; padding: 0; margin: 0; }
+._m-collection ._grid ._price ._productpricing ul { display: flex; flex-flow: row nowrap; align-items: center; }
+._m-collection ._grid ._price ._productpricing ul li { }
+._m-collection ._grid ._price ._productpricing ul li + li::before { content: "\00A0-\00A0"; }
+/* Pagination */
+._m-collection .pagination { margin: 5rem 0; display: flex; flex-flow: row wrap; justify-content: center; }
+._m-collection .pagination .prev { margin: 0 1rem; }
+._m-collection .pagination .page { margin: 0 1rem; }
+._m-collection .pagination .next { margin: 0 1rem; }
+._m-collection .pagination .current { border-bottom: solid 1px black; padding: 0 0.5rem 0.25rem; }
+._m-collection .pagination a { color: gray; text-decoration: none; padding: 0 0.5rem 0.25rem; }
+._m-collection .pagination a:hover { color: black; border-bottom: solid 1px black; }
+/* (Debug) -------------------------------------------------------------------*/
+._m-collection._DEBUG { outline: dashed 1px red; }
+._m-collection._DEBUG ._grid figure { outline: dashed 1px pink; }
+._m-collection._DEBUG .pagination span { outline: dashed 1px pink; }
+._m-collection._DEBUG .pagination a { outline: dashed 1px blue; }
+._m-collection._DEBUG .pagination a:hover { background: lavenderblush; }
+._m-collection._DEBUG ._productpricing { outline: dashed 1px red; padding: 0.5rem; }
+._m-collection._DEBUG ._productpricing ._message { outline: dashed 1px green; padding: 0.5rem; }
+._m-collection._DEBUG ._productpricing ._compare { outline: dashed 1px orange; padding: 0.5rem; }
+._m-collection._DEBUG ._productpricing ._price { outline: dashed 1px blue; padding: 0.5rem; }
+/*----------------------------------------------------------------------------*/

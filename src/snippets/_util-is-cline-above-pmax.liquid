@@ -1,0 +1,58 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_util-is-cline-above-pmax]
+
+Snippet:
+  _util-is-cline-above-pmax.Liquid
+
+Usage:
+  {% capture is_cline_above_pmax %}
+    {%- render "_util-is-cline-above-pmax", product: product -%}
+  {% endcapture %}
+
+Parameters:
+  {product} product
+
+Output:
+  - The boolean string is either "true" or "false".
+    The callee must do extra work to cast these into boolean types.
+
+Description:
+  - A "boolean string" for the predicate ∀x(Pmax < Cx)
+  - The design of the algorithm is thoroughly documented in a design document.
+  - The property.compare_at_price can be left empty by users in the Admin UI.
+    Therefore, it must be cast to a number before it is ever used.
+    If left empty, its value will be "nil", and wreak havoc when used.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- liquid
+  assign pmax = 0
+  for v in product.variants
+    capture availability
+      render "_util-variant-availability", variant: v
+    endcapture
+    if "instock" == availability or "outofstock" == availability
+      if pmax < v.price
+        assign pmax = v.price
+      endif
+    endif
+  endfor
+
+  assign bool = true
+  for v in product.variants
+    capture availability
+      render "_util-variant-availability", variant: v
+    endcapture
+    if "instock" == availability or "outofstock" == availability
+      assign compare_at_price = v.compare_at_price | default: 0
+      if compare_at_price <= pmax
+        assign bool = false
+        break
+      endif
+    endif
+  endfor
+
+  echo bool
+-%}

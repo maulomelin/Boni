@@ -1,81 +1,91 @@
 {%- comment -%}-----------------------------------------------------------------
-NOTES:
-  - we follow Slate's convention of wrapping the content of a Section file in
-    an element with a "data-section-type" attribute.  The type is taken from
-    this attribute's value.
+
+Notes:
+  - When Shopify renders a section theme tag (i.e. a {-% section %-} tag),
+    it wraps each section in a "<div>" element with a unique "[id]" attribute.
+    There is no need to write them out explicitly.
+  - To configure a section's properties, update its "{ % schema % }" tag.
+      https://shopify.dev/tutorials/develop-theme-use-sections
+      https://shopify.dev/docs/themes/settings
+
 --------------------------------------------------------------{%- endcomment -%}
 
-<!-- header section (\src\sections\header.liquid) -->
-<div data-section-id="{{ section.id }}" data-section-type="header">
-
-  {% include "_header" %}
-
-</div>
+{% include "_m-header" %}
 
 {% schema %}
   {
     "name": "Header",
     "settings": [
       {
-        "label": "Logo image",
-        "id": "logo",
-        "type": "image_picker"
+        "type": "header",
+        "content": "Alert Bar"
       },
       {
-        "label": "Custom logo width",
-        "id": "logo_max_width",
-        "type": "range",
-        "min": 50,
-        "max": 450,
-        "step": 10,
-        "unit": "px",
-        "default": 250
+        "id": "show_header_alert",
+        "type": "checkbox",
+        "default": false,
+        "label": "Show Alert Bar"
       },
       {
-        "label": "Menu",
-        "id": "main_linklist",
-        "type": "link_list",
-        "default": "main-menu"
+        "id": "header_alert_text",
+        "type": "text",
+        "label": "Alert Text"
+      },
+      {
+        "id": "header_alert_link",
+        "type": "url",
+        "label": "Alert Link"
       },
       {
         "type": "header",
-        "content": "Notification Bar"
+        "content": "Navbar"
       },
       {
-        "label": "Show Notification Bar",
-        "id": "display_notification_bar",
+        "id": "show_header_search_link",
         "type": "checkbox",
-        "default": false
+        "default": false,
+        "label": "Show Search Link"
       },
       {
-        "label": "Home Page only",
-        "id": "notification_bar_location_home_page_only",
+        "id": "show_header_account_link",
         "type": "checkbox",
-        "default": false
+        "default": false,
+        "label": "Show Account Link"
       },
       {
-        "label": "Notification text",
-        "id": "notificaton_bar_text",
+        "type": "header",
+        "content": "Logo"
+      },
+      {
+        "id": "link_logo_to_homepage",
+        "type": "checkbox",
+        "default": true,
+        "label": "Link Logo to Homepage"
+      },
+      {
+        "id": "header_logo_text",
         "type": "text",
-        "default": "Information or Notification"
+        "default": "Burrito Grande",
+        "label": "Logo Text"
       },
       {
-        "label": "Notification link",
-        "id": "notificaton_bar_link",
-        "type": "url",
-        "info": "Optional"
+        "type": "header",
+        "content": "Menus"
       },
       {
-        "label": "Background color",
-        "id": "notificaton_bar_background_color",
-        "type": "color",
-        "default": "#cccccc"
+        "id": "header_shop_menu",
+        "type": "link_list",
+        "label": "Shop Menu"
       },
       {
-        "label": "Text color",
-        "id": "notificaton_bar_text_color",
-        "type": "color",
-        "default": "#ffffff"
+        "id": "header_support_menu",
+        "type": "link_list",
+        "label": "Support Menu"
+      },
+      {
+        "id": "header_legal_menu",
+        "type": "link_list",
+        "label": "Legal Menu"
       }
     ]
   }

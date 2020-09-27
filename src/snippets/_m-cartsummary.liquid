@@ -1,0 +1,49 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_m-cartsummary]
+
+Snippet:
+  \src\snippets\_m-cartsummary.Liquid
+
+Usage:
+  {% include "_m-cartsummary" %}
+
+Parameters:
+  none
+
+Output:
+  - The html structure for the cart summary.
+
+Description:
+  - The cart summary is basically the number of items and total amounts,
+    and a button to proceed to checkout.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+<div class="_m-cartsummary">
+  <div class="_th"> Order Summary </div>
+
+  <div class="_tf _tf-subtotal">
+    <div class="_key"> Cart Subtotal ({{ cart.item_count }} {{ cart.item_count | pluralize: "item", "items" }}) </div>
+    <div class="_value"> {{ cart.items_subtotal_price | money }} </div>
+  </div>
+  <div class="_tf _tf-shipping">
+    <div class="_key"> Shipping </div>
+    <div class="_value"> Free </div>
+  </div>
+  <div class="_tf _tf-taxes">
+    <div class="_key"> Taxes </div>
+    <div class="_value"> Calculated at Checkout </div>
+  </div>
+
+  <div class="_line"></div>
+
+  <div class="_tf _tf-total">
+    <div class="_key"> Order Total </div>
+    <div class="_value"> {{ cart.total_price | money }} </div>
+  </div>
+
+  <form id="_id-cartsummary-form" action="/cart" method="post"></form>
+  <button form="_id-cartsummary-form" type="submit" name="checkout" class="_button">Proceed to Checkout</button>
+</div>

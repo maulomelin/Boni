@@ -1,0 +1,96 @@
+/* _m-addtocart.css ------------------------------------------------------------
+// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
+//----------------------------------------------------------------------------*/
+._m-addtocart { padding: 0 2rem; }
+/* Render the Cart and Alert controls on top of each other; only one will be shown via a visual breakpoint. */
+._m-addtocart ._controls { display: flex; flex-flow: column nowrap; justify-content: center; }
+/* Stack/Stretch the module's visible controls. */
+/*  [1] Stack/stretch the controls with a flexbox.  Allow Alert to wrap, for the message. */
+/*  [2] Make sure max-width ~= 2 * min-width. */
+/*  [3] The alert's info message sits on a row by itself. */
+._m-addtocart ._controls ._cart { display: flex; flex-flow: row nowrap; justify-content: center; } /* [1] */
+._m-addtocart ._controls ._cart ._button { flex-basis: 200px; flex-grow: 1; min-width: 200px; max-width: 400px; } /* [2] */
+._m-addtocart ._controls ._alert { display: flex; flex-flow: row wrap; justify-content: center; } /* [1] */
+._m-addtocart ._controls ._alert ._input { flex-basis: 200px; flex-grow: 1; min-width: 200px; max-width: 400px; } /* [2] */
+._m-addtocart ._controls ._alert ._button { flex-basis: 200px; flex-grow: 1; min-width: 200px; max-width: 400px; } /* [2] */
+._m-addtocart ._controls ._alert ._message { width: 100%; } /* [3] */
+/* Gaps & Margins */
+._m-addtocart ._controls ._cart ._button { margin: 0.5rem; }
+._m-addtocart ._controls ._alert ._input  { margin: 0.5rem; }
+._m-addtocart ._controls ._alert ._button { margin: 0.5rem; }
+._m-addtocart ._controls ._alert ._message { margin: 0 0.5rem; }
+/* Height & Width of Visible Controls
+    [1] On the e-mail input element, set height using line-height and padding, so we can shift the baseline depending whether the label is shown or hidden.
+    [2] Pad the input box as if it had content and the label was showing.
+    [3] Size all other controls using line-height and padding, for consistency with sizing and box-sizing properties.
+    [4] The DISABLED alternate version to [3] that uses the height property must account for the border area.
+*/
+._m-addtocart ._controls ._cart ._button button  { width: 100%; font: inherit; line-height: 2rem; padding: 0.75rem 1rem 0.75rem 1rem; } /* [3] */
+._m-addtocart ._controls ._alert ._input input   { width: 100%; font: inherit; line-height: 2rem; padding: 1.25rem 1rem 0.25rem 1rem; } /* [1] [2] */
+._m-addtocart ._controls ._alert ._button button { width: 100%; font: inherit; line-height: 2rem; padding: 0.75rem 1rem 0.75rem 1rem; } /* [3] */
+.x_m-addtocart ._controls ._alert ._button button { width: 100%; font: inherit; height: calc(3.5rem + 2px); } /* [4] */
+/* Control Visuals */
+._m-addtocart ._controls ._cart ._button button  { border: solid 1px black; border-radius: 2px; background: black; color: white; text-transform: uppercase; }
+._m-addtocart ._controls ._alert ._input input   { border: solid 1px black; border-radius: 2px; }
+._m-addtocart ._controls ._alert ._button button { border: solid 1px black; border-radius: 2px; background: black; color: white; text-transform: uppercase; }
+/* Position the input field label.
+    [1] Position it with respect to its parent, so that label and input box both are top-left aligned, by default.
+    [2] To left-align the label with the input box contents, the left position includes the same padding as the input box + the width of the border.
+    [3] Only show the label if the placeholder is no longer showing, which means the user typed something in the box.
+    [4] When the input box is empty, center the baseline so the placeholder is centered.
+*/
+._m-addtocart ._controls ._alert ._input { position: relative; } /* [1] */
+._m-addtocart ._controls ._alert ._input label { position: absolute; top: 0.5rem; } /* [2] */
+._m-addtocart ._controls ._alert ._input label { left: calc(1rem + 1px); } /* [2] */
+._m-addtocart ._controls ._alert ._input input:placeholder-shown + label { opacity: 0; } /* [3] */
+._m-addtocart ._controls ._alert ._input input:placeholder-shown {padding: 0.75rem 1rem 0.75rem 1rem; } /* [4] */
+/* Style the Alert input label. */
+._m-addtocart ._controls ._alert ._input label { font-size: calc(1rem * 10/14); color: gray; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; user-select: none; }
+/* Style the Alert validation message. */
+._m-addtocart ._controls ._alert ._input ._validation { font-size: calc(1rem * 12/14); color: red; }
+/* Hide the Alert validation message, by default. */
+._m-addtocart ._controls ._alert ._input ._validation { display: none; }
+/* Style the Alert message. */
+._m-addtocart ._controls ._alert ._message { font-size: calc(1rem * 12/14); color: gray; text-align: center; }
+/* Style :focus on the Alert input field. */
+._m-addtocart ._controls ._alert ._input input:focus { outline: 0; border: solid 1px #0070c9; box-shadow: 0 0 0 3px rgba(131,192,253,0.5); }
+/* Response Messages */
+._m-addtocart ._response { position: fixed; z-index: 999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(245, 245, 245, 0.5); }
+._m-addtocart ._response { display: flex; align-items: center; justify-content: center; }
+._m-addtocart ._response ._message { margin: 1rem; padding: 1rem; border: solid 1px transparent; border-radius: 0.25rem; text-align: center; max-width: 250px; }
+._m-addtocart ._response ._message ul { text-align: left; margin: 0.5rem; padding: 0.5rem; }
+._m-addtocart ._response ._message button { padding: 0.5rem 1rem; border-radius: 0.25rem; color: white; }
+._m-addtocart ._response ._message._success { background: #dff0d8; border-color: #d0e9c6; color: #3c763d; }
+._m-addtocart ._response ._message._success button { border: solid 1px green; background: green; }
+._m-addtocart ._response ._message._failure { background: #f2dede; border-color: #ebcccc; color: #a94442; }
+._m-addtocart ._response ._message._failure button { border: solid 1px red; background: red; }
+/* Availability Breakpoints */
+html[data-u-availability="instock"]     ._m-addtocart ._controls ._cart { display: flex !important; }
+html[data-u-availability="outofstock"]  ._m-addtocart ._controls ._cart { display: none; }
+html[data-u-availability="soldout"]     ._m-addtocart ._controls ._cart { display: none; }
+html[data-u-availability="unavailable"] ._m-addtocart ._controls ._cart { display: none; }
+html[data-u-availability="error"]       ._m-addtocart ._controls ._cart { display: none; }
+html[data-u-availability="instock"]     ._m-addtocart ._controls ._alert { display: none; }
+html[data-u-availability="outofstock"]  ._m-addtocart ._controls ._alert { display: flex !important; }
+html[data-u-availability="soldout"]     ._m-addtocart ._controls ._alert { display: flex !important; }
+html[data-u-availability="unavailable"] ._m-addtocart ._controls ._alert { display: flex !important; }
+html[data-u-availability="error"]       ._m-addtocart ._controls ._alert { display: flex !important; }
+/* Validation Breakpoints */
+._m-addtocart ._controls ._alert[data-u-validform="true"]  ._input input { border: solid 1px green; }
+._m-addtocart ._controls ._alert[data-u-validform="true"]  ._button input { background: honeydew; color: black; }
+._m-addtocart ._controls ._alert[data-u-validform="true"]  ._input ._validation { display: none; }
+._m-addtocart ._controls ._alert[data-u-validform="false"] ._input input:not(:placeholder-shown):not(:focus) { border: solid 1px red; }
+._m-addtocart ._controls ._alert[data-u-validform="false"] ._input input:not(:placeholder-shown):not(:focus) ~ ._validation { display: block !important; }
+._m-addtocart ._controls ._alert[data-u-validform="false"] ._button input { background: lavenderblush; color: black; }
+/* (Debug) -------------------------------------------------------------------*/
+._m-addtocart._DEBUG { border: dashed 1px red; padding: 0.5rem; margin: 0.5rem; }
+._m-addtocart._DEBUG ._controls ._cart { outline: dashed 1px green; padding: 0.5rem; margin: 0.25rem; }
+._m-addtocart._DEBUG ._controls ._alert { outline: dashed 1px orange; padding: 0.5rem; margin: 0.25rem; }
+._m-addtocart._DEBUG ._controls ._cart ._button { outline: dashed 1px pink; padding: 0.5rem; }
+._m-addtocart._DEBUG ._controls ._alert ._input { outline: dashed 1px pink; padding: 0.5rem; }
+._m-addtocart._DEBUG ._controls ._alert ._button { outline: dashed 1px pink; padding: 0.5rem; }
+._m-addtocart._DEBUG ._controls ._alert ._message { outline: dashed 1px pink; padding: 0.5rem; }
+._m-addtocart._UNHIDE fieldset { border: solid 1px lightgray; color: gray; background: whitesmoke; margin: 1rem 3rem; }
+._m-addtocart._UNHIDE .no-js { display: block !important; }
+._m-addtocart._UNHIDE fieldset._hide { display: block !important; }
+/*----------------------------------------------------------------------------*/

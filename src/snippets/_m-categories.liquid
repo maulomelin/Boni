@@ -1,0 +1,47 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_m-categories]
+
+Snippet:
+  \src\snippets\_m-categories.Liquid
+
+Usage:
+  {% include "_m-categories" %}
+
+Parameters:
+  none
+
+Output:
+  - A very simple html construct the main menu shown in a collection page.
+
+Description:
+  - The menu shown in a collection page has two forms:
+      1) Multi-Level Hierarchical - shown on wide screens as a nested menu.
+      2) Collapsed Select Options - shown on narrow screens as a drop-down.
+  - Both forms are rendered and are turned on/off using visual toggles issued
+    by the [_g-collection] layout, depending on the width of the screen and
+    the [_m-categories] module on the page.
+  - A menu must be defined.  The routine will simply return an empty container
+    element if no menu is defined.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+<div class="_m-categories _js-categories">
+
+  {%- assign _h = section.settings.categories_menu -%}
+
+  <div class="_menu _dropdown _bp-collectionpage-full-hide">
+    {%- render "_util-linklist-to-select",
+      list: linklists[_h], label: section.settings.menu_label,
+      id: "_id-select-categories", class: "_js-categories-dropdownmenu",
+      default_selection: section.settings.menu_default_selection,
+      indent_character: section.settings.menu_indent_character
+    -%}
+  </div>
+
+  <div class="_menu _tree _bp-collectionpage-narrow-hide">
+    {%- render "_util-linklist-to-ul", list: linklists[_h] -%}
+  </div>
+
+</div>

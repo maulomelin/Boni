@@ -1,0 +1,7 @@
+/* _m-pagetitle.css ------------------------------------------------------------
+// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
+//----------------------------------------------------------------------------*/
+._m-pagetitle { font-size: calc(1rem * 24/14); text-align: center; padding: 1rem; }
+/* (Debug) -------------------------------------------------------------------*/
+._m-pagetitle._DEBUG { outline: dashed 1px pink; }
+/*----------------------------------------------------------------------------*/

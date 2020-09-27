@@ -12,27 +12,9 @@
     "settings": [
       {
         "type": "textarea",
-        "id": "metadata_taxonomy",
-        "label": "(Product) Taxonomy",
-        "info": "Liquid object: {{settings.metadata_taxonomy}}"
-      },
-      {
-        "type": "textarea",
-        "id": "metadata_colorvariants",
-        "label": "(Product) Color Variants",
-        "info": "Liquid object: {{settings.metadata_colorvariants}}"
-      },
-      {
-        "type": "textarea",
-        "id": "metadata_outfititems",
-        "label": "(Product) Outfit Items",
-        "info": "Liquid object: {{settings.metadata_outfititems}}"
-      },
-      {
-        "type": "textarea",
-        "id": "metadata_measurements",
-        "label": "(Product) Measurements",
-        "info": "Liquid object: {{settings.metadata_measurements}}"
+        "id": "metadata_dictionary",
+        "label": "(Global) Dictionary",
+        "info": "Liquid object: {{settings.metadata_dictionary}}"
       },
       {
         "type": "textarea",
@@ -42,9 +24,33 @@
       },
       {
         "type": "textarea",
-        "id": "metadata_dictionary",
-        "label": "(Global) Dictionary",
-        "info": "Liquid object: {{settings.metadata_dictionary}}"
+        "id": "metadata_measurements",
+        "label": "(Product) Measurements",
+        "info": "Liquid object: {{settings.metadata_measurements}}"
+      },
+      {
+        "type": "textarea",
+        "id": "metadata_colorvariants",
+        "label": "(Product) Color Variants",
+        "info": "Liquid object: {{settings.metadata_colorvariants}}"
+      },
+      {
+        "type": "textarea",
+        "id": "metadata_pairedwith",
+        "label": "(Product) Paired With",
+        "info": "Liquid object: {{settings.metadata_pairedwith}}"
+      },
+      {
+        "type": "textarea",
+        "id": "metadata_alsopairedwith",
+        "label": "(Product) Also Paired With",
+        "info": "Liquid object: {{settings.metadata_alsopairedwith}}"
+      },
+      {
+        "type": "textarea",
+        "id": "metadata_taxonomy",
+        "label": "(Product) Taxonomy",
+        "info": "Liquid object: {{settings.metadata_taxonomy}}"
       }
     ]
   },

@@ -1,0 +1,48 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_m-footer]
+
+Snippet:
+  \src\snippets\_m-footer.Liquid
+
+Usage:
+  {%- include "_m-footer" -%}
+
+Parameters:
+  none
+
+Output:
+  - The [_m-footer] structure.
+
+Description:
+  - The function simply fills a pre-defined template.
+    See the design patterns doc for details.
+  - If the menu handle for a group is not defined, that group is not rendered.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+<footer class="_m-footer">
+
+  {%- assign _h = section.settings.footer_support_menu -%}
+  {%- if blank != _h -%}
+  <div class="_group _info">
+    {% include "_util-linklist-to-ul", list: linklists[_h] %}
+  </div>
+  {%- endif -%}
+
+  {%- assign _h = section.settings.footer_legal_menu -%}
+  {%- if blank != _h -%}
+  <div class="_group _legal">
+    {% include "_util-linklist-to-ul", list: linklists[_h] %}
+  </div>
+  {%- endif -%}
+
+  {%- assign _copyright = section.settings.footer_copyright_text -%}
+  {%- if blank != _copyright -%}
+  <div class="_group _copyright">
+    {{- _copyright -}}
+  </div>
+  {%- endif -%}
+
+</footer>

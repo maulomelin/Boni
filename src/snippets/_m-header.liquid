@@ -1,0 +1,39 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_m-header]
+
+Snippet:
+  \src\snippets\_m-header.Liquid
+
+Usage:
+  {%- include "_m-header" -%}
+
+Parameters:
+  none
+
+Output:
+  - The [_m-header] structure.
+
+Description:
+  - The function simply fills a pre-defined template by invoking other snippets.
+    See the design patterns doc for details.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+<header class="_m-header _js-header">
+  <div class="_stickyarea _js-header-stickyarea">
+    {% include "_m-header-alert" %}
+    {% include "_m-header-navbar", type: "sticky" %}
+    <div class="_drawers">
+      {% include "_m-header-navbar", type: "spacer" %}
+      {% include "_m-header-alert" %}
+      {% include "_m-header-menu" %}
+    </div>
+  </div>
+  <div class="_scrollarea">
+    {% include "_m-header-alert" %}
+    {% include "_m-header-navbar", type: "scroll" %}
+  </div>
+  <div class="_overlay _js-header-overlay"></div>
+</header>

@@ -1,0 +1,41 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_util-linklist-to-ul]
+
+Snippet:
+  _util-linklist-to-ul.Liquid
+
+Usage:
+  {% include "_util-linklist-to-ul", list: linklists.main-menu %}
+
+Parameters:
+  {linklist} list
+
+Output:
+  - An unordered (i.e. <ul>) list of nested links constructed from the contents
+    of the linklist object.
+
+Description:
+  - The output is a recursively nested list of line items.
+  - The routine calls itself recursively on any nested menu items in the list.
+  - This is a category of "utility" functions:
+    https://hackernoon.com/software-complexity-naming-6e02e7e6c8cb
+  - We opted not to do anything special {-% if true == _link.active %-}.
+      - It is unclear where/how it makes sense to do anything special, such as
+        the menu in the header or the nav menu in the sidebar or drop-down.
+      - It screws up any "home" link on the homepage's Shop buttons since
+        we only style "a" tags.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- if blank != list.links -%}
+<ul>
+  {%- for _link in list.links -%}
+  <li>
+    <a href="{{ _link.url }}">{{ _link.title }}</a>
+    {%- render "_util-linklist-to-ul", list: _link -%}
+  </li>
+  {%- endfor -%}
+</ul>
+{%- endif -%}

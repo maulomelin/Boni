@@ -1,0 +1,42 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_util-metadata-dictionary-lookup]
+
+Snippet:
+  _util-metadata-dictionary-lookup.Liquid
+
+Usage:
+  {% capture value %}
+    {% render "_util-metadata-dictionary-lookup", key: _key %}
+  {% endcapture %}
+
+Parameters:
+  {string} key
+
+Output:
+  - The value associated with the key parameter in the dictionary metadata.
+  - If no key is found in the dictionary, an empty string is returned.
+
+Description:
+  - The dictionary is pulled from the global settings object:
+
+        {{ settings.metadata_dictionary }}
+
+  - The dictionary is configurable via the Shopify Theme Editor.
+
+        [ Shopify > Themes > Current theme: Customize > Theme settings > Metadata ]
+
+  - The dictionary is in JSON format.
+      - The routines invoked to get the data are based on how it is structured.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- assign json = settings.metadata_dictionary -%}
+{%- assign path = "dictionary." | append: key -%}
+{%- capture xjson -%}{%- render "_util-json-convert-json-to-xjson", json: json -%}{%- endcapture -%}
+{%- capture xjsonstring -%}{%- render "_util-json-search-path-in-xjson", xjson: xjson, path: path -%}{%- endcapture -%}
+{%- capture string -%}{%- render "_util-json-get-data-from-xjson", xjson: xjsonstring -%}{%- endcapture -%}
+{%- assign string = string | default: key -%}
+
+{{- string -}}

@@ -1,0 +1,45 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_util-metadata-attributes-lookup]
+
+Snippet:
+  _util-metadata-attributes-lookup.Liquid
+
+Usage:
+  {% capture table %}
+    {% render "_util-metadata-attributes-lookup", handle: product.handle, attribute: "collectionname" %}
+  {% endcapture %}
+
+Parameters:
+  {handle} handle
+  {string} attribute
+
+Output:
+  - The value of the following node from the global settings object:
+
+      attributes.<handle>.<attribute>
+
+  - If no value is found, or the node is invalid, an empty value is returned.
+
+Description:
+  - The attributes metadata is pulled from the global settings object:
+
+      {{ settings.metadata_attributes }}
+
+  - The attributes metadata is configurable via the Shopify Theme Editor.
+
+      [ Shopify > Themes > Current theme: Customize > Theme settings > Metadata ]
+
+  - The attributes metadata is in JSON format.
+      - The routines invoked to get the data are based on how it is structured.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- assign json = settings.metadata_attributes -%}
+{%- assign path = "attributes." | append: handle | append: "." | append: attribute -%}
+{%- capture xjson -%}{%- render "_util-json-convert-json-to-xjson", json: json -%}{%- endcapture -%}
+{%- capture xjsonstring -%}{%- render "_util-json-search-path-in-xjson", xjson: xjson, path: path -%}{%- endcapture -%}
+{%- capture string -%}{%- render "_util-json-get-data-from-xjson", xjson: xjsonstring -%}{%- endcapture -%}
+
+{{- string -}}

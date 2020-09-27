@@ -1,0 +1,57 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_util-variant-availability]
+
+Snippet:
+  _util-variant-availability.Liquid
+
+Usage:
+  {% capture availability %}
+    {%- render "_util-variant-availability", variant: product.variants[0] -%}
+  {% endcapture %}
+
+Parameters:
+  {variant} variant
+
+Output:
+  - The availability state of the given variant.  This is one of:
+
+      [ "instock", "outofstock", "soldout", "unavailable", "error" ]
+
+  - The snippet is designed to be called with the "render" tag.
+    As such, its output should be captured in a variable.
+
+Description:
+  - The availability state logic is shared with a client-side script
+    that broadcasts the availability state of any selected variant.
+  - Client-side script file:
+
+        \src\scripts\boni\_m-optiongroup.js
+            function: getVariantAvailability()
+
+  - The server-side and client-side logic that calculates availability
+    state must be kept in sync for the UI to work as expected.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- liquid
+  if variant
+    if 0 < variant.inventory_quantity
+      assign _availability = "instock"
+    else
+      case variant.inventory_policy
+        when "continue"
+          assign _availability = "outofstock"
+        when "deny"
+          assign _availability = "soldout"
+        else
+          assign _availability = "error"
+      endcase
+    endif
+  else
+    assign _availability = "unavailable"
+  endif
+
+  echo _availability
+-%}
