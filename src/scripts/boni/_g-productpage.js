@@ -9,7 +9,7 @@
 //----------------------------------------------------------------------------*/
 $(function() {
 
-  let bDebug = true;
+  let bDebug = window.boni.debug;
   let sModule = "_g-productpage";
 
   if (bDebug) { console.log("[%s] Initializing", sModule); }

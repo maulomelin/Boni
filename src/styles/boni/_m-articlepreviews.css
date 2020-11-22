@@ -1,0 +1,23 @@
+/* _m-articlepreviews.css ------------------------------------------------------
+// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
+//----------------------------------------------------------------------------*/
+._m-articlepreviews { max-width: 500px; margin: 0 auto; text-align: center; }
+._m-articlepreviews a._previewlink { text-decoration: none; }
+._m-articlepreviews ._preview { padding: 1rem; display: flex; flex-flow: column; justify-content: center; align-items: center; }
+._m-articlepreviews ._preview ._title { order: 1; }
+._m-articlepreviews ._preview ._date { order: 2; }
+._m-articlepreviews ._preview ._image { order: 4; }
+._m-articlepreviews ._preview ._excerpt { order: 3; }
+._m-articlepreviews ._preview ._more { order: 5; }
+
+._m-articlepreviews ._preview ._date { margin: 0.5rem 0; font-size: calc(12/14 * 1rem); color: gray; }
+._m-articlepreviews ._preview ._excerpt { text-align: justify; margin: 1rem 0; }
+._m-articlepreviews ._preview ._image figure { margin: 1rem 0; }
+._m-articlepreviews ._preview ._image figure img { width: 100%; }
+._m-articlepreviews ._preview ._image figure figcaption { color: gray; }
+
+._m-articlepreviews hr { margin: 2rem 1rem; border: 0; height: 1px; background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));  }
+/* (Debug) -------------------------------------------------------------------*/
+._m-articlepreviews._DEBUG { outline: dashed 1px red; background: lightyellow; }
+._m-articlepreviews._DEBUG ._preview { outline: dashed 1px blue; background: lavenderblush; }
+/*----------------------------------------------------------------------------*/

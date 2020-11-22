@@ -73,6 +73,132 @@
       <tr><td>{{ "product.selected_variant" }}</td><td>Object</td><td>.id=({{ product.selected_variant.id }}), .title=({{ product.selected_variant.title }})</td></tr>
       <tr><td>{{ "product.first_available_variant" }}</td><td>Object</td><td>.id=({{ product.first_available_variant.id }})</td></tr>
       <tr><td>{{ "product.selected_or_first_available_variant" }}</td><td>Object</td><td>.id=({{ product.selected_or_first_available_variant.id }})</td></tr>
+      <tr>
+        <td>Product Breadcrumb 1 (test)</td>
+        <td>n/a</td>
+        <td>
+          {% for link0 in linklists["full-shop-menu"].links %}
+            <br/>{{ link0.title }}
+            {% if true == link0.active %} [0+] {% endif %}
+            {% if true == link0.child_active %} [0*] {% endif %}
+            {% if true == link0.current %} [0x] {% endif %}
+            {% for link1 in link0.links %}
+              <br/>-&nbsp;-&nbsp;{{ link1.title }}
+              {% if true == link1.active %} [1+] {% endif %}
+              {% if true == link1.child_active %} [1*] {% endif %}
+              {% if true == link1.current %} [1x] {% endif %}
+              {% for link2 in link1.links %}
+                <br/>-&nbsp;-&nbsp;-&nbsp;-&nbsp;{{ link2.title }}
+                {% if true == link2.active %} [2+] {% endif %}
+                {% if true == link2.child_active %} [2*] {% endif %}
+                {% if true == link2.current %} [2x] {% endif %}
+                {% for link3 in link2.links %}
+                  <br/>-&nbsp;-&nbsp;-&nbsp;-&nbsp;-&nbsp;-&nbsp;{{ link3.title }}
+                  {% if true == link3.active %} [3+] {% endif %}
+                  {% if true == link3.child_active %} [3*] {% endif %}
+                  {% if true == link3.current %} [3x] {% endif %}
+                {% endfor %}
+              {% endfor %}
+            {% endfor %}
+          {% endfor %}
+        </td>
+      </tr>
+      <tr>
+        <td>Product Breadcrumb 2 (test)</td>
+        <td>n/a</td>
+        <td>
+          {% for link0 in linklists["full-shop-menu"].links %}
+            <br/>{{ link0.title }}
+            {% for collection in product.collections %}
+              {% if collection.handle == link0.object.handle %} [*] {% endif %}
+            {% endfor %}
+
+            {% for link1 in link0.links %}
+              <br/>-&nbsp;-&nbsp;{{ link1.title }}
+              {% for collection in product.collections %}
+                {% if collection.handle == link1.object.handle %} [*] {% endif %}
+              {% endfor %}
+
+              {% for link2 in link1.links %}
+                <br/>-&nbsp;-&nbsp;-&nbsp;-&nbsp;{{ link2.title }}
+                {% for collection in product.collections %}
+                  {% if collection.handle == link2.object.handle %} [*] {% endif %}
+                {% endfor %}
+
+                {% for link3 in link2.links %}
+                  <br/>-&nbsp;-&nbsp;-&nbsp;-&nbsp;-&nbsp;-&nbsp;{{ link3.title }}
+                  {% for collection in product.collections %}
+                    {% if collection.handle == link3.object.handle %} [*] {% endif %}
+                  {% endfor %}
+
+                {% endfor %}
+              {% endfor %}
+            {% endfor %}
+          {% endfor %}
+        </td>
+      </tr>
+      <tr>
+        <td>Collection Breadcrumb 1 (hardcoded)</td>
+        <td>n/a</td>
+        <td>
+          {% for link0 in linklists["full-shop-menu"].links %}
+            <br/>{{ link0.title }}
+            {% if link0.active %} [+] {% endif %}
+            {% if link0.child_active %} [*] {% endif %}
+
+            {% for link1 in link0.links %}
+              <br/>-&nbsp;-&nbsp;{{ link1.title }}
+              {% if link1.active %} [+] {% endif %}
+              {% if link1.child_active %} [*] {% endif %}
+
+              {% for link2 in link1.links %}
+                <br/>-&nbsp;-&nbsp;-&nbsp;-&nbsp;{{ link2.title }}
+                {% if link2.active %} [+] {% endif %}
+                {% if link2.child_active %} [*] {% endif %}
+
+                {% for link3 in link2.links %}
+                  <br/>-&nbsp;-&nbsp;-&nbsp;-&nbsp;-&nbsp;-&nbsp;{{ link3.title }}
+                  {% if link3.active %} [+] {% endif %}
+                  {% if link3.child_active %} [*] {% endif %}
+
+                {% endfor %}
+              {% endfor %}
+            {% endfor %}
+          {% endfor %}
+        </td>
+      </tr>
+      <tr>
+        <td>Collection Breadcrumb 2 (global var)</td>
+        <td>n/a</td>
+        <td>
+          {% assign shopping_menu = settings.global_shopping_menu %}
+          <br/>Shopping Menu Handle: [{{ shopping_menu | json }}]
+          {% for link0 in linklists[shopping_menu].links %}
+            <br/>{{ link0.title }}
+            {% if link0.active %} [+] {% endif %}
+            {% if link0.child_active %} [*] {% endif %}
+
+            {% for link1 in link0.links %}
+              <br/>-&nbsp;-&nbsp;{{ link1.title }}
+              {% if link1.active %} [+] {% endif %}
+              {% if link1.child_active %} [*] {% endif %}
+
+              {% for link2 in link1.links %}
+                <br/>-&nbsp;-&nbsp;-&nbsp;-&nbsp;{{ link2.title }}
+                {% if link2.active %} [+] {% endif %}
+                {% if link2.child_active %} [*] {% endif %}
+
+                {% for link3 in link2.links %}
+                  <br/>-&nbsp;-&nbsp;-&nbsp;-&nbsp;-&nbsp;-&nbsp;{{ link3.title }}
+                  {% if link3.active %} [+] {% endif %}
+                  {% if link3.child_active %} [*] {% endif %}
+
+                {% endfor %}
+              {% endfor %}
+            {% endfor %}
+          {% endfor %}
+        </td>
+      </tr>
     </tbody>
   </table>
 

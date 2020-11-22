@@ -6,7 +6,7 @@
 //----------------------------------------------------------------------------*/
 $(function() {
 
-  let bDebug = true;
+  let bDebug = window.boni.debug;
   let sModule = "_m-addtocart";
 
   if (bDebug) { console.log("[%s] Initializing", sModule); }

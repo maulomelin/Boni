@@ -36,9 +36,9 @@ Description:
 <div class="_m-related">
   <div class="_heading">
   {%- if heading -%}
-    {{- heading -}}
+    {{- heading }} ({{ handles.size }})
   {%- else -%}
-    {{- "product.related.pairedwith.defaultheading" | t -}}
+    {{- "product.related.pairedwith.defaultheading" | t }} ({{ handles.size }})
   {%- endif -%}
   </div>
   <div class="_items">

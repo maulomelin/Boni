@@ -1,0 +1,76 @@
+{%- comment -%}-----------------------------------------------------------------
+Design Pattern:
+  [_jsonld-Product-Offers]
+
+Snippet:
+  _jsonld-Product-Offers.Liquid
+
+Usage:
+  {% render "_jsonld-Product-Offers", product: product %}
+
+Parameters:
+  {product object} product [ required ] // The product this json-ld is from.
+
+Output:
+  - JSON object for structured data.
+
+Description:
+  - Structured data documentation:
+    https://developers.google.com/search/docs/data-types/product
+  - This outputs either an Offer or an AggregateOffer object.
+      - We will use Offer if there's a single price; AggregateOffer if there
+        are multiple prices on a product's variants.
+  - product.price_varies acts on all variants, regardless of availability.
+  - We use product.price_varies to decide between Offer (single price) and
+    AggregateOffer (price range).
+  - Object properties, as listed in the Google Developer docs:
+
+        Offer: {
+          "price": Number, // Required. Required for Google Images.
+          "availability": ItemAvailability, // Required for Google Images.
+          "itemOffered": Thing,
+          "priceCurrency": Text, // Required for Google Images.
+          "priceValidUntil": Date,
+          "shippingDetails": OfferShippingDetails,
+          "url": URL
+        }
+
+        AggregateOffer: {
+          "lowPrice": Number, // Required.
+          "priceCurrency": Text, // Required. Required for Google Images.
+          "highPrice": Number,
+          "offerCount": Number
+        }
+
+      - Although the Google Developer documentation lists a different set of
+        properties required/recommended between Offer and AggregateOffer objects,
+        testing on https://search.google.com/test/rich-results shows that the
+        only difference seems to be single price or price range.
+        That is, we can add availability to AggregateOffer and it shows up.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- capture availability -%}{%- render "_util-product-availability", product: product -%}{%- endcapture %}
+{% capture availability -%}
+  {%- case availability -%}
+    {%- when "instock" -%} https://schema.org/InStock
+    {%- when "outofstock" -%} https://schema.org/OutOfStock
+    {%- when "soldout" -%} https://schema.org/SoldOut
+    {%- else -%} https://schema.org/Discontinued
+  {%- endcase -%}
+{%- endcapture -%}
+
+{
+{%- if true == product.price_varies %}
+  "@type": "Offer",
+  "price": "{{ product.price | money_without_trailing_zeros }}",
+{%- else %}
+  "@type": "AggregateOffer",
+  "lowPrice": "{{ product.price_min | money_without_trailing_zeros }}",
+  "highPrice": "{{ product.price_max | money_without_trailing_zeros }}",
+{%- endif %}
+  "priceCurrency": "{{ shop.currency }}",
+  "availability": "{{ availability }}",
+  "url": "{{ shop.url }}{{ product.url }}",
+  "shippingDetails": {% render "_jsonld-Product-OfferShippingDetails", product: product %}
+}

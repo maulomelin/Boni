@@ -32,6 +32,15 @@ Notes:
   {%- endcomment -%}
 </div>
 
+<script type="application/ld+json">
+  {% render "_jsonld-BreadcrumbList" %}
+</script>
+
+{% comment %} Debug Info
+{% render "debug-info" %}
+{% endcomment %}
+
+
 {% schema %}
   {
     "name": "Collection Page",

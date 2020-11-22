@@ -2,8 +2,8 @@
 // Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
 //----------------------------------------------------------------------------*/
 ._m-heading { text-align: center; }
-._m-heading ._designer { margin: 0 0 1rem 0; }
-._m-heading ._title { }
+._m-heading h1._title { font-size: calc(1rem * 16/14); }
+._m-heading h2._designer { font-size: calc(1rem * 16/14); margin: 0 0 1rem 0; }
 /* Breakpoints */
 html[data-u-layout="region1"] ._m-heading { margin: 2rem 0 0 0 !important; }
 html[data-u-layout="region2"] ._m-heading { margin: 2rem 0 0 0 !important; }

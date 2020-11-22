@@ -6,7 +6,7 @@
 ._m-details ._toggle { background: none; border: none; text-decoration: underline; cursor: pointer; color: #999999; font: inherit; }
 ._m-details ._toggle { font-size: calc(1rem * 10/14); }
 ._m-details ._toggle:focus { outline: none; }
-._m-details ._content { display: none; text-align: center; margin: 1rem 0 2rem 0; }
+._m-details ._content { display: none; text-align: center; margin: 1rem 0; }
 /* Breakpoints */
 html[data-u-layout="region3"] ._m-details { margin: 0 auto !important; }
 html[data-u-layout="region3"] ._m-details ._toggle { display: none !important; }

@@ -8,6 +8,25 @@
     "theme_support_url": "https://localhost"
   },
   {
+    "name": "Global",
+    "settings": [
+      {
+        "type": "header",
+        "content": "content property",
+        "info": "info property"
+      },
+      {
+        "type": "header",
+        "content": "Shopping Menu"
+      },
+      {
+        "id": "global_shopping_menu",
+        "type": "link_list",
+        "label": "Shopping Menu"
+      }
+    ]
+  },
+  {
     "name": "Metadata",
     "settings": [
       {

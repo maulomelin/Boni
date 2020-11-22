@@ -25,9 +25,6 @@ Description:
 --------------------------------------------------------------{%- endcomment -%}
 
 <div class="_m-sizechart _js-sizechart" data-u-productid="{{- product.id -}}" data-u-name="Size">
-  <button type="button" class="_toggle _js-sizechart-toggle" data-u-hidelabel="{{- 'product.sizechart.hidechart' | t -}}" data-u-showlabel="{{- 'product.sizechart.showchart' | t -}}">
-    {{- "product.sizechart.showchart" | t -}}
-  </button>
   <div class="_content _js-sizechart-content">
     {{- "product.sizechart.topinfo" | t | newline_to_br -}}
     <div class="_table">
@@ -67,4 +64,7 @@ Description:
     </div>
     {{- "product.sizechart.bottominfo_html" | t | newline_to_br -}}
   </div>
+  <button type="button" class="_toggle _js-sizechart-toggle" data-u-hidelabel="{{- 'product.sizechart.hidechart' | t -}}" data-u-showlabel="{{- 'product.sizechart.showchart' | t -}}">
+    {{- "product.sizechart.showchart" | t -}}
+  </button>
 </div>

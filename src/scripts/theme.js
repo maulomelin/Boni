@@ -23,6 +23,8 @@ window.boni = window.boni || {};
 // =require templates/customers-login.js
 
 /*===== Boni ================================*/
+/*----- Global ------------------------------*/
+// =require boni.js
 /*----- Layouts -----------------------------*/
 // =require boni/_g-cartpage.js
 // =require boni/_g-productpage.js
@@ -41,7 +43,6 @@ window.boni = window.boni || {};
 /*----- ToDo:InProgress ---------------------*/
 /*----- ToDo:Pending ------------------------*/
 /*----- ToDo:Deprecate ----------------------*/
-// =require boni.js
 // =require boni/_infochart.js
 // =require boni/_infochart-button.js
 /*----- /ToDo -------------------------------*/

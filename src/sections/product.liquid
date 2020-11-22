@@ -43,16 +43,24 @@ Notes:
   </div>
 </div>
 
-<script data-product-json type="application/json">
-  {{ product | json }}
-</script>
-
 {% render "_m-related-colorvariants", handle: product.handle, heading: "Other Colors" %}
 {% render "_m-related-pairedwith", handle: product.handle, heading: "Outfit Items" %}
 {% render "_m-related-alsopairedwith", handle: product.handle, heading: "See It Also Styled With" %}
 
+<script data-product-json type="application/json">
+  {{ product | json }}
+</script>
+
+<script type="application/ld+json">
+  {% render "_jsonld-BreadcrumbList" %}
+</script>
+
+<script type="application/ld+json">
+  {% render "_jsonld-Product", product: product %}
+</script>
+
 {% comment %} Debug Info
-{% render "debug-product-info" %}
+{% render "debug-info" %}
 {% endcomment %}
 
 

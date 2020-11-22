@@ -36,9 +36,9 @@ Description:
 <div class="_m-related">
   <div class="_heading">
   {%- if heading -%}
-    {{- heading -}}
+    {{- heading }} ({{ handles.size }})
   {%- else -%}
-    {{- "product.related.colorvariants.defaultheading" | t -}}
+    {{- "product.related.colorvariants.defaultheading" | t }} ({{ handles.size }})
   {%- endif -%}
   </div>
   <div class="_items">

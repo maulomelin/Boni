@@ -64,12 +64,9 @@ TODOs:
           </li>
           <li class="_title">
             <a href="{{- product.url -}}">
-              {%- comment -%}
-              {%- capture _title -%}{%- render "_util-metafield-attributes-lookup", handle: product.handle, attribute: "collectionname" -%}{%- endcapture -%}
-              {%- assign _title = _title | default: product.title -%}
-              {{- _title -}}
-              {%- endcomment -%}
-              {{- product.title -}}
+              {%- assign title = shop.metafields.global.attributes[product.handle].collectionname -%}
+              {%- assign title = title | default: product.title -%}
+              {{- title -}}
             </a>
           </li>
           <li class="_price">{%- render "_productpricing", product: product -%}</li>

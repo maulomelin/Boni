@@ -1,0 +1,96 @@
+{%- comment -%}-----------------------------------------------------------------
+Design Pattern:
+  [_jsonld-Product-OfferShippingDetails]
+
+Snippet:
+  _jsonld-Product-OfferShippingDetails.Liquid
+
+Usage:
+  {% render "_jsonld-Product-OfferShippingDetails", product: product %}
+
+Parameters:
+  {product object} product [ required ] // The product this json-ld is from.
+
+  Output:
+    - JSON object for structured data.
+
+  Description:
+  - See structured data documentation for required vs. optional properties.
+      https://developers.google.com/search/docs/data-types/product
+  - Object properties, as listed in the Google Developer docs:
+
+        OfferShippingDetails: {
+          "shippingDestination": DefinedRegion, // Required.
+          "deliveryTime": ShippingDeliveryTime,
+          "doesNotShip": Boolean,
+          "shippingRate": MonetaryAmount,
+          "shippingSettingsLink": URL
+        }
+
+        DefinedRegion: {
+          "addressCountry": Text // Required.
+        }
+
+        ShippingDeliveryTime: {
+          "businessDays": OpeningHoursSpecification,
+          "cutOffTime": DateTime,
+          "handlingTime": QuantitativeValue,
+          "transitTime": QuantitativeValue
+        }
+
+        QuantitativeValue: {
+          "minValue": Number,
+          "maxValue": Number
+        }
+
+        OpeningHoursSpecification: {
+          "dayOfWeek": DayOfWeek
+        }
+
+        DefinedRegion: {
+          "addressCountry": Text,
+          // Region OR PostalCode information, not both.
+          "addressRegion": Text,
+          // If PostalCode, one of these:
+          "postalCode": Text,
+          "postalCodePrefix": Text,
+          "postalCodeRange": postalCodeRange
+        }
+
+        MonetaryAmount: {
+          "currency": Text,
+          "value": Number
+        }
+
+        //----- EXAMPLE -----//
+        {
+          "shippingDetails": {
+            "@type": "OfferShippingDetails",
+            "shippingRate": {
+              "@type": "MonetaryAmount",
+              "value": "0",
+              "currency": "USD"
+            },
+            "shippingDestination": [{
+              "@type": "DefinedRegion",
+              "addressCountry": "US",
+              "addressRegion": ["NY"]
+            }]
+          }
+        }
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{
+  "@type": "OfferShippingDetails",
+  "shippingDestination": {
+    "@type": "DefinedRegion",
+    "addressCountry": "US"
+  },
+  "shippingRate": {
+    "@type": "MonetaryAmount",
+    "value": "0",
+    "currency": "{{ shop.currency }}"
+  },
+  "shippingSettingsLink": "{{ shop.url }}{{ pages["shipping"].url }}"
+}

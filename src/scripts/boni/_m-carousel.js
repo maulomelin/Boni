@@ -17,7 +17,7 @@
 
 $(function() {
 
-  var bDebug = true;
+  let bDebug = window.boni.debug;
   let sModule = "_m-carousel";
 
   if (bDebug) {

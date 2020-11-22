@@ -1,0 +1,16 @@
+/* _g-blog.css -----------------------------------------------------------------
+// Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
+//----------------------------------------------------------------------------*/
+/* Structure & Layout */
+._g-blog { display: grid; grid-template-areas: "title title title" ". previews ."; grid-template-columns: 1fr 4fr 1fr; }
+._g-blog ._g-blog-title { grid-area: title; }
+._g-blog ._g-blog-articles { grid-area: previews; }
+._g-blog ._g-blog-title { margin: 0 0 1rem 0; }
+@media only screen and (max-width: 500px) {
+  ._g-blog { grid-template-areas: "title" "previews"; grid-template-columns: 1fr; }
+}
+/* (Debug) -------------------------------------------------------------------*/
+._g-blog._DEBUG { outline: dashed 1px red; background: lavenderblush; }
+._g-blog._DEBUG ._g-blog-title { outline: dashed 1px orange; background: lightyellow; }
+._g-blog._DEBUG ._g-blog-articles { outline: dashed 1px green; background: honeydew; }
+/*----------------------------------------------------------------------------*/

@@ -27,26 +27,50 @@
   <tr>
     <th> # </th>
     <th> Name </th>
+    <th> Collection Name </th>
+    <th> Inventory </th>
     <th> Price </th>
-    <th> Images </th>
     <th> # Images </th>
+    <th> Images </th>
+    <th> Image ALTs </th>
     <th> Tags </th>
   </tr>
   {% assign products_by_price = collections.all.products | sort: "price" %}
   {% for product in products_by_price %}
   <tr>
-    <td> {{ current_offset | plus: forloop.index }} </td>
-    <td> <a href="{{ product.url }}"> {{ product.title }} </a> </td>
-    <td> {{ product.price | money_without_trailing_zeros }} </td>
-    <td>
+    <td> <!-- # -->
+      {{ current_offset | plus: forloop.index }}
+    </td>
+    <td nowrap> <!-- Name -->
+      {{ product.title | link_to: product.url }}
+    </td>
+    <td nowrap> <!-- Collection Name -->
+      {{- shop.metafields.global.attributes[product.handle].collectionname | default: product.title -}}
+    </td>
+    <td nowrap> <!-- Inventory -->
+      {%- for variant in product.variants -%}
+        {{ variant.inventory_quantity }} - {{ variant.title }} {%- if false == forloop.last -%}<br/>{%- endif -%}
+      {%- endfor -%}
+    </td>
+    <td> <!-- Price -->
+      {{ product.price | money_without_trailing_zeros }}
+    </td>
+    <td> <!-- # Images -->
+      {{ product.images.size }}
+    </td>
+    <td> <!-- Images -->
       {% assign imax = product.images.size | minus: 1 %}
       {% for i in (0..imax) %}
         {% assign src = product.images[forloop.index0].src | img_url: "small" %}
         <img src="{{ src }}">
       {% endfor %}
     </td>
-    <td> {{ product.images.size }} </td>
-    <td>
+    <td nowrap> <!-- Image ALTs -->
+      {%- for image in product.images -%}
+        {{- image.alt -}} {%- if false == forloop.last -%}<br/>{%- endif -%}
+      {%- endfor -%}
+    </td>
+    <td> <!-- Tags -->
       <code class="_block _text-small">
       {% for tag in product.tags %}
         {{ tag }}<br/>

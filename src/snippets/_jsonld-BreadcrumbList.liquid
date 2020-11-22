@@ -1,0 +1,114 @@
+{%- comment -%}-----------------------------------------------------------------
+Design Pattern:
+  [_jsonld-BreadcrumbList]
+
+Snippet:
+  _jsonld-BreadcrumbList.Liquid
+
+Usage:
+  {% render "_jsonld-BreadcrumbList" %}
+
+Parameters:
+  none
+
+  Output:
+    - JSON object for structured data.
+
+  Description:
+  - See structured data documentation for required vs. optional properties.
+      https://developers.google.com/search/docs/data-types/breadcrumb
+  - We take advantage of the fact that Shopify only allows linklists to be
+    three (3) levels deep to hard-code it.
+  - The snippet works for both Collection pages and Product pages.
+    Others can be added as needed.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{% assign position = 1 %}
+{
+  "@context": "https://schema.org/",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": {{ position }}, {% assign position = position | plus: 1 %}
+      "name": "Home",
+      "item": "{{ shop.url }}"
+    }
+
+    {%- assign shopping_menu = settings.global_shopping_menu -%}
+
+    {% assign bFound = false %}
+    {%- for link1 in linklists[shopping_menu].links -%}
+
+      {%- for collection in product.collections %}
+        {% if collection.handle == link1.object.handle %}
+          {% assign bFound = true %}
+          {% assign _link = link1 %}
+        {% endif %}
+      {% endfor %}
+      {%- if link1.child_active or link1.active -%}
+        {% assign bFound = true %}
+        {% assign _link = link1 %}
+      {% endif -%}
+
+      {%- if true == bFound -%}
+    ,{
+      "@type": "ListItem",
+      "position": {{ position }}, {% assign position = position | plus: 1 %}
+      "name": "{{ link1.title }}",
+      "item": "{{ shop.url }}{{ link1.url }}"
+    }
+        {%- break -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- assign bFound = false -%}
+    {%- for link2 in _link.links -%}
+      {%- for collection in product.collections -%}
+        {%- if collection.handle == link2.object.handle -%}
+          {%- assign bFound = true -%}
+          {%- assign _link = link2 -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- if link2.child_active or link2.active -%}
+        {%- assign bFound = true -%}
+        {%- assign _link = link2 -%}
+      {%- endif -%}
+
+      {%- if true == bFound -%}
+    ,{
+      "@type": "ListItem",
+      "position": {{ position }}, {% assign position = position | plus: 1 %}
+      "name": "{{ link2.title }}",
+      "item": "{{ shop.url }}{{ link2.url }}"
+    }
+        {%- break -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- assign bFound = false -%}
+    {%- for link3 in _link.links -%}
+      {%- for collection in product.collections -%}
+        {%- if collection.handle == link3.object.handle -%}
+          {%- assign bFound = true -%}
+          {%- assign _link = link3 -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- if link3.child_active or link3.active -%}
+        {%- assign bFound = true -%}
+        {%- assign _link = link3 -%}
+      {%- endif -%}
+
+      {%- if true == bFound -%}
+    ,{
+      "@type": "ListItem",
+      "position": {{ position }}, {% assign position = position | plus: 1 %}
+      "name": "{{ link3.title }}",
+      "item": "{{ shop.url }}{{ link3.url }}"
+    }
+        {%- break -%}
+      {%- endif -%}
+    {%- endfor %}
+  ]
+}

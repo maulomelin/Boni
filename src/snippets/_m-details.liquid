@@ -26,9 +26,6 @@ Description:
 --------------------------------------------------------------{%- endcomment -%}
 
 <div class="_m-details _js-details">
-  <button type="button" class="_toggle _js-details-toggle" data-u-hidelabel="{{ 'product.details.toggle_hide' | t }}" data-u-showlabel="{{ 'product.details.toggle_show' | t }}">
-    {{- 'product.details.toggle_show' | t -}}
-  </button>
   <div class="_content _js-details-content">
     {%- if empty == product.description -%}
       {{- "product.details.nodetails" | t -}}
@@ -36,4 +33,7 @@ Description:
       {{ product.description }}
     {%- endif -%}
   </div>
+  <button type="button" class="_toggle _js-details-toggle" data-u-hidelabel="{{ 'product.details.toggle_hide' | t }}" data-u-showlabel="{{ 'product.details.toggle_show' | t }}">
+    {{- 'product.details.toggle_show' | t -}}
+  </button>
 </div>

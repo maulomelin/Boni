@@ -6,7 +6,7 @@
 ._m-sizechart ._toggle { background: none; border: none; text-decoration: underline; cursor: pointer; color: #999999; font: inherit; }
 ._m-sizechart ._toggle { font-size: calc(1rem * 10/14); }
 ._m-sizechart ._toggle:focus { outline: none; }
-._m-sizechart ._content { display: none; text-align: center; margin: 1rem 0 2rem 0; }
+._m-sizechart ._content { display: none; text-align: center; margin: 1rem 0; padding: 0 2rem; }
 /* These style the <ul>s into a CSS Grid. */
 ._m-sizechart ._content ._table { width: min-content; margin: 0 auto; }
 ._m-sizechart ._content ._table { display: grid; grid-auto-flow: column; grid-auto-columns: max-content /*minmax(max-content, auto)*/; }

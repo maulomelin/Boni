@@ -1,0 +1,76 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Notes:
+  - When Shopify renders a section theme tag (i.e. a {-% section %-} tag),
+    it wraps each section in a "<div>" element with a unique "[id]" attribute.
+    There is no need to write them out explicitly.
+  - To configure a section's properties, update its "{-% schema %-}" tag.
+      https://shopify.dev/tutorials/develop-theme-use-sections
+      https://shopify.dev/docs/themes/settings
+
+--------------------------------------------------------------{%- endcomment -%}
+
+<style>
+  article { margin: 0 auto; max-width: 66ch; text-align: center; padding: 1rem; }
+  article._DEBUG { outline: dashed 1px red; background: lavenderblush; }
+  article ._date { margin: 0.5rem 0; font-size: calc(12/14 * 1rem); color: gray; }
+  article ._excerpt { text-align: justify; }
+  article ._content { text-align: justify; }
+  article figure { margin: 2rem 0; }
+  article figure img { width: 100%; }
+  article figure figcaption { color: gray; text-align: center; }
+  article hr { margin: 2rem 1rem; border: 0; height: 1px; background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));  }
+</style>
+
+<article role="article" itemscope itemtype="http://schema.org/Article">
+
+  <div class="_title">
+    <h1>{{ article.title }}</h1>
+  </div>
+  <div class="_date">
+    {% capture date %}{{ article.published_at | date: format: "mmm_d_yyyy" }}{% endcapture %}
+    {{ "blogs.article.posted_on_html" | t: date: date }}
+  </div>
+  <div class="_excerpt">
+    {{ article.excerpt }}
+  </div>
+  <hr/>
+  <div class="_content">
+      {{ article.content }}
+  </div>
+
+</article>
+
+
+{% schema %}
+  {
+    "name": "Blog",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Pagination Control"
+      },
+      {
+        "id": "paginate_page_size",
+        "type": "range",
+        "label": "Results Per Page",
+        "min": 1,
+        "max": 201,
+        "step": 2,
+        "default": 5
+      },
+      {
+        "id": "paginate_previous_string",
+        "type": "text",
+        "label": "String: Previous",
+        "default": "&laquo; Previous"
+      },
+      {
+        "id": "paginate_next_string",
+        "type": "text",
+        "label": "String: Next",
+        "default": "Next &raquo;"
+      }
+    ]
+  }
+{% endschema %}

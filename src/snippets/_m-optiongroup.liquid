@@ -89,7 +89,7 @@ Description:
   {%- assign _id_optiongroup = "_id-optiongroup-" | append: _product_option.name | append: "-" | append: product.id | downcase -%}
   {%- assign _n_option = "_n-option-" | append: _product_option.name | append: "-" | append: product.id | downcase -%}
   {%- assign _index = "option" | append: _product_option.position -%}
-  {%- capture _label -%} {%- render "_util-metafield-dictionary-lookup", key: _product_option.selected_value -%} {%- endcapture %}
+  {%- capture _label -%} {%- render "_util-metadata-dictionary-lookup", key: _product_option.selected_value -%} {%- endcapture %}
 <fieldset class="_m-optiongroup _js-optiongroup" id="{{- _id_optiongroup -}}" data-u-productid="{{- product.id -}}" data-u-name="{{- _product_option.name -}}">
   <legend>
     <div class="_caption">
@@ -103,7 +103,7 @@ Description:
     {%- for _value in _product_option.values -%}
       {%- assign _id_option = "_id-option-" | append: _product_option.name | append: "-" | append: product.id | append: "-" | append: forloop.index0 | downcase -%}
       {%- assign _checked = "" -%} {%- if _value == _product_option.selected_value %} {%- assign _checked = "checked" -%} {%- endif %}
-      {%- capture _label -%} {%- render "_util-metafield-dictionary-lookup", key: _value -%} {%- endcapture -%}
+      {%- capture _label -%} {%- render "_util-metadata-dictionary-lookup", key: _value -%} {%- endcapture -%}
     <input id="{{- _id_option -}}" type="radio" name="{{- _n_option -}}" class="_option _js-option" value="{{- _value -}}" data-u-title="{{- _label -}}" data-u-index="{{- _index -}}" {{ _checked }} XXX-DEPRECATED-XXXdata-index="{{- _index -}}" XXX-DEPRECATED-XXXdata-single-option-selector />
     <label for="{{- _id_option -}}" class="_label" title="{{- _label -}}">{{- _value -}}</label>
     {%- endfor %}

@@ -25,7 +25,7 @@
 //----------------------------------------------------------------------------*/
 $(function() {
 
-  let bDebug = true;
+  let bDebug = window.boni.debug;
   let sModule = "_m-sizechart";
 
   if (bDebug) { console.log("[%s] Initializing", sModule); }
@@ -76,7 +76,7 @@ $(function() {
   //----------------------------------------------------------------------------
   function highlightSizeChartTableColumn(event, data) {
 
-    console.log("[%s] highlightSizeChartTableColumn()", sModule);
+    if (bDebug) { console.log("[%s] highlightSizeChartTableColumn()", sModule); }
 
     if (!data) {
       if (bDebug) { console.warn("[%s] Aborting highlightSizeChartTableColumn(): No event data present.", sModule); }
@@ -101,9 +101,7 @@ $(function() {
           $column.addClass(classes.highlight);
         } else {
           $column.removeClass(classes.highlight);
-          if (bDebug) {
-            console.log("[%s] highlightInfochartTableColumn(): Highlighted column [%s]", sModule, data.value);
-          }
+          if (bDebug) { console.log("[%s] highlightInfochartTableColumn(): Highlighted column [%s]", sModule, data.value); }
         }
       });
     });

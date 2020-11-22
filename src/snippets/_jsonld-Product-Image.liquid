@@ -1,0 +1,29 @@
+{%- comment -%}-----------------------------------------------------------------
+Design Pattern:
+  [_jsonld-Product-Image]
+
+Snippet:
+  _jsonld-Product-Image.Liquid
+
+Usage:
+  {% render "_jsonld-Product-Image", product: product %}
+
+Parameters:
+  {product object} product [ required ] // The product this json-ld is from.
+
+Output:
+  - JSON object for structured data.
+
+Description:
+  - Structured data documentation:
+    https://developers.google.com/search/docs/data-types/product
+  - This outputs either an ImageObject or a URL object.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+[
+{% for image in product.images -%}
+  "{{ image | img_url: 'master' }}"
+  {%- if false == forloop.last -%},{%- endif %}
+{% endfor -%}
+]

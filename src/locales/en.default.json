@@ -46,7 +46,12 @@
     }
   },
   "blogs": {
+    "general": {
+      "categories": "Categories",
+      "noarticles": "Sorry! No articles have been written yet. :("
+    },
     "article": {
+      "posted_on_html": "Posted on {{ date }}",
       "author_on_date_html": "Posted by {{ author }} on {{ date }}",
       "comment_meta_html": "{{ author }} on {{ date }}",
       "read_more": "Read more"
@@ -64,9 +69,6 @@
         "one": "{{ count }} comment",
         "other": "{{ count }} comments"
       }
-    },
-    "general": {
-      "categories": "Categories"
     }
   },
   "cart": {
@@ -258,7 +260,7 @@
     "details": {
       "toggle_show": "Show Details",
       "toggle_hide": "Hide Details",
-      "nodetails": "Sorry!  No details available. :("
+      "nodetails": "Sorry! No details available. :("
     },
     "variantpricing": {
       "instock": "Selection is in stock",
@@ -270,7 +272,7 @@
     "sizechart": {
       "showchart": "Show Size Chart",
       "hidechart": "Hide Size Chart",
-      "nochart": "Sorry!  No size chart available. :(",
+      "nochart": "Sorry! No size chart available. :(",
       "topinfo": "All measurements are approximate, measured flat.\n\n",
       "bottominfo_html": "\nVariations in sizing may be caused by the nature of our artisanal pieces. If you require other measurements, or you want the specific measurement of a particular piece, please <a href='/pages/contact-us'>Contact Us</a>."
     },
@@ -344,6 +346,11 @@
     }
   },
   "date_formats":{
-    "month_day_year": "%B %d, %Y"
+    "month_day_year": "%B %d, %Y",
+    "mmm_d_yyyy": "%b %e, %Y",
+    "mmmm_d_yyyy": "%B %e, %Y",
+    "yyyy_mm_dd": "%Y-%m-%d",
+    "Excel_format": "https://www.ablebits.com/office-addins-blog/2015/03/11/change-date-format-excel/",
+    "Liquid_format": "http://www.strfti.me/"
   }
 }

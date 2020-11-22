@@ -1,0 +1,27 @@
+{%- comment -%}-----------------------------------------------------------------
+Design Pattern:
+  [_jsonld-Product-Brand]
+
+Snippet:
+  _jsonld-Product-Brand.Liquid
+
+Usage:
+  {% render "_jsonld-Product-Brand", product: product %}
+
+Parameters:
+  {product object} product [ required ] // The product this json-ld is from.
+
+Output:
+  - JSON object for structured data.
+
+Description:
+  - Structured data documentation:
+    https://developers.google.com/search/docs/data-types/product
+  - This outputs either a Brand or an Organization object.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{
+  "@type": "Brand",
+  "name": "{{ product.vendor }}"
+}

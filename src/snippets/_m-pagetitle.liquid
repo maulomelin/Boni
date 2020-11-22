@@ -7,7 +7,7 @@ Snippet:
   \src\snippets\_m-pagetitle.Liquid
 
 Usage:
-  {% include "_m-pagetitle" %}
+  {% include "_m-pagetitle", title: blog.title %}
 
 Parameters:
   {string} title // The string to use as content.
@@ -31,7 +31,7 @@ Description:
 --------------------------------------------------------------{%- endcomment -%}
 
 {%- if title -%}
-<div class="_m-pagetitle">
+<h1 class="_m-pagetitle">
   {{- title -}}
-</div>
+</h1>
 {%- endif -%}

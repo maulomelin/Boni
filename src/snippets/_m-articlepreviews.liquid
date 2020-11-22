@@ -1,0 +1,179 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_m-articlepreviews]
+
+Snippet:
+  \src\snippets\_m-articlepreviews.Liquid
+
+Usage:
+  {% render "_m-articlepreviews", blog: blog %}
+
+Parameters:
+  {blog} blog // The blog object to render article previews for.
+
+Output:
+  - The HTML for previews of the blog's articles.
+  - The list is paginated, as necessary.
+  - If no blog is provided, an empty message is rendered.
+
+Description:
+  - The preview is made of a title, posting date, primary image, and excerpt.
+      - The title is pulled from the article object.
+      - The posting date is pulled from the article object.
+      - The primary image is pulled from the article object.
+      - The excerpt is pulled from the article object.
+          - If there is no excerpt, then the first 100 characters from the
+            article's content are used.
+  - No tags, author, or comments are used in the current version.
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- if blog -%}
+<div class="x_DEBUG _m-articlepreviews">
+
+  {% if 0 == blog.articles_count -%}
+    {{ "blogs.general.noarticles" | t }}
+  {% else -%}
+    {% paginate blog.articles by section.settings.paginate_page_size %}
+
+      {% for article in blog.articles %}
+        <a href="{{ article.url }}" class="_previewlink">
+          <div class="_preview">
+            <div class="_title">
+              <h2>{{ article.title }}</h2>
+            </div>
+            <div class="_date">
+              {% capture date %}{{ article.published_at | date: format: "mmm_d_yyyy" }}{% endcapture %}
+              {{ "blogs.article.posted_on_html" | t: date: date }}
+            </div>
+            <div class="_image">
+              <figure>
+                {{ article | img_url: "master" | img_tag: article.title }}
+                <figcaption>
+                  {{ article.image.alt }}
+                </figcaption>
+              </figure>
+            </div>
+            <div class="_excerpt">
+              {% if 0 < article.excerpt.size %}
+                {{ article.excerpt }}
+              {% else %}
+                {{ article.content | strip_html | truncatewords: 100, " . . ." }}
+              {% endif %}
+            </div>
+          </div>
+        </a>
+        {% unless true == forloop.last %}
+        <hr/>
+        {% endunless %}
+      {% endfor %}
+
+      {% if 1 < paginate.pages %}
+        <div class="">
+          {{ paginate | default_pagination: previous: section.settings.paginate_previous_string, next: section.settings.paginate_next_string }}
+        </div>
+      {%- endif %}
+
+    {% endpaginate %}
+  {% endif %}
+
+</div>
+{%- endif -%}
+
+
+{% comment %}
+<hr>
+
+{% paginate blog.articles by 10 %}
+
+  {%- assign blog_title = blog.title -%}
+
+  {% if current_tags %}
+    {% capture blog_title %}{{ blog.title | link_to: blog.url }} &mdash; {{ current_tags.first }}{% endcapture %}
+  {% endif %}
+
+  <h1>{{ blog_title }}</h1>
+
+  {% if blog.all_tags.size > 0 %}
+    <h2>{{ 'blogs.general.categories' | t }}</h2>
+
+    <ul>
+      {% for tag in blog.all_tags %}
+
+        {% if current_tags contains tag %}
+          <li>{{ tag }}</li>
+        {% else %}
+          <li>{{ tag | link_to_tag: tag }}</li>
+        {% endif %}
+
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+
+  <!--
+  Article Previews
+  ====================
+  -->
+
+  {% for article in blog.articles %}
+    <h3>
+      <a href="{{ article.url }}">{{ article.title }}</a>
+    </h3>
+
+    {% capture date %}{{ article.published_at | time_tag: format: 'month_day_year' }}{% endcapture %}
+    <p>
+      {{ 'blogs.article.author_on_date_html' | t: author: article.author, date: date }}
+    </p>
+
+    {% if article.image %}
+      <a href="{{ article.url }}">
+        {{ article | img_url: '1024x1024' | img_tag: article.title }}
+      </a>
+    {% endif %}
+
+    <div class="rte">
+      {% if article.excerpt.size > 0 %}
+        {{ article.excerpt }}
+      {% else %}
+        <p>
+          {{ article.content | strip_html | truncatewords: 100 }}
+        </p>
+      {% endif %}
+    </div>
+
+    {% if blog.comments_enabled? or article.tags.size > 0 %}
+      <ul>
+        {% if blog.comments_enabled? %}
+          <li>
+            <a href="{{ article.url }}#comments">
+              {{ 'blogs.comments.with_count' | t: count: article.comments_count }}
+            </a>
+          </li>
+        {% endif %}
+
+        {% if article.tags.size > 0 %}
+          {% for tag in article.tags %}
+            <li>
+              <a href="{{ blog.url }}/tagged/{{ tag | handle }}">{{ tag }}</a>
+              {% unless forloop.last %}, {% endunless %}
+            </li>
+          {% endfor %}
+        {% endif %}
+      </ul>
+    {% endif %}
+
+    <p>
+      <a href="{{ article.url }}">{{ 'blogs.article.read_more' | t }} &rarr;</a>
+    </p>
+
+  {% endfor %}
+
+  {% if paginate.pages > 1 %}
+    {% include 'pagination' %}
+  {% endif %}
+
+{% endpaginate %}
+
+{% endcomment %}

@@ -1,0 +1,42 @@
+{%- comment -%}-----------------------------------------------------------------
+Design Pattern:
+  [_jsonld-Product]
+
+Snippet:
+  _jsonld-Product.Liquid
+
+Usage:
+  {% render "_jsonld-Product", product: product %}
+
+Parameters:
+  {product object} product [ required ] // The product this json-ld is from.
+
+  Output:
+    - JSON object for structured data.
+
+  Description:
+  - See structured data documentation for required vs. optional properties.
+      https://developers.google.com/search/docs/data-types/product
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": "{{ product.title }}",
+  "brand": {% render "_jsonld-Product-Brand", product: product -%},
+  "description": "{{ product.description }}",
+  "image": {% render "_jsonld-Product-Image", product: product -%},
+  "offers": {% render "_jsonld-Product-Offers", product: product -%}
+
+  {% comment %}
+  "review": Review,
+  "aggregateRating": AggregateRating,
+  "gtin8": Text,
+  "gtin13": Text,
+  "gtin14": Text,
+  "mpn": Text,
+  "isbn": Text,
+  "sku": Text,
+  {% endcomment %}
+}

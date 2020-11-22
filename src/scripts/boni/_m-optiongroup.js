@@ -37,7 +37,7 @@
 //----------------------------------------------------------------------------*/
 $(function() {
 
-  let bDebug = true;
+  let bDebug = window.boni.debug;
   let sModule = "_m-optiongroup";
 
   if (bDebug) { console.log("[%s] Initializing", sModule); }
@@ -480,7 +480,7 @@ $(function() {
   //  - Server-side script file:
   //
   //          \src\snippets\_util-variant-availability.liquid
-  //  
+  //
   //    - The server-side and client-side logic that calculates availability
   //      state must be kept in sync for the UI to work as expected.
   //----------------------------------------------------------------------------

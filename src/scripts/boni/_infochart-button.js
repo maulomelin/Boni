@@ -9,7 +9,7 @@
 //----------------------------------------------------------------------------*/
 $(function() {
 
-  let bDebug = true;
+  let bDebug = window.boni.debug;
 
   if (bDebug) {
     console.log("[_infochart-button] Initializing");
