@@ -2,6 +2,7 @@
 // Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
 //----------------------------------------------------------------------------*/
 /* Grid */
+._m-collection { text-align: center; }
 ._m-collection ._grid { display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 1rem; }
 ._m-collection ._grid figure { margin: auto; display: flex; flex-flow: column nowrap; justify-content: flex-start; }
 ._m-collection ._grid figure img { display: block; max-width: 100%; object-fit: contain; }

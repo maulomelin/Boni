@@ -16,21 +16,67 @@ Output:
   - A CSS Grid-based structure that is used to showcase a specific Collection.
 
 Description:
+  - The module renders all products in the collection on the page.
+    We must wrap the collection.products loop under a paginate tag in order
+    to be able to loop through more than the 50 max of the unwrapped loop.
+      - We use a ridiculous number for pagination to get all products on page 1.
+      - The module's first design used pagination. It was removed to allow for
+        custom sorting and filtering.
+          - To implement custom sorting across multiple pages, we need to fetch
+            all products in a filtered/paginated collection, sort them, paginate
+            them, and then render only those appropriate for the page we're on.
+          - Unfortunately, we cannot loop through all products on pages2+.
+            Shopify limits product loops to 50, unless the loop is within a
+            pagination tag, and then it applies pagination logic to loop only
+            through products logically valid for the page we're on.
+          - So, we decided to render all collection products on a single page.
+              - The limit seems to be 2,000 products.
+              - We'll revisit if we have these many products.
+              - The "/collections/all" is our marker.
+  - The module assumes the filters are part of the page request.
+    Filters are additional tags that are added to the collection's request URL.
+  - To sort:
+      1) Determine what page we're on. On pages 2+ there won't be any results.
+         We simply output an "Ooops" message with a simple collection.url link.
+      2) Determine the sorting order. This is done with the "?sort_by=" param.
+          - If there is no param, or it's invalid, set a default sorting order.
+          - We need the sorting order to determine whether a product can be
+            sorted or not by that property, in the next step.
+      3) Get all collection's products into sorting arrays.
+          - We need two sorting arrays. One for all products that are actually
+            tagged with that sorting order's sort tag, and the other for
+            products that are not.
+          - A sort tag looks like this: "sort:design:dress-cardenal-red".
+          - The sorting order is the second property in the tag (i.e. "design").
+      4) Sort the arrays.
+          - The tagged sort array can be sorted as expected.
+          - The other sort array are stragglers that need tagging.
+            They can be sorted or left alone.
+      5) Render the products, sorted array first.
+  - Must request a specific image size when using the "img_url" filter,
+    else a (100x100)px one is returned.
+    https://shopify.dev/docs/themes/liquid/reference/filters/url-filters#img_url
+  - To map back to the product object from the sorted array, we cannot use
+    {-% assign product = all_products[handle] %-} because Shopify imposes a
+    limit of 20 unique handles per page. Using it yields 20 distinct items with
+    additional ones being copies of the 20th. We must use the collection.
+      - To retrieve a product by handle from a collection,
+
+Notes from the first implementation when we paginated the collection products:
   - The results are paginated using the "paginate" tags.
     https://shopify.dev/docs/themes/liquid/reference/tags/theme-tags#paginate
   - The results per page constant is configurable via the Shopify Theme Editor.
-  - Limit of 50 products per page.
+  - Limit of 50 products per page without using the "paginate" tag.
     https://help.shopify.com/en/themes/development/templates/collection-liquid
       - Unless we use {-% layout none %-}.
         https://ecommerce.shopify.com/c/ecommerce-design/t/filter-collection-without-tags-502924
-      - A test shows we can show more than 50 products per page without {-% layout none %-}!
+      - A test confirms the 50 products per page limit if we use a simple
+        loop on the collection.products object. This limit is greater if we
+        wrap it under a "paginate" tag with a greater limit.
       - If the design of the page is 2/3/4 images wide, in order to have all
         images on interim pages to frame the page completely, we want pages to
         paginate at counts of 12n: 12/24/36/48/60/72/84/96/...
       - Paginate at 48 items.
-  - Must request a specific image size when using the "img_url" filter,
-    else a (100x100)px one is returned.
-    https://shopify.dev/docs/themes/liquid/reference/filters/url-filters#img_url
   - Shopify's built-in pagination control does not render any content if there
     is not enough content for more than one page.
 
@@ -46,37 +92,121 @@ TODOs:
           {%- capture _title -%}{%- render "_util-metafield-attributes-lookup", handle: product.handle, attribute: "collectionname" -%}{%- endcapture -%}
           {%- assign _title = _title | default: product.title -%}
           {{- _title -}}
+      - UPDATE:
+          - This should be resolved by no longer needing to build a title
+            on the fly and instead using the default title.
 
 --------------------------------------------------------------{%- endcomment -%}
 
-<div class="_m-collection _js-collection">
-  {% paginate collection.products by section.settings.paginate_page_size -%}
-  <div class="_grid _js-collection-grid">
-    {%- for product in collection.products %}
-    <figure>
-      <a href="{{- product.url -}}">
-        <img src="{{- product.featured_image | img_url: "400x600" -}}" />
-      </a>
-      <figcaption>
-        <ul>
-          <li class="_vendor">
-            {{- product.vendor -}}
-          </li>
-          <li class="_title">
-            <a href="{{- product.url -}}">
-              {%- assign title = shop.metafields.global.attributes[product.handle].collectionname -%}
-              {%- assign title = title | default: product.title -%}
-              {{- title -}}
-            </a>
-          </li>
-          <li class="_price">{%- render "_productpricing", product: product -%}</li>
-        </ul>
-      </figcaption>
-    </figure>
-    {% endfor -%}
-  </div>
-  <div class="pagination">
-    {{ paginate | default_pagination: previous: section.settings.paginate_previous_string, next: section.settings.paginate_next_string }}
-  </div>
-  {%- endpaginate %}
-</div>
+{%- paginate collection.products by 99999 -%}
+
+  {%- if 1 < paginate.current_offset -%}
+
+    {% comment %} Pages 2+ not supported. {% endcomment %}
+    <div class="_m-collection">
+      {{ "collections.general.bad_page" | t }}
+      <br/><br/>
+      <a href="{{ collection.url }}">{{ "collections.general.bad_page_action" | t }}</a>
+    </div>
+
+  {%- elsif 0 == collection.products_count -%}
+
+    {% comment %} Handle the NoProducts scenario. {% endcomment %}
+    <div class="_m-collection">
+      {{ "collections.general.no_matches" | t }}
+    </div>
+
+  {%- else -%}
+
+    {% comment %} Determine the sorting order. {% endcomment %}
+
+    {%- assign sort_by = collection.sort_by | default: collection.default_sort_by | downcase -%}
+
+    {% comment %} Get all collection products into sorting arrays. {% endcomment %}
+
+    {%- assign str_tagged_products = nil -%}
+    {%- assign str_unsortable_handles = nil -%}
+    {%- for product in collection.products -%}
+      {%- assign bTagged = false -%}
+      {%- for tag in product.tags -%}
+        {%- assign sorting_prefix = "sort:" | append: sort_by | append: ":" -%}
+        {%- if tag contains sorting_prefix -%}
+          {%- assign bTagged = true -%}
+          {%- assign str_tagged_products = str_tagged_products | append: tag | append: "#" | append: product.handle | append: "|" -%}
+          {%- break -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- if false == bTagged -%}
+        {%- assign str_unsortable_handles = str_unsortable_handles | append: product.handle | append: "|" -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {% comment %} Sort all tagged products. {% endcomment %}
+
+    {%- assign arr_sorted_products = str_tagged_products | split: "|" | sort_natural -%}
+
+    {% comment %} Create handle-array for all products. {% endcomment %}
+
+    {%- assign str_sorted_handles = nil -%}
+    {%- for th in arr_sorted_products -%}
+      {%- assign h = th | split: "#" | last -%}
+      {%- assign str_sorted_handles = str_sorted_handles | append: h | append: "|" -%}
+    {%- endfor -%}
+    {%- assign arr_sorted_handles = str_sorted_handles | split: "|" -%}
+    {%- assign arr_unsortable_handles = str_unsortable_handles | split: "|" -%}
+
+    {%- assign arr_handles = arr_sorted_handles | concat: arr_unsortable_handles -%}
+
+    {% comment %} Render all products. {% endcomment %}
+
+    <div class="_m-collection _js-collection">
+      <div class="_grid _js-collection-grid">
+        {%- for h in arr_handles -%}
+
+          {%- for p in collection.products -%}
+            {%- if p.handle == h -%}
+              {%- assign product = p -%}
+            {%- endif -%}
+          {%- endfor -%}
+
+        <figure>
+          <a href="{{- product.url -}}">
+            <img src="{{- product.featured_image | img_url: "400x600" -}}" />
+          </a>
+          <figcaption>
+            <ul>
+              <li class="_vendor">
+                {{- product.vendor -}}
+              </li>
+              <li class="_title">
+                <a href="{{- product.url -}}">
+                  {%- assign title = shop.metafields.global.attributes[product.handle].collectionname -%}
+                  {%- assign title = title | default: product.title -%}
+                  {{- product.title -}}
+                </a>
+              </li>
+              <li class="_price">{%- render "_productpricing", product: product -%}</li>
+            </ul>
+          </figcaption>
+        </figure>
+
+        {%- endfor -%}
+      </div>
+    </div>
+
+  {%- endif -%}
+
+{%- endpaginate -%}
+
+{% comment %}
+<!-- [_m-collection] Debug Info:
+sort_by=[{{ sort_by }}]
+str_tagged_products=[{{ str_tagged_products }}]
+str_unsortable_handles=[{{ str_unsortable_handles }}]
+arr_sorted_products=[{{ arr_sorted_products | strip }}]
+arr_sorted_handles=[{{ arr_sorted_handles | strip }}]
+arr_unsortable_handles=[{{ arr_unsortable_handles | strip }}]
+arr_handles=[{{ arr_handles | strip }}]
+collection.products=[ too big ]
+<!---->
+{% endcomment %}

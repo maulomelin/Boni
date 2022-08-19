@@ -1,0 +1,157 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_m-sort]
+
+Snippet:
+  \src\snippets\_m-sort.Liquid
+
+Usage:
+  {% include "_m-sort", collection: collection %}
+
+Parameters:
+  {string} collection // The collection to be sorted.
+
+Output:
+  - A very simple html construct that gives users sorting options.
+  - If no collection is provided, nothing is returned.
+
+Description:
+  - The module simply looks for specific tags that have the "sort:" prefix
+    in the collection's current view (it could be filtered, or paginated).
+      - The property that follows that prefix is the sorting option, e.g.:
+            sort:color:white-tank-top
+            sort:color:red-dress
+            sort:design:pants-basic-khaki
+      - Those possible sorting options are used to build a simple control to
+        update the page URL's "?sort_by=" parameter.
+      - The [_m-collection] module is responsible for reading that parameter
+        value and sorting the collection's products.
+  - We leverage the "?sort_by=" parameter to pass custom sorting options.
+  - Possible sort orders defined by Shopify:
+      - manual
+      - best-selling
+      - title-ascending / title-descending
+      - price-ascending / price-descending
+      - created-ascending / created-descending
+  - When we build the list of available sorting tags, appending the delimiter
+    at the end of each option makes the "split" filter not create an empty
+    one after the last one. If we pre-pended the delimiter, the "split" filter
+    would create an empty first entry, forcing us to add logic to either check
+    when we add the first item, or remove empty entries afterwards.
+  - There are two ways of constructing the sorting URLs:
+
+      1) canonical_url | sort_by
+          {-% assign url = canonical_url | sort_by: sort %-}
+          {-% assign url = url | replace: "kaqe.co", "localhost:3000" %-}
+
+      2) (collection.url + current_tags) | sort_by
+          {-% assign filters = current_tags | join: "+" %-}
+          {-% assign url = collection.url | append: "/" | append: filters | sort_by: sort %-}
+
+      - #1 needs to replace "kaqe.co" with "localhost:3000" to work in the
+        dev environment.
+      - #2 works in any environment, since the links are relative, but they
+        may miss additional parameters.
+      - We chose #2 out of ease of use.
+  - The sorting URLs only carry through the filters and the sort_by param.
+      - Additional params that need to be carried will need to be added here.
+      - We don't know how to carry through the "view" param in Liquid.
+
+TODOs:
+  - Both ._m-sort._hlist and ._m-sort._vlist versions have the same HTML.
+    Figure out a way of applying a different CSS depending on the layout.
+      - One option is to create _g-collectionpage.js and create a message
+        that can be used to update all module CSS files.
+      - Can we do it without introducing a new script?
+  - If we ever use the "view" param to support different view modes, we have
+    to figure out how to carry it through in the sorting URL.
+      - One option is to read it on the fly with javascript and update the URLs
+        but then that makes this feature script-dependent, not <noscript> safe.
+      - Maybe we can read the template we're using!
+          - If the view parameter is valid, it should render the collection
+            in the corresponding template. Then, { { template.suffix }} should
+            give us the name of the alternate template in use, which implies
+            a "view" parameter is in use, which means we can add it manually!
+              - This, of course, needs to be checked once we create alternate
+                collection templates.
+          - Resources:
+              https://stackoverflow.com/questions/58066025/how-to-link-to-a-custom-template-in-shopify
+              https://www.shopify.ca/partners/blog/shopify-alternate-templates
+              https://shopify.dev/docs/themes/liquid/reference/objects#template
+  - Move "Sort by " string to a localization file.
+  - Only show sorting options if there are 2 or more items.
+  - Inject "-ascend/-descend" to sort-by options.
+  - Highlight the currently-selected sorting option. Pull the "?sort_by=" param
+    and highlight its corresponding sorting option, if it exists.
+  - Figure out how to best render a list of links as a dropdown.
+    This can even be extended to the [_m-categories] module.
+      https://stackoverflow.com/questions/2000656/using-href-links-inside-option-tag
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- comment -%} Get sorting options from the collection's current view. {%- endcomment -%}
+{% assign sorts = nil %}
+{% for tag in collection.tags %}
+  {% if tag contains "sort:" %}
+    {% assign arr_tag = tag | split: ":" %}
+    {% assign sorts = sorts | append: arr_tag[1] | append: "|" %}
+  {% endif %}
+{% endfor %}
+{%- assign arr_sorts = sorts | split: "|" | uniq -%}
+
+{%- comment -%} Render the SortBy UX. {%- endcomment -%}
+{%- if 0 < arr_sorts.size -%}
+
+  <style>
+    ._m-sort._hlist { padding: 1rem; color: gray; }
+    ._m-sort._hlist ._title { margin: 0 0.25rem 0 0; }
+    ._m-sort._hlist { display: flex; flex-flow: row nowrap; justify-content: center; }
+    ._m-sort._hlist ul { margin: 0; padding: 0; list-style-type: none; }
+    ._m-sort._hlist ul { display: flex; flex-flow: row nowrap; justify-content: center; }
+    ._m-sort._hlist ul li a { margin: 0 0.25rem; color: gray; text-decoration: none; }
+    ._m-sort._hlist ul li a:hover { color: black; text-decoration: underline; }
+  </style>
+  <div class="_m-sort _hlist _bp-collectionpage-full-hide">
+    <div class="_title">
+      SORT BY:
+    </div>
+    <ul>
+      {% for sort in arr_sorts %}
+        {% assign filters = current_tags | join: "+" %}
+        {% assign url = collection.url | append: "/" | append: filters | sort_by: sort %}
+        {% assign title = "Sort by " | append: sort %}
+        <li>{{ sort | capitalize | link_to: url, title }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <style>
+    ._m-sort._vlist ._title { padding: 0.125rem 0; color: gray; }
+    ._m-sort._vlist ul { margin: 0; padding: 0; list-style-type: none; }
+    ._m-sort._vlist ul li { padding: 0 0 0 1rem; }
+    ._m-sort._vlist ul li a { display: block; padding: 0.125rem 0; color: gray; text-decoration: none; }
+    ._m-sort._vlist ul li a:hover { color: black; text-decoration: underline; }
+  </style>
+  <div class="_m-sort _vlist _bp-collectionpage-narrow-hide">
+    <div class="_title">
+      SORT BY:
+    </div>
+    <ul>
+      {% for sort in arr_sorts %}
+        {% assign filters = current_tags | join: "+" %}
+        {% assign url = collection.url | append: "/" | append: filters | sort_by: sort %}
+        {% assign title = "Sort by " | append: sort %}
+        <li>{{ sort | capitalize | link_to: url, title }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+{%- endif -%}
+
+{% comment %}
+{% endcomment %}
+<!-- [_m-sort] Debug Info:
+sorts=[{{ sorts }}]
+arr_sorts=[{{ arr_sorts | strip }}]
+<!---->

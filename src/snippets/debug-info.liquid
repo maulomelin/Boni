@@ -1,7 +1,534 @@
+<style>
+  ._debug-info table { border-collapse: collapse; }
+  ._debug-info table td { border: solid 1px lightgray; padding: 0 0.5rem; }
+  ._debug-info table thead td { background: whitesmoke; font-weight: 500; }
+  ._debug-info table td:first-child { white-space: nowrap; }
+</style>
+
 <div class="_debug-info">
   <h1>{{ product.title }}</h1>
 
-  <p>All product info (Type = {String, Number, Boolean, Nil, Array, EmptyDrop} )</p>
+  <p>General DEBUG info (Type = {String, Number, Boolean, Nil, Array, EmptyDrop} )</p>
+  <table>
+    <thead>
+      <tr><td>Data</td><td>Value</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{ { content_for_header }}</td>
+        <td>
+          <ul style="margin: 0; padding-left: 1rem;">
+            <li>Look at "view-source" because this tag renders tons of tags and scripts that go into <code>&lt;head&gt;</code>, flanked by some code "window.performance.mark('shopify.content_for_header.start')" and "window.performance.mark('shopify.content_for_header.end')".</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>{ { template }}</td>
+        <td>{{ template }}</td>
+      </tr>
+      <tr>
+        <td>{ { template.directory }}</td>
+        <td>{{ template.directory }}</td>
+      </tr>
+      <tr>
+        <td>{ { template.name }}</td>
+        <td>{{ template.name }}</td>
+      </tr>
+      <tr>
+        <td>{ { template.suffix }}</td>
+        <td>{{ template.suffix }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <br/><br/>
+
+  <p>COLLECTION info (Type = {String, Number, Boolean, Nil, Array, EmptyDrop} )</p>
+  <table>
+    <thead>
+      <tr><td>Data</td><td>Value</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{ { paginate.current_page }}</td>
+        <td>
+          <ul style="margin: 0; padding-left: 1rem;">
+            <li>Value of URL param "?page="</li>
+          </ul>
+          {% paginate collection.products %}{{ paginate.current_page }}{% endpaginate %}
+        </td>
+      </tr>
+      <tr>
+        <td>{ { paginate.page_size }}</td>
+        <td>
+          <ul style="margin: 0; padding-left: 1rem;">
+            <li>Default page size when not specified in the "paginate" tag.</li>
+          </ul>
+          {% paginate collection.products %}{{ paginate.page_size }}{% endpaginate %}
+        </td>
+      </tr>
+      <tr>
+        <td>{ { paginate.pages }}</td>
+        <td>
+          <ul style="margin: 0; padding-left: 1rem;">
+            <li># of pages using the page size in the enclosing "paginate" tag.</li>
+          </ul>
+          {% paginate collection.products %}{{ paginate.pages }}{% endpaginate %}
+        </td>
+      </tr>
+      <tr>
+        <td>{ { paginate.items }}</td>
+        <td>{% paginate collection.products %}{{ paginate.items }}{% endpaginate %}</td>
+      </tr>
+      <tr>
+        <td>{ { collection.sort_by }}</td>
+        <td>
+          <ul style="margin: 0; padding-left: 1rem;">
+            <li>Value of URL param "?sort_by="</li>
+          </ul>
+          {{ collection.sort_by }}
+        </td>
+      </tr>
+      <tr>
+        <td>{ { collection.default_sort_by }}</td>
+        <td>{{ collection.default_sort_by }}</td>
+      </tr>
+      <tr>
+        <td>{ { collection.products_count }}</td>
+        <td>{{ collection.products_count }}</td>
+      </tr>
+      <tr>
+        <td>{ { collection.handle }}</td>
+        <td>{{ collection.handle }}</td>
+      </tr>
+      <tr>
+        <td>{ { collection.url }}</td>
+        <td>{{ collection.url }}</td>
+      </tr>
+      <tr>
+        <td>{ { canonical_url }}</td>
+        <td>{{ canonical_url }}</td>
+      </tr>
+      <tr>
+        <td>{ { current_tags }}</td>
+        <td>{{ current_tags | strip }}</td>
+      </tr>
+      <tr>
+        <td>{ { collection.url | sort_by: "xx" }}</td>
+        <td>{{ collection.url | sort_by: "xxx" }}</td>
+      </tr>
+      <tr>
+        <td>collection.url + current_tags</td>
+        <td>
+          {% assign filters = current_tags | join: "+" %}
+          {{ collection.url | append: "/" | append: filters }}
+        </td>
+      </tr>
+      <tr>
+        <td>(collection.url + current_tags) | sort_by:</td>
+        <td>
+          {% assign filters = current_tags | join: "+" %}
+          {% assign url = collection.url | append: "/" | append: filters | sort_by: "kaqe-ascending" %}
+          {{ url }}
+          <br/>
+          {{ "Link from URL above using the 'link_to' filter" | link_to: url, "title" }}
+        </td>
+      </tr>
+      <tr>
+        <td>{ { "..." | link_to_add_tag: "fake-tag" }}</td>
+        <td>
+          <ul style="margin: 0; padding-left: 1rem;">
+            <li>Note: title attribute is automatically populated to "Narrow selection to products matching tag &lt;fake-tag&gt;" if no title value is given.</li>
+          </ul>
+          {{ "link to collection with tag 'fake-tag' added" | link_to_add_tag: "fake-tag" }}
+        </td>
+      </tr>
+      <tr>
+        <td>{ { "..." | link_to_remove_tag: "color:shedron" }}</td>
+        <td>
+          <ul style="margin: 0; padding-left: 1rem;">
+            <li>Note: tag name is case-sensitive.</li>
+            <li>Note: title attribute is automatically populated to "Remove tag &lt;fake-tag&gt;" if no title value is given.</li>
+          </ul>
+          {{ "link to collection with tag 'color:shedron' removed" | link_to_remove_tag: "color:shedron" }}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          { % for p in collection.products % }
+          <br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;. . .
+          <br/>
+          { % endfor % }
+        </td>
+        <td>
+          {%- assign n = 1 -%}
+          {%- for p in collection.products -%}
+            {{ n }}
+            {%- assign n = n | plus: 1 -%}
+          {%- endfor -%}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          { % paginate collection.products by 999999 % }
+            <br/>
+            &nbsp;&nbsp;&nbsp;&nbsp;{ % for p in collection.products % }
+            <br/>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;. . .
+            <br/>
+            &nbsp;&nbsp;&nbsp;&nbsp;{ % endfor % }
+            <br/>
+          { % endpaginate % }
+        </td>
+        <td>
+          {%- assign n = 1 -%}
+          {% paginate collection.products by 999999 %}
+            {%- for p in collection.products -%}
+              {{ n }}
+              {%- assign n = n | plus: 1 -%}
+            {%- endfor -%}
+          {% endpaginate %}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          { % assign paginate.current_page = 1 % }
+          <br/>
+          { % paginate collection.products by 999999 % }
+            <br/>
+            &nbsp;&nbsp;&nbsp;&nbsp;{ % for p in collection.products % }
+            <br/>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;. . .
+            <br/>
+            &nbsp;&nbsp;&nbsp;&nbsp;{ % endfor % }
+            <br/>
+          { % endpaginate % }
+        </td>
+        <td>
+          {%- assign n = 1 -%}
+          {% paginate collection.products by 999999 %}
+            {%- for p in collection.products -%}
+              {{ n }}
+              {%- assign n = n | plus: 1 -%}
+            {%- endfor -%}
+          {% endpaginate %}
+        </td>
+      </tr>
+      <tr>
+        <td>{ { paginate | default_pagination }}</td>
+        <td>
+          {% paginate collection.products by 1 %}
+            {%- for p in collection.products -%}
+            {%- endfor -%}
+            {{ paginate | default_pagination }}
+          {% endpaginate %}
+        </td>
+      </tr>
+      <tr>
+        <td>{ { collection.all_types }}</td>
+        <td>{{ collection.all_types | strip }}</td>
+      </tr>
+      <tr>
+        <td>(try to) Loop through { { all_products }}</td>
+        <td>
+          {%- assign n = 1 -%}
+          {% for p in all_products %}
+            {{ n }}
+            {%- assign n = n | plus: 1 -%}
+          {% endfor %}
+        </td>
+      </tr>
+      <tr>
+        <td>"paginate by 5" on array and collection.</td>
+        <td>
+          {% assign arr_alpha = "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p" | split: "," %}
+          {% paginate collection.products by 5 %}
+            array ({{ arr_alpha.size }}):
+            {%- assign n = 1 -%}
+            {% for a in arr_alpha %}
+              {{ a }}
+              {{ n }}
+              {%- assign n = n | plus: 1 -%}
+            {% endfor %}
+            <br/>
+            collection.products ({{ collection.products.size }}):
+            {%- assign n = 1 -%}
+            {% for p in collection.products %}
+              {{ n }}
+              {%- assign n = n | plus: 1 -%}
+            {% endfor %}
+          {% endpaginate %}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Loop through { { collections.all.products }}
+        </td>
+        <td>
+          {%- assign n = 1 -%}
+          {% for p in collections.all.products %}
+            {{ n }}
+            {%- assign n = n | plus: 1 -%}
+          {% endfor %}
+        </td>
+      </tr>
+      <tr>
+        <td>{ { collection.tags }}</td>
+        <td>{{ collection.tags | strip }}</td>
+      </tr>
+      <tr>
+        <td>{ { collection.all_tags }}</td>
+        <td>{{ collection.all_tags | strip }}</td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          Observations so far:
+          <ul>
+            <li>
+              To create a relative URL to a collection page with filter tags and sort-by parameters, we can either:
+              <ol>
+                <li>
+                  Construct it manually by merging <code>collection.url</code> with <code>current_tags</code> and apply the <code>sort_by</code> filter.
+                  <ul>
+                    <li>
+                      This gives us flexibility to use the resulting URL in any control we want.
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  Use the <code>link_to_remove_tag</code> with a fake tag that forces the system to generate the URL.
+                  <ul>
+                    <li>
+                      Unfortunately, this filter generates an HTML anchor element with its href and title attributes, and content populated.
+                      It does not give us access to the URL (href property).
+                    </li>
+                    <li>
+                      The template for the default title attribute is "Remove tag &lt;tag&gt;".
+                    </li>
+                    <li>
+                      This will work if the filters are rendered as links, but not if we ever change their presentation and need the URL.
+                    </li>
+                    <li>
+                      Similarly, the <code>link_to_add_tag</code> automatically adds a title is none is provided.
+                      The template for the title attribute is "Narrow selection to products matching tag &lt;tag&gt;".
+                    </li>
+                  </ul>
+                </li>
+              </ol>
+            </li>
+            <li>
+              Page 1: <a href="https://localhost:3000/collections/women">https://localhost:3000/collections/women</a>
+              <ul>
+                <li>
+                  In the simple loop, 50 products show.
+                  <ul>
+                    <li>
+                      Presumably, Shopify limits the loop to 50 items and the first 50 items are looped through.
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  In the nested pagination loop, all (161) products show.
+                  <ul>
+                    <li>
+                      Note: At the time of this writing, the collection being tested had 161 products in it.
+                    </li>
+                    <li>
+                      Presumably because there are less than the 999,999 limit we used.
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li>
+              Pages 2+: <a href="https://localhost:3000/collections/women?page=2">https://localhost:3000/collections/women?page=2</a>
+              <ul>
+                <li>
+                  In the simple loop, 50 products show.
+                  <ul>
+                    <li>
+                      Presumably, Shopify limits the loop to 50 items and the second 50 items are looped through.
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  In the nested pagination loop, no products show.
+                  <ul>
+                    <li>
+                      Presumably because there are less than the 999,999 limit we used, page 2 would have no products to show so none are looped through.
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li style="color: blue; list-style-type: '\021D2\2002';">
+              So...how do we loop through *all* products in a collection, regardless of which page we're on, so we can paginate ourselves?
+            </li>
+            <li>
+              Looping through all products in a collection regardless of page number.
+              <ul>
+                <li>
+                  What if we have two pagination loops?
+                  One to pull all the products off a collection's current view, and the second to do it off the current pagination window?
+                  <ul>
+                    <li style="color: red; list-style-type: '\021D2\2002';">
+                      We have been unable to find a way of retrieving all of the products in the collection's current view.
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  Are there paramters to the "paginate" tag that allow us to force it to behave as if it was on page 1?
+                  <ul>
+                    <li>
+                      <a href="https://www.spiffystores.com.au/kb/Liquid_Paginate_Tag">https://www.spiffystores.com.au/kb/Liquid_Paginate_Tag</a>
+                    </li>
+                    <li style="color: red; list-style-type: '\021D2\2002';">
+                      We have not found any.
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  What if we create a list of desired products first, and then paginate that list of products?
+                  <ul>
+                    <li>
+                      <a href="https://stackoverflow.com/questions/23803345/shopify-how-to-exclude-a-collection-in-paginate">https://stackoverflow.com/questions/23803345/shopify-how-to-exclude-a-collection-in-paginate</a>
+                    </li>
+                    <li>
+                      We loop through a construct that allows more than 50 items and check to see which items are in the current collection's view.
+                    </li>
+                    <li>
+                      Does the "paginate" tag work with a random array?
+                      <ul>
+                        <li style="color: red; list-style-type: '\021D2\2002';">
+                          No.
+                          It does not have any effect.
+                        </li>
+                      </ul>
+                    </li>
+                    <li style="color: red; list-style-type: '\021D2\2002';">
+                      We have been unable to find a way of retrieving all of the products in a collection on pages 2+.
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  Can we force { % assign paginate.current_page = 1 % }?
+                  <ul>
+                    <li>
+                      No.
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li>
+              What if we side-step this issue and simply render everything in one page?
+              <ul>
+                <li>
+                  This will suffice only until we reach the max limit of the "paginate" tag for the largest collection (i.e. "all").
+                  <ul>
+                    <li>
+                      We can re-evaluate the solution once we hit this limit.
+                      We believe the limit is 2,000.
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  We will need to address the scenario where the "?page=" parameter is present in the query string, since that would prevent any results from being shown to users due to Shopify/Liquid limitations on how looping through collection products and the paginate tag works.
+                </li>
+                <li>
+                  If we render everything in one page, do we implement client-side or server-side sorting & filtering?
+                  <ul>
+                    <li>
+                      Client-side sorting & filtering.
+                      <ul>
+                        <li>
+                          <span style="color: green;">[PRO]</span>
+                          We can do everything in javascript on the client.
+                        </li>
+                        <li>
+                          <span style="color: green;">[PRO]</span>
+                          Performance on the client is better, since there are no round-trips needed to fetch new data.
+                          We simply need to tag all elements accordingly and let the client-side script re-order on the fly.
+                        </li>
+                        <li>
+                          <span style="color: red;">[CON]</span>
+                          This will still require a <code>&lt;noscript&gt;</code> implementation.
+                          A client-side solution will not work for users who have javascript disabled.
+                          <ul>
+                            <li>
+                              A long-term goal of the site is to support a <code>&lt;noscript&gt;</code> scenario.
+                            </li>
+                          </ul>
+                        </li>
+                        <li>
+                          <span style="color: red;">[CON]</span>
+                          We'll have to redo the work if we ever need to support server-side pagination due to Shopify/Liquid limitations.
+                        </li>
+                        <li>
+                          <span style="color: red;">[CON]</span>
+                          Additional work required to create links to sorted/filtered pages.
+                        </li>
+                      </ul>
+                    </li>
+                    <li>
+                      Server-side sorting & filtering.
+                      <ul>
+                        <li>
+                          <span style="color: green;">[PRO]</span>
+                          We can do everything in Liquid on the server.
+                        </li>
+                        <li>
+                          <span style="color: red;">[CON]</span>
+                          Performance on the server is worse, since there are round-trips needed to fetch the same data sorted and/or filtered.
+                        </li>
+                        <li>
+                          <span style="color: green;">[PRO]</span>
+                          This is an inherent <code>&lt;noscript&gt;</code> implementation.
+                          A server-side solution will work for all users, regardless of their client's script settings.
+                          <ul>
+                            <li>
+                              A long-term goal of the site is to support a <code>&lt;noscript&gt;</code> scenario.
+                            </li>
+                          </ul>
+                        </li>
+                        <li>
+                          <span style="color: green;">[PRO]</span>
+                          We'll be better prepared if we ever need to support server-side pagination due to Shopify/Liquid limitations.
+                        </li>
+                        <li>
+                          <span style="color: green;">[PRO]</span>
+                          Makes it easy to add create links to sorted/filtered pages.
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+                <li style="color: green; list-style-type: '\021D2\2002';">
+                  Render all results on a single page.
+                  Implement server-side sorting &amp; filtering.
+                  Handle the "?page=" scenario by giving a simple "this doesn't work" message with a link to the page with the offending parameter removed.
+                  This is the way.
+                </li>
+              </ul>
+            </li>
+            <li>
+              Resources:
+              <ul>
+                <li>
+                  <a href="https://github.com/Shopify/liquid/blob/master/performance/shopify/paginate.rb">https://github.com/Shopify/liquid/blob/master/performance/shopify/paginate.rb</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <br/><br/>
+
+  <p>All PRODUCTinfo (Type = {String, Number, Boolean, Nil, Array, EmptyDrop} )</p>
   <table>
     <thead>
       <tr><td>Attribute</td><td>Type</td><td>Output</td>

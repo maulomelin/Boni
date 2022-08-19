@@ -1,0 +1,97 @@
+{%- comment -%}-----------------------------------------------------------------
+
+Design Pattern:
+  [_m-filter-color]
+
+Snippet:
+  \src\snippets\_m-filter-color.Liquid
+
+Usage:
+  {% include "_m-filter-color", collection: collection %}
+
+Parameters:
+  {string} collection // The collection to be sorted.
+
+Output:
+  - A very simple html construct that gives users color-filtering options.
+  - If no collection is provided, nothing is returned.
+
+Description:
+  - The module simply looks for specific tags it can filter results by color.
+      - We can't just use {-% contains "color:" %-} because the string "color:"
+        could be used in other tags, such as "soft:color:red-shirt".
+        So we
+
+TODOs:
+  - Make the filter prefix configurable via the Shopify Theme Editor.
+      - @[ Shopify > Online Store > Themes > Customize > Themes settings ]
+
+--------------------------------------------------------------{%- endcomment -%}
+
+{%- comment -%} Get all color tags from the collection. {%- endcomment -%}
+{%- assign all_color_tags = nil -%}
+{%- for tag in collection.all_tags -%}
+  {%- if tag contains "color:" -%}
+    {%- assign arr_tag = tag | split: ":" -%}
+    {%- if "color" == arr_tag[0] -%}
+      {%- assign all_color_tags = all_color_tags | append: tag | append: "|" -%}
+    {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- assign arr_all_color_tags = all_color_tags | split: "|" | uniq -%}
+
+{%- comment -%} Get all color tags from the collection's current view. {%- endcomment -%}
+{%- assign available_color_tags = nil -%}
+{%- for tag in collection.tags -%}
+  {%- if tag contains "color:" -%}
+    {%- assign arr_tag = tag | split: ":" -%}
+    {%- if "color" == arr_tag[0] -%}
+      {%- assign available_color_tags = available_color_tags | append: tag | append: "|" -%}
+    {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- assign arr_available_color_tags = available_color_tags | split: "|" | uniq -%}
+
+{%- comment -%} Get the current filter tags. {%- endcomment -%}
+{%- assign arr_current_filter_tags = current_tags -%}
+
+
+{%- comment -%} Render the SortBy UX. {%- endcomment -%}
+{%- if 0 < arr_colors.size -%}
+
+  <style>
+    ._m-filter { }
+  </style>
+  <div class="_m-filter-color">
+    <div class="_title">
+      FILTER BY:
+    </div>
+    <ul>
+      {% for color in arr_colors %}
+
+        {% assign filters = current_tags | join: "+" %}
+        {% assign url = collection.url | append: "/" | append: filters | sort_by: sort %}
+
+        {% assign title = "Filter by color " | append: color %}
+        <li>{{ color | capitalize | link_to: url, title }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+{%- endif -%}
+
+{% comment %}
+{% endcomment %}
+<!-- [_m-filter-color] Debug Info:
+arr_all_color_tags=[{{ arr_all_color_tags | strip }}]
+
+arr_available_color_tags=[{{ arr_available_color_tags | strip }}]
+
+arr_current_filter_tags=[{{ arr_current_filter_tags | strip }}]
+
+current_tags=[{{ current_tags | strip }}]
+
+collection.tags=[{{ collection.tags | strip }}]
+
+collection.all_tags=[{{ collection.all_tags | strip }}]
+<!---->

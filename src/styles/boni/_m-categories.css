@@ -12,7 +12,6 @@
 ._m-categories ._menu._tree ul li a { color: gray; text-decoration: none; }
 ._m-categories ._menu._tree ul li a:hover { color: black; text-decoration: underline; }
 ._m-categories ._menu._tree ul li a:focus { outline: auto black; }
-._m-categories ._menu._tree ul li a:visited { color: gray; }
 /* (Debug) -------------------------------------------------------------------*/
 ._m-categories._DEBUG { outline: dashed 1px pink; padding: 0.5rem; }
 ._m-categories._DEBUG ._menu._dropdown { outline: dashed 1px green; background: honeydew; }

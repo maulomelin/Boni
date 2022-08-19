@@ -98,7 +98,9 @@
   "collections": {
     "general": {
       "no_matches": "Sorry, there are no products in this collection",
-      "link_title": "Browse our {{ title }} collection"
+      "link_title": "Browse our {{ title }} collection",
+      "bad_page": "Sorry! No products on this page. :(",
+      "bad_page_action": "Fix it!"
     }
   },
   "contact": {

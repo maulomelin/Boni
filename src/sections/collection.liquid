@@ -10,7 +10,7 @@ Notes:
 
 --------------------------------------------------------------{%- endcomment -%}
 
-<div class="x_DEBUG _g-collectionpage">
+<div class="_g-collectionpage">
   <div class="_g-collectionpage-categories">
     {% render "_m-categories" %}
   </div>
@@ -25,11 +25,11 @@ Notes:
   <div class="_g-collectionpage-content">
     {% render "_m-collection" %}
   </div>
-  {%- comment -%}
   <div class="_g-collectionpage-views">
-    [REMOVE]
+    {% render "_m-sort", collection: collection %}
+    <br/>
+    {% render "_m-filter-color", collection: collection %}
   </div>
-  {%- endcomment -%}
 </div>
 
 <script type="application/ld+json">
@@ -37,8 +37,8 @@ Notes:
 </script>
 
 {% comment %} Debug Info
-{% render "debug-info" %}
 {% endcomment %}
+{% render "debug-info" %}
 
 
 {% schema %}

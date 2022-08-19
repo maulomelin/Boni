@@ -2,14 +2,14 @@
 // Copyright (c) 2018 maulomelin@gmail.com.  Released under the MIT license.
 //----------------------------------------------------------------------------*/
 /* Container Element */
-._g-collectionpage { display: grid; grid-template-areas: "categories" "title" "content"; grid-template-columns: 1fr; grid-template-rows: min-content min-content 1fr; grid-gap: 1rem; }
+._g-collectionpage { display: grid; grid-template-areas: "categories" "title" "views" "content"; grid-template-columns: 1fr; grid-template-rows: min-content min-content 1fr; grid-gap: 1rem; }
 ._g-collectionpage ._g-collectionpage-categories { grid-area: categories; }
 ._g-collectionpage ._g-collectionpage-views { grid-area: views; }
 ._g-collectionpage ._g-collectionpage-title { grid-area: title; }
 ._g-collectionpage ._g-collectionpage-content { grid-area: content; }
 /* Breakpoints */
 @media only screen and (max-width: 999px) {
-  ._g-collectionpage { grid-template-areas: "categories" "title" "content"; grid-template-columns: 1fr; }
+  ._g-collectionpage { grid-template-areas: "categories" "title" "views" "content"; grid-template-columns: 1fr; }
   ._bp-collectionpage-narrow-hide { display: none !important; }
   ._bp-collectionpage-narrow-show { display: block !important; }
 }
@@ -21,8 +21,8 @@
 
 /* (Debug) -------------------------------------------------------------------*/
 ._g-collectionpage._DEBUG { outline: dashed 1px red; background: lavenderblush; padding: 0.5rem; }
-._g-collectionpage._DEBUG ._g-collectionpage-categories { outline: dashed 1px orange; background: lightyellow; xtext-align: center; }
-._g-collectionpage._DEBUG ._g-collectionpage-views { outline: dashed 1px orange; background: lightyellow; xtext-align: center; }
-._g-collectionpage._DEBUG ._g-collectionpage-title { outline: dashed 1px green; background: honeydew; xtext-align: center; }
-._g-collectionpage._DEBUG ._g-collectionpage-content { outline: dashed 1px green; background: honeydew; xtext-align: center; }
+._g-collectionpage._DEBUG ._g-collectionpage-categories { outline: dashed 1px orange; background: lightyellow; }
+._g-collectionpage._DEBUG ._g-collectionpage-views { outline: dashed 1px orange; background: lightyellow; }
+._g-collectionpage._DEBUG ._g-collectionpage-title { outline: dashed 1px green; background: honeydew; }
+._g-collectionpage._DEBUG ._g-collectionpage-content { outline: dashed 1px green; background: honeydew; }
 /*----------------------------------------------------------------------------*/

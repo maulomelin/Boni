@@ -17,6 +17,29 @@
 
 --------------------------------------------------------------{%- endcomment -%}
 
+<table border="1">
+  <tr>
+    <td>{ { template }}</td>
+    <td>{{ template }}</td>
+  </tr>
+  <tr>
+    <td>{ { template.directory }}</td>
+    <td>{{ template.directory }}</td>
+  </tr>
+  <tr>
+    <td>{ { template.name }}</td>
+    <td>{{ template.name }}</td>
+  </tr>
+  <tr>
+    <td>{ { template.suffix }}</td>
+    <td>{{ template.suffix }}</td>
+  </tr>
+  <tr>
+    <td>{ { page.template_suffix }}</td>
+    <td>{{ page.template_suffix }}</td>
+  </tr>
+</table>
+<br/>
 {% paginate collections.all.products by 200 %}
 <style>
   ._t { margin: 0 auto; border-collapse: collapse; }
